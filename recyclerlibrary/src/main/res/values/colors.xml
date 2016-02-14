@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="app_bg">#EEEEEE</color>
+    <color name="divide">#EEEEEE</color>
+    <color name="black">#FF000000</color>
+    <color name="gray">#E1E1E1</color>
+    <color name="dark_gray">#FF444444</color>
+    <color name="lt_gray">#FFcccccc</color>
+    <color name="red">#FFFF3333</color>
+    <color name="brown">#FF7389AB</color>
+    <color name="dark_red">#FFEE6868</color>
+    <color name="blue">#FF4EA7FE</color>
+    <color name="orange">#FFFF9900</color>
+    <color name="green">#FF45C018</color>
+    <color name="yellow">#FFBB00</color>
+    <color name="light_green">#FF62D837</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="light_black">#FF383B3d</color>
+    <color name="light_yellow">#FFFFFcc3</color>
+
+
+</resources>

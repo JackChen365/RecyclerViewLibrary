@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">PullToRefreshRecyclerView</string>
+    <string name="about">About</string>
+    <string name="add_header">添加头</string>
+    <string name="remove_header">移除头</string>
+    <string name="remove_footer">移除尾</string>
+    <string name="add_footer">添加尾</string>
+    <string name="add_item">添加条目</string>
+    <string name="action_add">Add</string>
+    <string name="action_remove">Remove</string>
+    <string name="is_header">This is a HeaderView</string>
+    <string name="header">Header</string>
+    <string name="action_remove_group">移除分组</string>
+    <string name="action_remove_child">移除分组子条目</string>
+    <string name="action_expand_toggle">展开切换</string>
+    <string name="add_group">添加组</string>
+    <string name="scan_files">正在检索所有文件</string>
+    <string name="random_add">随机添加</string>
+    <string name="random_remove">随机移除</string>
+    <string name="my_channel">我的频道</string>
+    <string name="add_channel">添加频道</string>
+    <string name="channel_tip">长按拖动频道可排序</string>
+    <string name="channel_sort_delete">排序/删除</string>
+    <string name="more_channel">更多频道</string>
+    <string name="input_like_channel">输入你感兴趣的频道</string>
+    <string name="small_header">Header</string>
+    <string name="complete">完成</string>
+</resources>

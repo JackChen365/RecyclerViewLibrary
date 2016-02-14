@@ -1,0 +1,19 @@
+<ui>
+    <listItem name="0">
+        <item name="PullToRefreshRecyclerView" class=".ui.recyclerview.PullToRefreshActivity" />
+        <item name="PullToRefreshGridRecyclerView"
+            class=".ui.recyclerview.GridPullToRefreshActivity" />
+        <item name="ExpandRecyclerView" class=".ui.recyclerview.PullToRefreshExpandActivity" />
+    </listItem>
+    <listItem name="1">
+        <item name="LinearDragRecyclerView" class=".ui.drag.LinearDragActivity" />
+        <item name="GridDragRecyclerView" class=".ui.drag.GridDragActivity" />
+        <item name="DynamicDragRecyclerView" class=".ui.drag.DynamicDragActivity" />
+        <item name="CustomDragSample" class=".ui.drag.CustomDragActivity" />
+    </listItem>
+    <listItem name="2">
+        <item name="HeaderAdapter" class=".ui.adapter.HeaderAdapterActivity" />
+        <item name="TreeAdapter" class=".ui.adapter.TreeAdapterViewActivity" />
+        <item name="DynamicAdapter" class=".ui.adapter.DynamicAdapterActivity" />
+    </listItem>
+</ui>

@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">RecyclerLibrary</string>
+    <string name="listview_header_hint_normal">pull to refresh</string>
+    <string name="listview_header_hint_release">release to start refresh</string>
+    <string name="listview_loading">loading...</string>
+    <string name="nomore_loading">no more to be loaded</string>
+    <string name="refreshing">refreshing...</string>
+    <string name="refresh_done">refresh done</string>
+    <string name="listview_header_last_time">last update：</string>
+    <string name="look">Look</string>
+    <string name="loading">Loading...</string>
+    <string name="check_net_info">Please Check Network</string>
+    <string name="re_try">try</string>
+    <string name="load_complete">LoadComplete</string>
+
+</resources>

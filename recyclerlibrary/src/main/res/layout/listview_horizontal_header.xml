@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:auto="http://schemas.android.com/apk/res-auto">
+
+    <com.ldzs.recyclerlibrary.WheelView
+        android:id="@+id/pull_to_refresh_progress"
+        android:layout_width="30dip"
+        android:layout_height="30dip"
+        android:layout_gravity="center_vertical"
+        auto:wev_outContourColor="@color/green"
+        auto:wev_outContourWidth="1.5dp"
+        auto:wev_outerBoundsColor="@color/light_green"
+        auto:wev_text="@string/look"
+        auto:wev_textColor="@color/green"
+        auto:wev_textMode="custom_text" />
+
+    <TextView
+        android:id="@+id/refresh_status_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:padding="4dp" />
+
+</merge>

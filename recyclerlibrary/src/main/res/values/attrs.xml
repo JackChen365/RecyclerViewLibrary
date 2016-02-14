@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="PullToRefreshRecyclerView">
+        <!--刷新模式-->
+        <attr name="pv_refreshMode" format="enum">
+            <enum name="both" value="0x00" />
+            <enum name="header" value="0x01" />
+            <enum name="bottom" value="0x02" />
+            <enum name="none" value="0x03" />
+        </attr>
+        <attr name="pv_listDivide" format="reference" />
+        <attr name="pv_listDivideHeight" format="dimension" />
+        <attr name="pv_divideHorizontalPadding" format="dimension" />
+        <attr name="pv_divideVerticalPadding" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="WheelView">
+        <attr name="wev_wheelMode" format="enum">
+            <enum name="set_progress" value="0" />
+            <enum name="matrix_progress" value="1" />
+            <enum name="auto_progress" value="2" />
+        </attr>
+        <attr name="wev_contourMode" format="enum">
+            <enum name="out_contour" value="0" />
+            <enum name="all_contour" value="1" />
+            <enum name="inner_contour" value="2" />
+            <enum name="rvs_contour" value="3" />
+        </attr>
+        <attr name="wev_textMode" format="enum">
+            <enum name="progress_text" value="0" />
+            <enum name="custom_text" value="1" />
+            <enum name="empty_text" value="2" />
+        </attr>
+        <attr name="wev_innerPaddingMode" format="enum">
+            <enum name="contour_padding" value="0" />
+            <enum name="contour_width" value="1" />
+        </attr>
+        <attr name="wev_outContourColor" format="color" />
+        <attr name="wev_innerContourColor" format="color" />
+        <attr name="wev_outerBoundsColor" format="color" />
+        <attr name="wev_outContourWidth" format="dimension" />
+        <attr name="wev_innerContourSize" format="dimension" />
+        <attr name="wev_text" format="reference" />
+        <attr name="wev_textSize" format="dimension" />
+        <attr name="wev_textColor" format="reference" />
+    </declare-styleable>
+
+</resources>

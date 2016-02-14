@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">RecyclerView演示</string>
+    <string name="about">关于</string>
+</resources>

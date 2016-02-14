@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="Recycler_List">
+        <item>动态添加头尾Adapter</item>
+        <item>往任一位置添加铺满条目的Adapter</item>
+        <item>树形的RefreshRecycler</item>
+        <item>上拉刷新/下拉加载RefreshRecycler</item>
+        <item>上拉刷新/下拉加载GridRefreshRecycler</item>
+        <item>可展开的RefreshRecycler</item>
+        <item>可拖动的RecyclerView</item>
+    </string-array>
+</resources>
