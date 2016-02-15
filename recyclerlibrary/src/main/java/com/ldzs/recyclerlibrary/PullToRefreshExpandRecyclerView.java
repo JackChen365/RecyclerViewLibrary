@@ -44,9 +44,12 @@ public class PullToRefreshExpandRecyclerView extends PullToRefreshRecyclerView {
         if (adapter instanceof ExpandAdapter) {
             mExpandAdapter = (ExpandAdapter) adapter;
             mExpandAdapter.setHeaderViewCount(getHeaderViewCount());
-            mExpandAdapter.setOnExpandItemClickListener((v, groupPosition, childPosition) -> {
-                if (null != mExpandItemClickListener) {
-                    mExpandItemClickListener.onItemClick(v, groupPosition, childPosition);
+            mExpandAdapter.setOnExpandItemClickListener(new OnExpandItemClickListener() {
+                @Override
+                public void onItemClick(View v, int groupPosition, int childPosition) {
+                    if (null != mExpandItemClickListener) {
+                        mExpandItemClickListener.onItemClick(v, groupPosition, childPosition);
+                    }
                 }
             });
         } else {

@@ -96,7 +96,12 @@ public class DragRecyclerView extends RecyclerView implements CallbackItemTouch 
             mAdapter.swap(oldPosition, newPosition);
             mAdapter.notifyItemMoved(oldPosition, newPosition);
             //动态结束后,刷新条目
-            postDelayed(() -> mAdapter.notifyItemChanged(newPosition), getItemAnimator().getMoveDuration());
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.notifyItemChanged(newPosition);
+                }
+            }, getItemAnimator().getMoveDuration());
         }
     }
 

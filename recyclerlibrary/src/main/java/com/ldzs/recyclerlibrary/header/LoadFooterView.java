@@ -38,11 +38,19 @@ public class LoadFooterView extends RelativeLayout implements BaseRefreshFooter 
         mFrameGroups[FRAME_LOAD] = findViewById(R.id.footer_load_layout);
         mFrameGroups[FRAME_ERROR] = findViewById(R.id.footer_error_layout);
         mFrameGroups[FRAME_COMPLETE] = findViewById(R.id.tv_load_complete);
-        mFrameGroups[FRAME_ERROR].findViewById(R.id.tv_error_try).setOnClickListener(v -> {
-            if (null != mListener) {
-                setState(BaseRefresh.STATE_REFRESHING);
-                //延持200毫秒,让用户看到加载效果
-                v.postDelayed(() -> mListener.onClick(v), 200);
+        mFrameGroups[FRAME_ERROR].findViewById(R.id.tv_error_try).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                if (null != mListener) {
+                    setState(BaseRefresh.STATE_REFRESHING);
+                    //延持200毫秒,让用户看到加载效果
+                    v.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mListener.onClick(v);
+                        }
+                    }, 200);
+                }
             }
         });
         setState(BaseRefresh.STATE_NORMAL);

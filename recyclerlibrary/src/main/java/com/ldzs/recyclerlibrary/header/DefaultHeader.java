@@ -101,7 +101,12 @@ public class DefaultHeader extends LinearLayout implements BaseRefreshHeader {
         ValueAnimator animator = ValueAnimator.ofInt(getRefreshHeight(), destHeight);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(200);
-        animator.addUpdateListener(animation -> setRefreshHeight((int) animation.getAnimatedValue()));
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                setRefreshHeight((int) animation.getAnimatedValue());
+            }
+        });
         animator.start();
     }
 

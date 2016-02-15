@@ -117,22 +117,28 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
         switch (viewType) {
             case HEADER_ITEM:
                 onBindGroupHolder(holder, groupPosition);
-                holder.itemView.setOnClickListener(v -> {
-                    //展开.或关闭条目列
-                    int newPosition = holder.getAdapterPosition() - mHeaderCount;
-                    int newGroupPosition = getGroupPosition(newPosition);
-                    Boolean expand = mGroupStatus.get(newGroupPosition);
-                    mGroupStatus.set(newGroupPosition, !expand);//状态置反
-                    onGroupExpand(holder, !expand, newGroupPosition);
-                    expandGroup(newPosition, newGroupPosition, expand);
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //展开.或关闭条目列
+                        int newPosition = holder.getAdapterPosition() - mHeaderCount;
+                        int newGroupPosition = getGroupPosition(newPosition);
+                        Boolean expand = mGroupStatus.get(newGroupPosition);
+                        mGroupStatus.set(newGroupPosition, !expand);//状态置反
+                        onGroupExpand(holder, !expand, newGroupPosition);
+                        expandGroup(newPosition, newGroupPosition, expand);
+                    }
                 });
                 break;
             case CHILD_ITEM:
                 final int childPosition = getChildPosition(position);
                 onBindChildHolder(holder, groupPosition, childPosition);
-                holder.itemView.setOnClickListener(v -> {
-                    if (null != mListener) {
-                        mListener.onItemClick(v, groupPosition, childPosition);
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (null != mListener) {
+                            mListener.onItemClick(v, groupPosition, childPosition);
+                        }
                     }
                 });
                 break;

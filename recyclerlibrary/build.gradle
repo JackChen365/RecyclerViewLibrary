@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'me.tatarka.retrolambda'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
@@ -10,10 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+
     buildTypes {
         release {
             minifyEnabled false

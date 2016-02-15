@@ -185,10 +185,13 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mAdapter.onBindViewHolder(holder, position - startIndex);
             int findPosition = findPosition(position);
             if (RecyclerView.NO_POSITION == findPosition) {
-                holder.itemView.setOnClickListener(v -> {
-                    if (null != mItemClickListener) {
-                        int itemPosition = holder.getAdapterPosition();
-                        mItemClickListener.onItemClick(v, itemPosition);
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (null != mItemClickListener) {
+                            int itemPosition = holder.getAdapterPosition();
+                            mItemClickListener.onItemClick(v, itemPosition);
+                        }
                     }
                 });
             }
