@@ -3,6 +3,7 @@ package com.ldzs.recyclerlibrary.header;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -86,6 +87,12 @@ public class DefaultHeader extends LinearLayout implements BaseRefreshHeader {
         setLayoutParams(lp);
     }
 
+
+    @Override
+    public int getOriginalHeight() {
+        return mMeasuredHeight;
+    }
+
     public int getRefreshHeight() {
         RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) getLayoutParams();
         return lp.height;
@@ -141,10 +148,11 @@ public class DefaultHeader extends LinearLayout implements BaseRefreshHeader {
     @Override
     public void pullToRefresh(float offsetValue) {
         //添加现有高度值
+        Log.e(TAG, "offset:" + offsetValue + " height:" + getRefreshHeight());
         if (0 < getRefreshHeight() || 0 < offsetValue) {
             setRefreshHeight((int) (offsetValue));
             if (mState <= STATE_RELEASE_TO_REFRESH) { // 未处于刷新状态，更新箭头
-                if (getRefreshHeight() > mMeasuredHeight) {
+                if (getRefreshHeight() >= mMeasuredHeight) {
                     setState(STATE_RELEASE_TO_REFRESH);
                 } else {
                     setState(STATE_NORMAL);
@@ -161,7 +169,7 @@ public class DefaultHeader extends LinearLayout implements BaseRefreshHeader {
      */
     @Override
     public void setRefreshing() {
-        if (mState < STATE_REFRESHING && getRefreshHeight() > mMeasuredHeight) {
+        if (mState < STATE_REFRESHING && getRefreshHeight() >= mMeasuredHeight) {
             setState(STATE_REFRESHING);
         }
     }

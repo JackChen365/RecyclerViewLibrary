@@ -38,9 +38,12 @@ public class DynamicAdapterActivity extends AppCompatActivity {
         mRecyclerView.getItemAnimator().setRemoveDuration(300);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 4);
         mRecyclerView.setLayoutManager(layoutManager);
-        mAdapter = new DynamicAdapter(this, new SimpleAdapter(this, Date.createItems(this, 40)));
+        final SimpleAdapter adapter = new SimpleAdapter(this, Date.createItems(this, 40));
+        mAdapter = new DynamicAdapter(this, adapter);
         mRecyclerView.setAdapter(mAdapter);
         Random random = new Random();
+        findViewById(R.id.btn_item_add).setOnClickListener(v -> adapter.addItems(Date.createItems(this, 4),0));
+        findViewById(R.id.btn_item_remove).setOnClickListener(v -> adapter.remove(2));
         View addView = findViewById(R.id.btn_add);
         addView.setOnClickListener(v -> addView(random.nextInt(mAdapter.getItemCount())));
         View removeView = findViewById(R.id.btn_remove);

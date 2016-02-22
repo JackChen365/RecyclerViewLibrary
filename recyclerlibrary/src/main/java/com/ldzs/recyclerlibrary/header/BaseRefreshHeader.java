@@ -6,6 +6,13 @@ package com.ldzs.recyclerlibrary.header;
 public interface BaseRefreshHeader extends BaseRefresh {
 
     /**
+     * 获得刷新头原始高度,不变的
+     *
+     * @return
+     */
+    int getOriginalHeight();
+
+    /**
      * 获得当前刷新高度
      *
      * @return

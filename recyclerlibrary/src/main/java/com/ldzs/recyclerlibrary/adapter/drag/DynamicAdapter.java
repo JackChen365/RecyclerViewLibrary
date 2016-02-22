@@ -14,6 +14,7 @@ import com.ldzs.recyclerlibrary.adapter.BaseViewHolder;
 import com.ldzs.recyclerlibrary.callback.OnItemClickListener;
 import com.ldzs.recyclerlibrary.callback.OnItemLongClickListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -51,6 +52,95 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         mItemPositions = new int[0];
         mFullItemTypes = new SparseIntArray();
         mFullViews = new SparseArray<>();
+        //子孩子添加时,动态更新插入条目
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                itemRangeInsert(positionStart, itemCount);
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                super.onItemRangeRemoved(positionStart, itemCount);
+                itemRangeRemove(positionStart, itemCount);
+            }
+
+        });
+    }
+
+    /**
+     * 条目范围插入
+     *
+     * @param positionStart
+     * @param itemCount
+     */
+    private void itemRangeInsert(int positionStart, int itemCount) {
+        int totalCount = getItemCount();
+        //重置所有移除范围内的动态条信息
+        ArrayList<Integer> itemPositionLists = new ArrayList<>();
+        for (int i = 0; i < mItemPositions.length; i++) {
+            itemPositionLists.add(mItemPositions[i]);
+        }
+        for (int i = positionStart; i < totalCount; i++) {
+            int position = getStartIndex(i) + i;
+            int index = findPosition(position);
+            if (RecyclerView.NO_POSITION != index) {
+                //自定义条目,整体往后移动位置
+                int newPosition = i + itemCount;
+                int viewType = mFullItemTypes.get(position);
+                mFullItemTypes.removeAt(index);
+                mFullItemTypes.put(newPosition, viewType);
+                itemPositionLists.set(index, newPosition);
+            }
+        }
+        int size = itemPositionLists.size();
+        mItemPositions = new int[size];
+        for (int i = 0; i < size; i++) {
+            mItemPositions[i] = itemPositionLists.get(i);
+        }
+        notifyItemRangeChanged(positionStart, totalCount - positionStart);
+    }
+
+    /**
+     * 条目范围移动
+     *
+     * @param positionStart
+     * @param itemCount
+     */
+    private void itemRangeRemove(int positionStart, int itemCount) {
+        int totalCount = getItemCount();
+        //重置所有移除范围内的动态条信息
+        ArrayList<Integer> itemPositionLists = new ArrayList<>();
+        for (int i = 0; i < mItemPositions.length; i++) {
+            itemPositionLists.add(mItemPositions[i]);
+        }
+        for (int i = positionStart; i < totalCount; i++) {
+            int position = getStartIndex(i) + i;
+            int index = findPosition(position);
+            if (RecyclerView.NO_POSITION != index) {
+                if (i < positionStart + itemCount) {
+                    //移除动态条目
+                    int viewType = mFullItemTypes.get(position);
+                    mFullViews.remove(viewType);
+                    mFullItemTypes.removeAt(index);
+                    itemPositionLists.remove(index);
+                } else {
+                    //范围外自定义条目,整体往前移动位置
+                    int newPosition = i - itemCount;
+                    int viewType = mFullItemTypes.get(position);
+                    mFullItemTypes.removeAt(index);
+                    mFullItemTypes.put(newPosition, viewType);
+                    itemPositionLists.set(index, newPosition);
+                }
+            }
+        }
+        int size = itemPositionLists.size();
+        mItemPositions = new int[size];
+        for (int i = 0; i < size; i++) {
+            mItemPositions[i] = itemPositionLists.get(i);
+        }
+        notifyItemRangeChanged(positionStart, totalCount - positionStart);
     }
 
     /**

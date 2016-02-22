@@ -30,7 +30,7 @@ public class PullToRefreshActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recycler_view);
+        setContentView(R.layout.activity_linear_recycler_view);
         setTitle(getIntent().getStringExtra("title"));
         mRecyclerView = (PullToRefreshRecyclerView) this.findViewById(R.id.recycler_view);
         mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
@@ -76,6 +76,9 @@ public class PullToRefreshActivity extends AppCompatActivity {
         //初始设置2个,考虑其不满一屏加载状态
         mAdapter = new SimpleAdapter(this, Date.createItems(this, 2));
         mRecyclerView.setAdapter(mAdapter);
+
+
+        findViewById(R.id.btn_auto_refresh).setOnClickListener(v -> mRecyclerView.setRefreshing());
     }
 
     /**

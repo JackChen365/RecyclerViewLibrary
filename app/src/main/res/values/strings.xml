@@ -25,4 +25,7 @@
     <string name="input_like_channel">输入你感兴趣的频道</string>
     <string name="small_header">Header</string>
     <string name="complete">完成</string>
+    <string name="item_remove">条目移除</string>
+    <string name="item_add">条目添加</string>
+    <string name="auto_refresh">自动刷新</string>
 </resources>

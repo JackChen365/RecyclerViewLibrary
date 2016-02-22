@@ -20,6 +20,9 @@ import com.ldzs.recyclerlibrary.header.BaseRefreshHeader;
 import com.ldzs.recyclerlibrary.header.DefaultHeader;
 import com.ldzs.recyclerlibrary.header.LoadFooterView;
 import com.ldzs.recyclerlibrary.observe.HeaderAdapterDataObserve;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.AnimatorListenerAdapter;
+import com.nineoldandroids.animation.ValueAnimator;
 
 /**
  * RecyclerView
@@ -74,19 +77,15 @@ public class PullToRefreshRecyclerView extends RecyclerView {
         mRefreshFooter = footView;
         //初始化自定义属性
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PullToRefreshRecyclerView);
-        int res = a.getResourceId(R.styleable.PullToRefreshRecyclerView_pv_listDivide, R.color.transparent);
-        int divideHeight = (int) a.getDimension(R.styleable.PullToRefreshRecyclerView_pv_listDivideHeight, 0);
-        int horizontalPadding = (int) a.getDimension(R.styleable.PullToRefreshRecyclerView_pv_divideHorizontalPadding, 0);
-        int verticalPadding = (int) a.getDimension(R.styleable.PullToRefreshRecyclerView_pv_divideVerticalPadding, 0);
+        setDivideDrawable(a.getResourceId(R.styleable.PullToRefreshRecyclerView_pv_listDivide, R.color.transparent));
+        setListDivideHeight(a.getDimension(R.styleable.PullToRefreshRecyclerView_pv_listDivideHeight, 0));
+        setDivideHorizontalPadding(a.getDimension(R.styleable.PullToRefreshRecyclerView_pv_divideHorizontalPadding, 0));
+        setDivideVerticalPadding(a.getDimension(R.styleable.PullToRefreshRecyclerView_pv_divideVerticalPadding, 0));
         setRefreshMode(Mode.values()[a.getInt(R.styleable.PullToRefreshRecyclerView_pv_refreshMode, REFRESH_BOTH)]);
         a.recycle();
 
-        //初始化分隔线属性
-        mSimpleItemDecoration.setDrawable(res);
-        mSimpleItemDecoration.setDivideHorizontalPadding(horizontalPadding);
-        mSimpleItemDecoration.setDivideVerticalPadding(verticalPadding);
-        mSimpleItemDecoration.setStrokeWidth(divideHeight);
     }
+
 
     /**
      * 添加顶部控件
@@ -165,6 +164,26 @@ public class PullToRefreshRecyclerView extends RecyclerView {
         return mAdapter.getFootersCount();
     }
 
+    public void setDivideDrawable(int res) {
+        mSimpleItemDecoration.setDrawable(res);
+        invalidateItemDecorations();
+    }
+
+    public void setListDivideHeight(float height) {
+        mSimpleItemDecoration.setStrokeWidth(Math.round(height));
+        invalidateItemDecorations();
+    }
+
+    public void setDivideHorizontalPadding(float padding) {
+        mSimpleItemDecoration.setDivideHorizontalPadding(Math.round(padding));
+        invalidateItemDecorations();
+    }
+
+    public void setDivideVerticalPadding(float padding) {
+        mSimpleItemDecoration.setDivideVerticalPadding(Math.round(padding));
+        invalidateItemDecorations();
+    }
+
     /**
      * 顶部刷新完毕
      */
@@ -174,6 +193,45 @@ public class PullToRefreshRecyclerView extends RecyclerView {
         } else if (mRefreshFooter.isRefreshing()) {
             mRefreshFooter.refreshComplete();
         }
+    }
+
+    /**
+     * 手动通知刷新
+     */
+    public void setRefreshing() {
+        //正在刷新中,则不执行
+        if (mRefreshHeader.isRefreshing() || mRefreshHeader.isCurrentState(BaseRefresh.STATE_RELEASE_TO_REFRESH))
+            return;
+        scrollToPosition(0);
+        // TODO 以动画滑动到顶部,会出现延持不统一情况,待解决
+//        smoothScrollToPosition(0);
+//        ItemAnimator itemAnimator = getItemAnimator();
+//        long moveDuration = itemAnimator.getMoveDuration();
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(1.0f);
+        valueAnimator.setDuration(200);
+//        valueAnimator.setStartDelay(moveDuration);
+        final int originalHeight = mRefreshHeader.getOriginalHeight();//获得原始高度
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float fraction = animation.getAnimatedFraction();
+                mRefreshHeader.pullToRefresh(fraction * originalHeight);
+            }
+        });
+        valueAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mRefreshHeader.setState(BaseRefresh.STATE_RELEASE_TO_REFRESH);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                //动画结束后,改变刷新头状态,并执行回调
+                mRefreshHeader.setRefreshing();
+                mUpListener.onRefresh();
+            }
+        });
+        valueAnimator.start();
     }
 
     /**
@@ -264,6 +322,17 @@ public class PullToRefreshRecyclerView extends RecyclerView {
     public void onScrolled(int dx, int dy) {
         super.onScrolled(dx, dy);
         refreshDown(RecyclerView.SCROLL_STATE_IDLE);
+    }
+
+    /**
+     * 设置动画控制对象
+     * 复写进行劫持操作.用以局部制制动画展示
+     *
+     * @param animator
+     */
+    @Override
+    public void setItemAnimator(ItemAnimator animator) {
+        super.setItemAnimator(animator);
     }
 
     /**

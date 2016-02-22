@@ -21,7 +21,7 @@ public class FadeInDownAnimator extends BaseItemAnimator {
     @Override
     protected void animateRemoveImpl(final RecyclerView.ViewHolder holder, int index) {
         ViewCompat.animate(holder.itemView)
-                .translationY(-holder.itemView.getHeight() * .25f)
+                .translationY(-holder.itemView.getHeight())
                 .alpha(0)
                 .setDuration(getRemoveDuration())
                 .setInterpolator(mInterpolator)
@@ -32,7 +32,7 @@ public class FadeInDownAnimator extends BaseItemAnimator {
 
     @Override
     protected void preAnimateAddImpl(RecyclerView.ViewHolder holder) {
-        ViewCompat.setTranslationY(holder.itemView, -holder.itemView.getHeight() * .25f);
+        ViewCompat.setTranslationY(holder.itemView, -holder.itemView.getHeight());
         ViewCompat.setAlpha(holder.itemView, 0);
     }
 

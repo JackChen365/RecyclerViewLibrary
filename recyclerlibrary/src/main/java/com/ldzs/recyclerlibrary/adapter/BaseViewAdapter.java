@@ -79,8 +79,8 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
     public void addItems(List<E> items, int index) {
         if (null != items && !items.isEmpty()) {
             int size = items.size();
-            this.mItems.addAll(0, items);
-            notifyItemRangeInserted(0, size);
+            this.mItems.addAll(index, items);
+            notifyItemRangeInserted(index, size);
         }
     }
 
