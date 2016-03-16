@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:auto="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.ldzs.recyclerlibrary.PullToRefreshRecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        auto:pv_divideHorizontalPadding="@dimen/activity_margin"
+        auto:pv_divideVerticalPadding="@dimen/activity_margin"
+        auto:pv_listDivide="@color/divide"
+        auto:pv_listDivideHeight="0.8dp" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_auto_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:text="@string/auto_refresh"/>
+</FrameLayout>
