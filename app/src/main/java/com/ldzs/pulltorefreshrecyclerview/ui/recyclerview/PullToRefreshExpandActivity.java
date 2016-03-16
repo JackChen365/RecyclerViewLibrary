@@ -98,7 +98,8 @@ public class PullToRefreshExpandActivity extends AppCompatActivity {
             addGroupItem(true);
             return true;
         } else if (id == R.id.action_remove) {
-            mAdapter.removeGroup(0);
+//            mAdapter.removeGroup(0);
+            mAdapter.swapItems(Data.createExpandItems(this,10));
             return true;
         }
         return super.onOptionsItemSelected(item);
