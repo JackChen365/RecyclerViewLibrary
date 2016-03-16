@@ -34,7 +34,7 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
      * @param layout
      * @return
      */
-    protected View createView(ViewGroup parent, int layout) {
+    protected View inflateView(ViewGroup parent, int layout) {
         return mInflater.inflate(layout, parent, false);
     }
 

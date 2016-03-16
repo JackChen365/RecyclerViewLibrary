@@ -10,6 +10,8 @@ import com.ldzs.recyclerlibrary.adapter.BaseViewHolder;
 import com.ldzs.recyclerlibrary.callback.OnExpandItemClickListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by cz on 16/1/22.
@@ -26,6 +28,15 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
     private final ArrayList<Boolean> mGroupStatus;//每个分组当前展开状态
     private OnExpandItemClickListener mListener;
     private int mHeaderCount;//顶部view总数
+
+    public ExpandAdapter(Context context, HashMap<K, ArrayList<E>> items) {
+        this(context, items, false);
+    }
+
+    public ExpandAdapter(Context context, HashMap<K, ArrayList<E>> items, boolean expand) {
+        this(context, getNewItems(items), expand);
+    }
+
 
     public ExpandAdapter(Context context, ArrayList<Entry<K, ArrayList<E>>> items) {
         this(context, items, false);
@@ -47,6 +58,24 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
             //初始化状态
             updateGroupItemInfo();
         }
+    }
+
+    /**
+     * 转换hashMap
+     *
+     * @param items
+     * @param <K>
+     * @param <E>
+     * @return
+     */
+    private static <K, E> ArrayList<ExpandAdapter.Entry<K, ArrayList<E>>> getNewItems(HashMap<K, ArrayList<E>> items) {
+        ArrayList<ExpandAdapter.Entry<K, ArrayList<E>>> newItems = new ArrayList<>();
+        if (!items.isEmpty()) {
+            for (Map.Entry<K, ArrayList<E>> entry : items.entrySet()) {
+                newItems.add(new ExpandAdapter.Entry<>(entry.getKey(), entry.getValue()));
+            }
+        }
+        return newItems;
     }
 
     /**
@@ -366,6 +395,23 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
         }
     }
 
+    public void swapItems(HashMap<K, ArrayList<E>> items) {
+        swapItems(getNewItems(items));
+    }
+
+    /**
+     * 置换数据
+     *
+     * @param items
+     */
+    public void swapItems(ArrayList<Entry<K, ArrayList<E>>> items) {
+        if (!items.isEmpty()) {
+            mItems.clear();
+            mItems.addAll(items);
+            notifyDataSetChanged();
+        }
+    }
+
 
     /**
      * 创建view对象
@@ -374,7 +420,7 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
      * @param layout
      * @return
      */
-    protected View createView(ViewGroup parent, int layout) {
+    protected View inflateView(ViewGroup parent, int layout) {
         return mLayoutInflater.inflate(layout, parent, false);
     }
 

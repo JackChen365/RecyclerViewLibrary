@@ -44,7 +44,7 @@ public class SimpleAdapter<E> extends BaseViewAdapter<BaseViewHolder, E> {
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new BaseViewHolder(createView(parent, layout));
+        return new BaseViewHolder(inflateView(parent, layout));
     }
 
     @Override

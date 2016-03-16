@@ -25,7 +25,7 @@ public class ChannelAdapter extends BaseViewAdapter<ChannelAdapter.ViewHolder, C
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(createView(parent, R.layout.channel_item));
+        return new ViewHolder(inflateView(parent, R.layout.channel_item));
     }
 
     @Override

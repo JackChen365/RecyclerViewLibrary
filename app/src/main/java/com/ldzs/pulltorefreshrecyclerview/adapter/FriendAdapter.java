@@ -29,12 +29,12 @@ public class FriendAdapter extends ExpandAdapter<String, String> {
 
     @Override
     public BaseViewHolder createGroupHolder(ViewGroup parent) {
-        return new GroupHolder(createView(parent, R.layout.group_item));
+        return new GroupHolder(inflateView(parent, R.layout.group_item));
     }
 
     @Override
     public BaseViewHolder createChildHolder(ViewGroup parent) {
-        return new ItemHolder(createView(parent, R.layout.text_item));
+        return new ItemHolder(inflateView(parent, R.layout.text_item));
     }
 
     @Override
