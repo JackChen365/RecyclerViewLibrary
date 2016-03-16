@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.ldzs.pulltorefreshrecyclerview.R;
 import com.ldzs.pulltorefreshrecyclerview.adapter.SimpleAdapter;
-import com.ldzs.pulltorefreshrecyclerview.data.Date;
+import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
 
 public class GridPullToRefreshActivity extends AppCompatActivity {
@@ -37,14 +37,14 @@ public class GridPullToRefreshActivity extends AppCompatActivity {
         mRecyclerView.setOnPullUpToRefreshListener(() -> {
             times = 0;
             mRecyclerView.postDelayed(() -> {
-                mAdapter.addItems(Date.createItems(this, 10), 0);
+                mAdapter.addItems(Data.createItems(this, 10), 0);
                 mRecyclerView.onRefreshComplete();
             }, 1000);
         });
         mRecyclerView.setOnPullDownToRefreshListener(() -> {
             if (times < 2) {
                 mRecyclerView.postDelayed(() -> {
-                    mAdapter.addItems(Date.createItems(this, 10));
+                    mAdapter.addItems(Data.createItems(this, 10));
                     mRecyclerView.onRefreshComplete();
                 }, 1000);
             } else {
@@ -53,14 +53,14 @@ public class GridPullToRefreshActivity extends AppCompatActivity {
             times++;
         });
 
-        mRecyclerView.setAdapter(mAdapter = new SimpleAdapter(this, R.layout.grid_text_item, Date.createItems(this, 10)));
+        mRecyclerView.setAdapter(mAdapter = new SimpleAdapter(this, R.layout.grid_text_item, Data.createItems(this, 10)));
     }
 
     /**
      * 获得一个顶部控件
      */
     public View getHeaderView() {
-        int textColor = Date.getRandomColor();
+        int textColor = Data.getRandomColor();
         View header = LayoutInflater.from(this).inflate(R.layout.recyclerview_header1, (ViewGroup) findViewById(android.R.id.content), false);
         TextView headerView = (TextView) header;
         headerView.setTextColor(textColor);

@@ -28,4 +28,6 @@
     <string name="item_remove">条目移除</string>
     <string name="item_add">条目添加</string>
     <string name="auto_refresh">自动刷新</string>
+    <string name="remove_item">移除条目</string>
+    <string name="update_item">更新条目</string>
 </resources>

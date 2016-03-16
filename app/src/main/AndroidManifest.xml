@@ -29,6 +29,12 @@
         <activity android:name=".ui.drag.GridDragActivity" />
         <activity android:name=".ui.drag.DynamicDragActivity" />
         <activity android:name=".ui.drag.CustomDragActivity" />
+        <activity android:name=".ui.adapter.CursorAdapterActivity" />
+
+        <provider
+            android:authorities="com.ldzs.pulltorefreshrecyclerview"
+            android:name=".provider.InfoProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>

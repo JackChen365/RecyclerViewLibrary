@@ -6,7 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 
 import com.ldzs.pulltorefreshrecyclerview.R;
 import com.ldzs.pulltorefreshrecyclerview.adapter.SimpleAdapter;
-import com.ldzs.pulltorefreshrecyclerview.data.Date;
+import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.recyclerlibrary.DragRecyclerView;
 import com.ldzs.recyclerlibrary.anim.SlideInLeftAnimator;
 
@@ -28,7 +28,7 @@ public class LinearDragActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setAdapter(new SimpleAdapter(this, Date.createItems(this, 100)));
+        mRecyclerView.setAdapter(new SimpleAdapter(this, Data.createItems(this, 100)));
         mRecyclerView.setLongPressDrawEnable(true);
         mRecyclerView.setOnDragItemEnableListener(position -> true);
     }

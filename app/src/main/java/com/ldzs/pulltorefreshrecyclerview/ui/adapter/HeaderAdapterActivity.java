@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.ldzs.pulltorefreshrecyclerview.R;
 import com.ldzs.pulltorefreshrecyclerview.adapter.SimpleAdapter;
-import com.ldzs.pulltorefreshrecyclerview.data.Date;
+import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.recyclerlibrary.Mode;
 import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
 import com.ldzs.recyclerlibrary.anim.SlideInLeftAnimator;
@@ -40,7 +40,7 @@ public class HeaderAdapterActivity extends AppCompatActivity {
         mRecyclerView.setRefreshMode(Mode.DISABLED);//禁用刷新
 
 
-        SimpleAdapter adapter = new SimpleAdapter(this, Date.createItems(this, 10));
+        SimpleAdapter adapter = new SimpleAdapter(this, Data.createItems(this, 10));
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.addHeaderView(getHeaderView());
         mRecyclerView.addFooterView(getFooterView());
@@ -48,14 +48,14 @@ public class HeaderAdapterActivity extends AppCompatActivity {
         findViewById(R.id.btn_remove_header).setOnClickListener(v -> mRecyclerView.removeHeaderView(0));
         findViewById(R.id.btn_add_footer).setOnClickListener(v -> mRecyclerView.addFooterView(getFooterView()));
         findViewById(R.id.btn_remove_footer).setOnClickListener(v -> mRecyclerView.removeFooterView(0));
-        findViewById(R.id.btn_add_item).setOnClickListener(v -> adapter.addItems(Date.createItems(this, 2), 0));
+        findViewById(R.id.btn_add_item).setOnClickListener(v -> adapter.addItems(Data.createItems(this, 2), 0));
     }
 
     /**
      * 获得一个顶部控件
      */
     public View getHeaderView() {
-        int textColor = Date.getRandomColor();
+        int textColor = Data.getRandomColor();
         View header = LayoutInflater.from(this).inflate(R.layout.recyclerview_header1, (ViewGroup) findViewById(android.R.id.content), false);
         TextView headerView = (TextView) header;
         headerView.setTextColor(textColor);
@@ -71,8 +71,8 @@ public class HeaderAdapterActivity extends AppCompatActivity {
      * 获得一个底部控件
      */
     public View getFooterView() {
-        int color = Date.getRandomColor();
-        int textColor = Date.getDarkColor(color);
+        int color = Data.getRandomColor();
+        int textColor = Data.getDarkColor(color);
         View footer = LayoutInflater.from(this).inflate(R.layout.recyclerview_footer, (ViewGroup) findViewById(android.R.id.content), false);
         TextView footerView = (TextView) footer;
         footerView.setText("FooterView:" + mRecyclerView.getFooterViewCount());

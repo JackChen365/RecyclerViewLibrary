@@ -15,5 +15,6 @@
         <item name="HeaderAdapter" class=".ui.adapter.HeaderAdapterActivity" />
         <item name="TreeAdapter" class=".ui.adapter.TreeAdapterViewActivity" />
         <item name="DynamicAdapter" class=".ui.adapter.DynamicAdapterActivity" />
+        <item name="CursorAdapter" class=".ui.adapter.CursorAdapterActivity" />
     </listItem>
 </ui>

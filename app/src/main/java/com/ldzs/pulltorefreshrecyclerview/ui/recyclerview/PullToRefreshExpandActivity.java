@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.ldzs.pulltorefreshrecyclerview.R;
 import com.ldzs.pulltorefreshrecyclerview.adapter.FriendAdapter;
-import com.ldzs.pulltorefreshrecyclerview.data.Date;
+import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.recyclerlibrary.PullToRefreshExpandRecyclerView;
 import com.ldzs.recyclerlibrary.anim.SlideInLeftAnimator;
 
@@ -66,7 +66,7 @@ public class PullToRefreshExpandActivity extends AppCompatActivity {
             times++;
         });
 
-        mAdapter = new FriendAdapter(this, Date.createExpandItems(10, 4), true);
+        mAdapter = new FriendAdapter(this, Data.createExpandItems(10, 4), true);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -74,7 +74,7 @@ public class PullToRefreshExpandActivity extends AppCompatActivity {
      * 获得一个顶部控件
      */
     public View getHeaderView() {
-        int textColor = Date.getRandomColor();
+        int textColor = Data.getRandomColor();
         View header = LayoutInflater.from(this).inflate(R.layout.recyclerview_header1, (ViewGroup) findViewById(android.R.id.content), false);
         header.setBackgroundColor(Color.BLUE);
         TextView headerView = (TextView) header;
@@ -106,7 +106,7 @@ public class PullToRefreshExpandActivity extends AppCompatActivity {
 
     private void addGroupItem(boolean top) {
         Random random = new Random();
-        mAdapter.addGroupItems(getString(R.string.add_group) + mAdapter.getGroupCount(), Date.createItems(this, 2), top ? 0 : mAdapter.getGroupCount(), 0 == random.nextInt(2));
+        mAdapter.addGroupItems(getString(R.string.add_group) + mAdapter.getGroupCount(), Data.createItems(this, 2), top ? 0 : mAdapter.getGroupCount(), 0 == random.nextInt(2));
     }
 
 }

@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.ldzs.pulltorefreshrecyclerview.R;
 import com.ldzs.pulltorefreshrecyclerview.adapter.SimpleAdapter;
-import com.ldzs.pulltorefreshrecyclerview.data.Date;
+import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.recyclerlibrary.adapter.drag.DynamicAdapter;
 import com.ldzs.recyclerlibrary.anim.SlideInLeftAnimator;
 
@@ -38,7 +38,7 @@ public class ExpandAdapterActivity extends AppCompatActivity {
         mRecyclerView.getItemAnimator().setRemoveDuration(300);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         mRecyclerView.setLayoutManager(layoutManager);
-        mAdapter = new DynamicAdapter(this,new SimpleAdapter(this,Date.createItems(this, 150)));
+        mAdapter = new DynamicAdapter(this,new SimpleAdapter(this, Data.createItems(this, 150)));
         mRecyclerView.setAdapter(mAdapter);
         Random random = new Random();
         findViewById(R.id.btn_add).setOnClickListener(v -> mAdapter.addFullItem(getFullItemView(), random.nextInt(mAdapter.getItemCount())));
@@ -50,8 +50,8 @@ public class ExpandAdapterActivity extends AppCompatActivity {
      * 获得一个铺满的控件
      */
     public View getFullItemView() {
-        int color = Date.getRandomColor();
-        int darkColor = Date.getDarkColor(color);
+        int color = Data.getRandomColor();
+        int darkColor = Data.getDarkColor(color);
         View header = LayoutInflater.from(this).inflate(R.layout.recyclerview_header1, (ViewGroup) findViewById(android.R.id.content), false);
         TextView headerView = (TextView) header;
         header.setBackgroundColor(color);

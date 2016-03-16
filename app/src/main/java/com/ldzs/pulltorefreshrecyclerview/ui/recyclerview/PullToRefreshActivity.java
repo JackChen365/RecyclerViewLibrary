@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.ldzs.pulltorefreshrecyclerview.R;
 import com.ldzs.pulltorefreshrecyclerview.adapter.SimpleAdapter;
-import com.ldzs.pulltorefreshrecyclerview.data.Date;
+import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
 import com.ldzs.recyclerlibrary.anim.SlideInLeftAnimator;
 
@@ -50,7 +50,7 @@ public class PullToRefreshActivity extends AppCompatActivity {
         mRecyclerView.setOnPullUpToRefreshListener(() -> {
             times = 0;
             mRecyclerView.postDelayed(() -> {
-                mAdapter.addItems(Date.createItems(this, 2), 0);
+                mAdapter.addItems(Data.createItems(this, 2), 0);
                 mRecyclerView.onRefreshComplete();
             }, 1000);
         });
@@ -58,13 +58,13 @@ public class PullToRefreshActivity extends AppCompatActivity {
         mRecyclerView.setOnPullDownToRefreshListener(() -> {
             if (times < 2) {
                 mRecyclerView.postDelayed(() -> {
-                    mAdapter.addItems(Date.createItems(this, 4));
+                    mAdapter.addItems(Data.createItems(this, 4));
                     mRecyclerView.onRefreshComplete();
                 }, 1000);
             } else if (times < 4) {
                 mRecyclerView.postDelayed(() -> {
                     mRecyclerView.setFooterRetryListener(v -> {
-                        mAdapter.addItems(Date.createItems(this, 4));
+                        mAdapter.addItems(Data.createItems(this, 4));
                         mRecyclerView.onRefreshComplete();
                     });
                 }, 1000);
@@ -74,7 +74,7 @@ public class PullToRefreshActivity extends AppCompatActivity {
             times++;
         });
         //初始设置2个,考虑其不满一屏加载状态
-        mAdapter = new SimpleAdapter(this, Date.createItems(this, 2));
+        mAdapter = new SimpleAdapter(this, Data.createItems(this, 2));
         mRecyclerView.setAdapter(mAdapter);
 
 
@@ -85,7 +85,7 @@ public class PullToRefreshActivity extends AppCompatActivity {
      * 获得一个顶部控件
      */
     public View getHeaderView() {
-        int textColor = Date.getRandomColor();
+        int textColor = Data.getRandomColor();
         View header = LayoutInflater.from(this).inflate(R.layout.recyclerview_header1, (ViewGroup) findViewById(android.R.id.content), false);
         TextView headerView = (TextView) header;
         headerView.setTextColor(textColor);
