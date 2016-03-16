@@ -7,6 +7,8 @@ import android.database.DataSetObserver;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.FilterQueryProvider;
@@ -69,6 +71,8 @@ public abstract class CursorRecyclerAdapter<H extends RecyclerView.ViewHolder> e
      */
     protected FilterQueryProvider mFilterQueryProvider;
 
+    protected final LayoutInflater mInflater;
+
     /**
      * If set the adapter will call requery() on the cursor whenever a content change
      * notification is delivered. Implies {@link #FLAG_REGISTER_CONTENT_OBSERVER}.
@@ -96,13 +100,12 @@ public abstract class CursorRecyclerAdapter<H extends RecyclerView.ViewHolder> e
      *
      * @param c       The cursor from which to get the data.
      * @param context The context
-     * @deprecated This option is discouraged, as it results in Cursor queries
-     * being performed on the application's UI thread and thus can cause poor
-     * responsiveness or even Application Not Responding errors.  As an alternative,
-     * use {@link android.app.LoaderManager} with a {@link android.content.CursorLoader}.
+     *                being performed on the application's UI thread and thus can cause poor
+     *                responsiveness or even Application Not Responding errors.  As an alternative,
+     *                use {@link android.app.LoaderManager} with a {@link android.content.CursorLoader}.
      */
     public CursorRecyclerAdapter(Context context, Cursor c) {
-        init(context, c, FLAG_REGISTER_CONTENT_OBSERVER);
+        this(context, c, FLAG_REGISTER_CONTENT_OBSERVER);
     }
 
     /**
@@ -115,6 +118,7 @@ public abstract class CursorRecyclerAdapter<H extends RecyclerView.ViewHolder> e
      *                {@link #FLAG_REGISTER_CONTENT_OBSERVER}.
      */
     public CursorRecyclerAdapter(Context context, Cursor c, int flags) {
+        mInflater = LayoutInflater.from(context);
         init(context, c, flags);
     }
 
@@ -143,6 +147,17 @@ public abstract class CursorRecyclerAdapter<H extends RecyclerView.ViewHolder> e
             if (mChangeObserver != null) c.registerContentObserver(mChangeObserver);
             if (mDataSetObserver != null) c.registerDataSetObserver(mDataSetObserver);
         }
+    }
+
+    /**
+     * inflateView
+     *
+     * @param parent
+     * @param layout
+     * @return
+     */
+    protected View inflateView(ViewGroup parent, int layout) {
+        return mInflater.inflate(layout, parent, false);
     }
 
     /**
