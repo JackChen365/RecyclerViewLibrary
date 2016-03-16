@@ -408,6 +408,8 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
         if (!items.isEmpty()) {
             mItems.clear();
             mItems.addAll(items);
+            //初始化状态
+            updateGroupItemInfo();
             notifyDataSetChanged();
         }
     }
