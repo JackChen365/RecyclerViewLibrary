@@ -6,6 +6,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ldzs.recyclerlibrary.adapter.tree.TreeAdapter;
 import com.ldzs.recyclerlibrary.callback.OnItemClickListener;
 
 import java.util.ArrayList;
@@ -92,10 +93,18 @@ public class HeaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.mHeaderViews.add(index, new HeaderViewItem(viewType, view));
         notifyItemInserted(index);
         mHeaderCount++;
+        if (null != mAdapter) {
+            //避免包装子条目混乱
+            if (mAdapter instanceof TreeAdapter) {
+                TreeAdapter treeAdapter = (TreeAdapter) this.mAdapter;
+                treeAdapter.setHeaderCount(getHeadersCount());
+            }
+        }
     }
 
     /**
      * 此方法不开放,避免角标混乱
+     *
      * @param view
      * @param index
      */

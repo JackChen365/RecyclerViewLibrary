@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ldzs.recyclerlibrary.adapter.BaseViewHolder;
+import com.ldzs.recyclerlibrary.callback.OnNodeItemClickListener;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -20,6 +21,7 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
     private final ArrayList<TreeNode<E>> mNodeItems;//树的列表展示节点
     private final TreeNode<E> mRootNode;
     private int mHeaderCount;//头控件数
+    private OnNodeItemClickListener mListener;
 
 
     public TreeAdapter(Context context, TreeNode<E> rootNode) {
@@ -31,6 +33,10 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
             this.mNodeItems.addAll(nodes);
         }
 
+    }
+
+    public void setHeaderCount(int headerCount) {
+        this.mHeaderCount = headerCount;
     }
 
     /**
@@ -75,7 +81,7 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int itemPosition = holder.getAdapterPosition();
+                int itemPosition = holder.getAdapterPosition() - mHeaderCount;
                 TreeNode<E> node = getNode(itemPosition);
                 boolean expand = node.expand;
                 node.expand = true;//置为true,取得当前展开后的节点
@@ -93,13 +99,14 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
                         //展开动作
                         notifyItemRangeInserted(itemPosition + 1, size);
                     }
+                } else if (null != mListener) {
+                    mListener.onNodeItemClick(node,v);
                 }
             }
         });
     }
 
     /**
-     *
      * 子类实现,节点展开或关闭
      *
      * @param node
@@ -141,6 +148,10 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
      */
     public void setLevelExpand(int level, boolean expand) {
 
+    }
+
+    public void setOnNodeItemClickListener(OnNodeItemClickListener listener) {
+        this.mListener = listener;
     }
 
 

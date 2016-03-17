@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.ldzs.recyclerlibrary.adapter.RefreshHeaderAdapter;
+import com.ldzs.recyclerlibrary.adapter.tree.TreeAdapter;
 import com.ldzs.recyclerlibrary.callback.OnItemClickListener;
 import com.ldzs.recyclerlibrary.divide.SimpleItemDecoration;
 import com.ldzs.recyclerlibrary.header.BaseRefresh;
@@ -269,6 +270,13 @@ public class PullToRefreshRecyclerView extends RecyclerView {
         mAdapter.setAdapter(adapter);
         super.setAdapter(mAdapter);
         adapter.registerAdapterDataObserver(new HeaderAdapterDataObserve(mAdapter));
+        if (null != adapter) {
+            //避免包装子条目混乱
+            if (adapter instanceof TreeAdapter) {
+                TreeAdapter treeAdapter = (TreeAdapter) adapter;
+                treeAdapter.setHeaderCount(mAdapter.getHeadersCount());
+            }
+        }
     }
 
     @Override
