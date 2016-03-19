@@ -89,18 +89,19 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
                 TreeNode<E> node = getNode(itemPosition);
                 boolean expand = node.expand;
                 node.expand = true;//置为true,取得当前展开后的节点
+                ArrayList<E> items = getItems(node);
                 final ArrayList<TreeNode<E>> addNodes = getNodeItems(node);
                 node.expand = !expand;//更新展开状态
                 if (!addNodes.isEmpty()) {
                     int size = addNodes.size();
                     onNodeExpand(node, holder, !expand);
                     if (expand) {
-                        mItems.removeAll(getItems(addNodes));
+                        mItems.removeAll(items);
                         mNodeItems.removeAll(addNodes);
                         //关闭动作
                         notifyItemRangeRemoved(itemPosition + 1, size);
                     } else {
-                        mItems.addAll(itemPosition + 1, getItems(addNodes));
+                        mItems.addAll(itemPosition + 1, items);
                         mNodeItems.addAll(itemPosition + 1, addNodes);
                         //展开动作
                         notifyItemRangeInserted(itemPosition + 1, size);
@@ -160,13 +161,36 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
         this.mListener = listener;
     }
 
-    public ArrayList<E> getItems(ArrayList<TreeNode<E>> nodes) {
-        ArrayList<E> items = new ArrayList<>();
-        if (null != nodes && nodes.isEmpty()) {
-            int size = nodes.size();
-            for (int i = 0; i < size; i++) {
-                items.add(nodes.get(i).e);
+    /**
+     * 获取节点内所有可展开节点
+     * 这里效率稍微了点,但可以接受
+     */
+    private ArrayList<E> getItems(TreeNode rootNode) {
+        ArrayList<E> nodeItems = new ArrayList<>();
+        LinkedList<TreeNode<E>> nodes = new LinkedList<>();
+        nodes.add(rootNode);
+        while (!nodes.isEmpty()) {
+            TreeNode<E> node = nodes.pollFirst();
+            if (mRootNode == node || node.expand && !node.child.isEmpty()) {
+                ArrayList<TreeNode<E>> child = node.child;
+                int size = child.size();
+                for (int i = size - 1; i >= 0; i--) {
+                    TreeNode<E> childNode = child.get(i);
+                    nodes.offerFirst(childNode);
+                }
             }
+            if (node != rootNode) {
+                nodeItems.add(node.e);
+            }
+        }
+        return nodeItems;
+    }
+
+    private ArrayList<E> getItems(ArrayList<TreeNode<E>> nodes) {
+        ArrayList<E> items = new ArrayList<>();
+        int size = nodes.size();
+        for (int i = 0; i < size; i++) {
+            items.add(nodes.get(i).e);
         }
         return items;
     }
