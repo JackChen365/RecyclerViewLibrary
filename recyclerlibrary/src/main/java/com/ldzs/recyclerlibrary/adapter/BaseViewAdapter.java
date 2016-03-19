@@ -68,6 +68,21 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
         }
     }
 
+    public int indexOfItem(E e) {
+        int index = -1;
+        if (null != e) {
+            index = this.mItems.indexOf(e);
+        }
+        return index;
+    }
+
+    public void set(int index, E e) {
+        if (index < getItemCount()) {
+            mItems.set(index, e);
+            notifyItemChanged(index);
+        }
+    }
+
     public void addItem(E e) {
         if (null != e) {
             this.mItems.add(e);

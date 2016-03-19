@@ -100,7 +100,7 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
                         notifyItemRangeInserted(itemPosition + 1, size);
                     }
                 } else if (null != mListener) {
-                    mListener.onNodeItemClick(node,v);
+                    mListener.onNodeItemClick(node, v, itemPosition);
                 }
             }
         });
