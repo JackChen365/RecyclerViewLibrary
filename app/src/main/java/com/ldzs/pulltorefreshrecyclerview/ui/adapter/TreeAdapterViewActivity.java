@@ -117,6 +117,8 @@ public class TreeAdapterViewActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_add) {
+            File file = new File("abc");
+            mAdapter.insertNode(file);
             return true;
         } else if (id == R.id.action_remove) {
             mAdapter.removeNode(1);

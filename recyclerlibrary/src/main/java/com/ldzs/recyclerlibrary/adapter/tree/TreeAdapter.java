@@ -18,9 +18,9 @@ import java.util.LinkedList;
  */
 public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder> {
     private static final String TAG = "TreeAdapter";
+    protected final ArrayList<TreeNode<E>> mNodeItems;//树的列表展示节点
+    protected final TreeNode<E> mRootNode;
     private final LayoutInflater mLayoutInflater;
-    private final ArrayList<TreeNode<E>> mNodeItems;//树的列表展示节点
-    private final TreeNode<E> mRootNode;
     private int mHeaderCount;//头控件数
     private OnNodeItemClickListener mListener;
 
@@ -198,6 +198,30 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
             //通知父条目改动
             notifyItemChanged(mNodeItems.indexOf(parent));
         }
+    }
+
+    public void insertNode(E e) {
+        insertNode(new TreeNode(mRootNode, e));
+    }
+
+    /**
+     * 插入节点
+     *
+     * @param node
+     */
+    public void insertNode(TreeNode<E> node) {
+        //这是认祖归宗罗
+        node.parent = mRootNode;
+        mRootNode.child.add(node);
+        ArrayList<TreeNode<E>> nodeItems = new ArrayList<>();
+        nodeItems.add(node);
+        ArrayList<TreeNode<E>> items = getNodeItems(node);
+        if (!items.isEmpty()) {
+            nodeItems.addAll(items);
+        }
+        int itemCount = getItemCount();
+        mNodeItems.addAll(nodeItems);
+        notifyItemRangeInserted(itemCount, nodeItems.size());
     }
 
 
