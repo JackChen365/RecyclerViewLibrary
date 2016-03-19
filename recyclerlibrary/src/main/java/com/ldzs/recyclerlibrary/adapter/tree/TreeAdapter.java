@@ -19,6 +19,7 @@ import java.util.LinkedList;
 public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder> {
     private static final String TAG = "TreeAdapter";
     protected final ArrayList<TreeNode<E>> mNodeItems;//树的列表展示节点
+    protected final ArrayList<E> mItems;
     protected final TreeNode<E> mRootNode;
     private final LayoutInflater mLayoutInflater;
     private int mHeaderCount;//头控件数
@@ -29,8 +30,10 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
         this.mLayoutInflater = LayoutInflater.from(context);
         this.mRootNode = rootNode;
         this.mNodeItems = new ArrayList<>();
+        this.mItems = new ArrayList<>();
         ArrayList<TreeNode<E>> nodes = getNodeItems(mRootNode);
         if (null != nodes) {
+            this.mItems.addAll(getItems(nodes));
             this.mNodeItems.addAll(nodes);
         }
 
@@ -92,10 +95,12 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
                     int size = addNodes.size();
                     onNodeExpand(node, holder, !expand);
                     if (expand) {
+                        mItems.removeAll(getItems(addNodes));
                         mNodeItems.removeAll(addNodes);
                         //关闭动作
                         notifyItemRangeRemoved(itemPosition + 1, size);
                     } else {
+                        mItems.addAll(itemPosition + 1, getItems(addNodes));
                         mNodeItems.addAll(itemPosition + 1, addNodes);
                         //展开动作
                         notifyItemRangeInserted(itemPosition + 1, size);
@@ -155,6 +160,17 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
         this.mListener = listener;
     }
 
+    public ArrayList<E> getItems(ArrayList<TreeNode<E>> nodes) {
+        ArrayList<E> items = new ArrayList<>();
+        if (null != nodes && nodes.isEmpty()) {
+            int size = nodes.size();
+            for (int i = 0; i < size; i++) {
+                items.add(nodes.get(i).e);
+            }
+        }
+        return items;
+    }
+
     /**
      * 移除指定节点
      *
@@ -184,11 +200,35 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
     }
 
     /**
+     * 获取条目在节点位置
+     *
+     * @param e
+     * @return
+     */
+    public int indexOfItem(E e) {
+        return mItems.indexOf(e);
+    }
+
+    /**
+     * 设置指定条目取值
+     *
+     * @param index
+     * @param e
+     */
+    public void set(int index, E e) {
+        mItems.set(index, e);
+        TreeNode<E> node = mNodeItems.get(index);
+        node.e = e;
+        notifyItemChanged(index);
+    }
+
+    /**
      * 按位置移除
      *
      * @param position
      */
     private void remove(int position) {
+        mItems.remove(position);
         TreeNode<E> node = mNodeItems.remove(position);
         notifyItemRemoved(position);
         //移除根节点内节点指向
@@ -221,6 +261,7 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
         }
         int itemCount = getItemCount();
         mNodeItems.addAll(nodeItems);
+        mItems.addAll(getItems(nodeItems));
         notifyItemRangeInserted(itemCount, nodeItems.size());
     }
 

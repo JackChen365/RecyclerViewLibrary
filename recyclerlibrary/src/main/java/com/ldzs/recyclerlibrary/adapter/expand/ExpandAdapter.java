@@ -399,12 +399,16 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
         swapItems(getNewItems(items));
     }
 
+    public void swapItems(ArrayList<Entry<K, ArrayList<E>>> items) {
+        swapItems(items, false);
+    }
+
     /**
      * 置换数据
      *
      * @param items
      */
-    public void swapItems(ArrayList<Entry<K, ArrayList<E>>> items) {
+    public void swapItems(ArrayList<Entry<K, ArrayList<E>>> items, boolean expand) {
         if (!items.isEmpty()) {
             mGroupStatus.clear();
             mItemCounts.clear();
@@ -413,7 +417,7 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
             mItems.addAll(items);
             int size = items.size();
             for (int i = 0; i < size; i++) {
-                mGroupStatus.add(false);//记录初始展开状态
+                mGroupStatus.add(expand);//记录初始展开状态
             }
             //初始化状态
             updateGroupItemInfo();
