@@ -17,6 +17,7 @@ import java.util.LinkedList;
  * 一个RecyclerView的树形管理Adapter对象
  */
 public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder> {
+    private static final String TAG = "TreeAdapter";
     private final LayoutInflater mLayoutInflater;
     private final ArrayList<TreeNode<E>> mNodeItems;//树的列表展示节点
     private final TreeNode<E> mRootNode;
@@ -154,6 +155,51 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
         this.mListener = listener;
     }
 
+    /**
+     * 移除指定节点
+     *
+     * @param node
+     */
+    public void removeNode(TreeNode<E> node) {
+        if (null != node) {
+            ArrayList<TreeNode<E>> childNodes = node.child;
+            //移除节点内,所有子节点
+            if (node.expand && !childNodes.isEmpty()) {
+                int size = childNodes.size();
+                //这里之所以反向减少.是因为正向减少的话.这边减,在递归里,child的条目在减少.正向会引起size,没减,但child减少的角标越界问题.反向则不会
+                for (int i = size - 1; i >= 0; i--) {
+                    TreeNode<E> treeNode = childNodes.get(i);
+                    removeNode(treeNode);
+                }
+            }
+            int index = mNodeItems.indexOf(node);
+            if (0 <= index) {
+                remove(index);
+            }
+        }
+    }
+
+    public void removeNode(int position) {
+        removeNode(mNodeItems.get(position));
+    }
+
+    /**
+     * 按位置移除
+     *
+     * @param position
+     */
+    private void remove(int position) {
+        TreeNode<E> node = mNodeItems.remove(position);
+        notifyItemRemoved(position);
+        //移除根节点内节点指向
+        TreeNode<E> parent = node.parent;
+        if (null != parent) {
+            parent.child.remove(node);
+            //通知父条目改动
+            notifyItemChanged(mNodeItems.indexOf(parent));
+        }
+    }
+
 
     /**
      * 创建view对象
@@ -194,5 +240,22 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
             this.child = new ArrayList<>();
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            boolean result = false;
+            TreeNode r = (TreeNode) o;
+            if (null != e && null != r.e) {
+                result = e.equals(r.e);
+            }
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return e.toString();
+        }
     }
 }

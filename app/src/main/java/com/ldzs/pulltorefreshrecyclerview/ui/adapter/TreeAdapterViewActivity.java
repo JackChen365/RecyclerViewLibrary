@@ -6,6 +6,8 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.ldzs.pulltorefreshrecyclerview.R;
 import com.ldzs.pulltorefreshrecyclerview.adapter.FileAdapter;
@@ -103,6 +105,24 @@ public class TreeAdapterViewActivity extends AppCompatActivity {
             }
         }
         return rootNode;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_refresh, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_add) {
+            return true;
+        } else if (id == R.id.action_remove) {
+            mAdapter.removeNode(1);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
