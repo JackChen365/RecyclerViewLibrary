@@ -4,7 +4,7 @@ A RecyclerView libirary ,has some support, like headerAdapter/TreeAdapter,and Pu
 #### gradle compile
 ```
 dependencies {
-    compile 'com.ldzs.recyclerlibrary:recyclerlibrary:1.0.0'
+    compile 'com.ldzs.recyclerlibrary:recyclerlibrary:1.0.1'
 }
 ```
 
@@ -61,5 +61,7 @@ mAdapter==HeaderViewAdapter:RecyclerView内部维护Adapter,所以实现不影�
 ```
 ================
 还有更难实现的DynamicAdapter等
+
+2016/3/16 更新了cursorAdapter支持,直接拷贝了v4内的ListView的CursorAdapter的代码.稍做微改就完成了转换.因为CursorAdapter本身就是一个就是一个展示数据的adapter,并不局限于.为哪一个adapter服务.重新查看了CursorAdapter源码.发现,其数据更新推荐使用Loader,而不推荐使用CursorAdapter提供的autoQuery操作.也为我解释了.CursorAdapter的释放时机的问题.Loader自身维护Cursor的查询,数据更改查询,关闭等操作.而Cursor本身也界面也有藕合,设计更为合理.
 
 #### 参考:RecyclerView-Animator/XRecyclerView.非常感谢.
