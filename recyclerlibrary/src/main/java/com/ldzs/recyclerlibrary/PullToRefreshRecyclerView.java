@@ -2,6 +2,9 @@ package com.ldzs.recyclerlibrary;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.IntDef;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
@@ -11,8 +14,9 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.ldzs.recyclerlibrary.adapter.RefreshHeaderAdapter;
+import com.ldzs.recyclerlibrary.adapter.SelectAdapter;
 import com.ldzs.recyclerlibrary.adapter.tree.TreeAdapter;
+import com.ldzs.recyclerlibrary.callback.OnCheckListener;
 import com.ldzs.recyclerlibrary.callback.OnItemClickListener;
 import com.ldzs.recyclerlibrary.divide.SimpleItemDecoration;
 import com.ldzs.recyclerlibrary.header.BaseRefresh;
@@ -35,21 +39,37 @@ import com.nineoldandroids.animation.ValueAnimator;
  * 1.3:尾
  * 1.4:不启用
  * 2:源码简化
+ * <p>
+ * 2016/3/3 增加列表选择模式
  */
 public class PullToRefreshRecyclerView extends RecyclerView {
     private static final String TAG = "PullToRefreshRecyclerView";
+    //选择状态,默认点击
+    public static final int CLICK = 0;//单击
+    public static final int SINGLE_CHOICE = 1;//单选
+    public static final int MULTI_CHOICE = 2;//多选
+    public static final int RECTANGLE_CHOICE = 3;//块选择
     //刷新模式
     public static final int REFRESH_BOTH = 0x00;
     public static final int REFRESH_HEADER = 0x01;
     public static final int REFRESH_BOTTOM = 0x02;
     public static final int REFRESH_NONE = 0x03;
+
+    @IntDef(value = {CLICK, SINGLE_CHOICE, MULTI_CHOICE, RECTANGLE_CHOICE})
+    public @interface ChoiceMode {
+    }
+
+    @IntDef(value = {REFRESH_BOTH, REFRESH_HEADER, REFRESH_BOTTOM, REFRESH_NONE})
+    public @interface RefreshMode {
+    }
+
     private static final float RESISTANCE = 3;//阻力倍数
     protected BaseRefreshHeader mRefreshHeader;
     protected BaseRefreshFooter mRefreshFooter;
     protected SimpleItemDecoration mSimpleItemDecoration;
     protected OnPullUpToRefreshListener mUpListener;
     protected OnPullDownToRefreshListener mDownListener;
-    protected RefreshHeaderAdapter mAdapter;
+    protected SelectAdapter mAdapter;//继承自HeaderAdapter,并增加选择模式
     private Mode mode;//刷新模式
     private float mScrollOffset;//滑动距离
     private float mLastY;
@@ -66,7 +86,7 @@ public class PullToRefreshRecyclerView extends RecyclerView {
     public PullToRefreshRecyclerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mode = Mode.BOTH;
-        mAdapter = new RefreshHeaderAdapter(null);
+        mAdapter = new SelectAdapter(null);
         mSimpleItemDecoration = new SimpleItemDecoration(this);//初始化分隔线
         addItemDecoration(mSimpleItemDecoration);
         //初始化header/footer
@@ -83,8 +103,37 @@ public class PullToRefreshRecyclerView extends RecyclerView {
         setDivideHorizontalPadding(a.getDimension(R.styleable.PullToRefreshRecyclerView_pv_divideHorizontalPadding, 0));
         setDivideVerticalPadding(a.getDimension(R.styleable.PullToRefreshRecyclerView_pv_divideVerticalPadding, 0));
         setRefreshMode(Mode.values()[a.getInt(R.styleable.PullToRefreshRecyclerView_pv_refreshMode, REFRESH_BOTH)]);
+        mAdapter.setSelectMode(a.getInt(R.styleable.PullToRefreshRecyclerView_pv_choiceMode, CLICK));
+        setChoiceBackground(a.getDrawable(R.styleable.PullToRefreshRecyclerView_pv_choiceBackground));
         a.recycle();
 
+    }
+
+    /**
+     * 设置选中背景
+     *
+     * @param drawable
+     */
+    public void setChoiceBackground(Drawable drawable) {
+        mAdapter.setChoiceBackground(drawable);
+    }
+
+    /**
+     * 设置选中背景颜色
+     *
+     * @param color
+     */
+    public void setChoiceBackground(int color) {
+        mAdapter.setChoiceBackground(new ColorDrawable(color));
+    }
+
+    /**
+     * 设置选择模式
+     *
+     * @param mode
+     */
+    public void setChoiceMode(@ChoiceMode int mode) {
+        mAdapter.setSelectMode(mode);
     }
 
 
@@ -404,7 +453,7 @@ public class PullToRefreshRecyclerView extends RecyclerView {
      *
      * @param mode
      */
-    public void setRefreshMode(Mode mode) {
+    public void setRefreshMode(@RefreshMode Mode mode) {
         this.mode = mode;
         if (mode.disableHeader()) {
             mRefreshHeader.setState(BaseRefresh.STATE_NORMAL);
@@ -443,6 +492,15 @@ public class PullToRefreshRecyclerView extends RecyclerView {
      */
     public void setOnItemClickListener(OnItemClickListener listener) {
         mAdapter.setOnItemClickListener(listener);
+    }
+
+    /**
+     * 设置选择监听
+     *
+     * @param listener
+     */
+    public void setOnCheckListener(OnCheckListener listener) {
+        mAdapter.setOnCheckListener(listener);
     }
 
     /**

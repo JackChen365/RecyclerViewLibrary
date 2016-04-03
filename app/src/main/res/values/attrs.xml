@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="RadioLayout">
+        <attr name="rl_items" format="reference" />
+    </declare-styleable>
+
+
+</resources>

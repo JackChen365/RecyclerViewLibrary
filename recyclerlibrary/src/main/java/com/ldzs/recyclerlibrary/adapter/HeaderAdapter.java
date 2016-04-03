@@ -244,22 +244,34 @@ public class HeaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (isHeader(position)) return;
-        final int itemPosition = position - getHeadersCount();
-        if (null != mAdapter && itemPosition < mAdapter.getItemCount()) {
-            mAdapter.onBindViewHolder(holder, itemPosition);
-            if (mAdapter instanceof BaseViewAdapter) {
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (null != mItemClickListener) {
-                            mItemClickListener.onItemClick(v, itemPosition);
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+        if (!isHeader(position)) {
+            position -= getHeadersCount();
+            if (null != mAdapter && position < mAdapter.getItemCount()) {
+                mAdapter.onBindViewHolder(holder, position);
+                if (mAdapter instanceof BaseViewAdapter) {
+                    holder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            int itemPosition = holder.getAdapterPosition() - getHeadersCount();
+                            if (!onItemClick(v, itemPosition) && null != mItemClickListener) {
+                                mItemClickListener.onItemClick(v, itemPosition);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         }
+    }
+
+    /**
+     * 子类点击使用
+     *
+     * @param v
+     * @param position
+     */
+    protected boolean onItemClick(View v, int position) {
+        return false;
     }
 
     @Override
