@@ -2,6 +2,7 @@ package com.ldzs.recyclerlibrary.divide;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -9,6 +10,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -17,67 +19,53 @@ import android.view.View;
 public class SimpleItemDecoration extends RecyclerView.ItemDecoration {
     private static final String TAG = "SimpleItemDecoration";
     //分隔线模式
-    public static final int HORIZONTAL = 0;
-    public static final int VERTICAL = 1;
+    public static final int VERTICAL = 0;
+    public static final int HORIZONTAL = 1;
     public static final int GRID = 2;
-    private final RecyclerView mRecyclerView;
-    private int mStrokeWidth;
-    private int mHorizontalPadding;
-    private int mVerticalPadding;
-    private int mHeaderCount;
-    private int mFooterCount;
-    private boolean mShowHeader;
-    private boolean mShowFooter;
-    private Drawable mDrawable;
-    private int mDivideMode;
+    private int strokeWidth;
+    private int horizontalPadding;
+    private int verticalPadding;
+    private int headerCount;
+    private int footerCount;
+    private boolean showHeader;
+    private boolean showFooter;
+    private Drawable drawable;
+    private int divideMode;
 
     @IntDef(value = {HORIZONTAL, VERTICAL, GRID})
     public @interface Mode {
     }
 
-    public SimpleItemDecoration(RecyclerView recyclerView) {
-        this.mRecyclerView = recyclerView;
+    public SimpleItemDecoration() {
     }
 
     public void setStrokeWidth(int strokeWidth) {
-        this.mStrokeWidth = strokeWidth;
-        mRecyclerView.invalidateItemDecorations();
+        this.strokeWidth = strokeWidth;
     }
 
     public void setDivideHorizontalPadding(int padding) {
-        this.mHorizontalPadding = padding;
-        mRecyclerView.invalidateItemDecorations();
+        this.horizontalPadding = padding;
     }
 
     public void setDivideVerticalPadding(int padding) {
-        this.mVerticalPadding = padding;
-        mRecyclerView.invalidateItemDecorations();
+        this.verticalPadding = padding;
     }
 
     public void setShowHeader(boolean showHeader) {
-        this.mShowHeader = showHeader;
-        mRecyclerView.invalidateItemDecorations();
+        this.showHeader = showHeader;
     }
 
     public void setShowFooter(boolean showFooter) {
-        this.mShowFooter = showFooter;
-        mRecyclerView.invalidateItemDecorations();
+        this.showFooter = showFooter;
     }
 
     public void setColorDrawable(int color) {
-        this.mDrawable = new ColorDrawable(color);
-        mRecyclerView.invalidateItemDecorations();
+        this.drawable = new ColorDrawable(color);
     }
 
-    public void setDrawable(@DrawableRes int res) {
-        Resources resources = mRecyclerView.getResources();
-        this.mDrawable = resources.getDrawable(res);
-        mRecyclerView.invalidateItemDecorations();
-    }
 
     public void setDrawable(Drawable drawable) {
-        this.mDrawable = drawable;
-        mRecyclerView.invalidateItemDecorations();
+        this.drawable = drawable;
     }
 
     /**
@@ -86,24 +74,22 @@ public class SimpleItemDecoration extends RecyclerView.ItemDecoration {
      * @param mode
      */
     public void setDivideMode(@Mode int mode) {
-        this.mDivideMode = mode;
-        mRecyclerView.invalidateItemDecorations();
+        this.divideMode = mode;
     }
 
     public void setHeaderCount(int headerCount) {
-        this.mHeaderCount = headerCount;
-        mRecyclerView.invalidateItemDecorations();
+        this.headerCount = headerCount;
     }
 
     public void setFooterCount(int footerCount) {
-        this.mFooterCount = footerCount;
-        mRecyclerView.invalidateItemDecorations();
+        this.footerCount = footerCount;
     }
 
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         super.onDraw(c, parent, state);
-        switch (mDivideMode) {
+        if(null==drawable) return ;
+        switch (divideMode) {
             case VERTICAL:
                 drawLinearVertical(c, parent, state);
                 break;
@@ -131,9 +117,9 @@ public class SimpleItemDecoration extends RecyclerView.ItemDecoration {
                 final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
                         .getLayoutParams();
                 final int top = child.getBottom() + params.bottomMargin;
-                final int bottom = top + mStrokeWidth;
-                mDrawable.setBounds(left + mVerticalPadding, top, right - mVerticalPadding, bottom);
-                mDrawable.draw(c);
+                final int bottom = top + strokeWidth;
+                drawable.setBounds(left + verticalPadding, top, right - verticalPadding, bottom);
+                drawable.draw(c);
             }
         }
     }
@@ -148,15 +134,15 @@ public class SimpleItemDecoration extends RecyclerView.ItemDecoration {
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
                     .getLayoutParams();
             final int left = child.getRight() + params.rightMargin;
-            final int right = left + mStrokeWidth;
-            mDrawable.setBounds(left, top + mHorizontalPadding, right, bottom - mHorizontalPadding);
-            mDrawable.draw(c);
+            final int right = left + strokeWidth;
+            drawable.setBounds(left, top + horizontalPadding, right, bottom - horizontalPadding);
+            drawable.draw(c);
         }
     }
 
 
     public void drawVertical(Canvas c, RecyclerView parent) {
-        int strokeWidth = this.mStrokeWidth;
+        int strokeWidth = this.strokeWidth;
         final int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
@@ -164,24 +150,24 @@ public class SimpleItemDecoration extends RecyclerView.ItemDecoration {
             final int left = child.getLeft() - params.leftMargin - strokeWidth;
             final int right = child.getRight() + params.rightMargin + strokeWidth;
             final int top = child.getBottom() + params.bottomMargin + strokeWidth;
-            final int bottom = top + mDrawable.getIntrinsicHeight();
-            mDrawable.setBounds(left, top, right, bottom);
-            mDrawable.draw(c);
+            final int bottom = top + drawable.getIntrinsicHeight();
+            drawable.setBounds(left, top, right, bottom);
+            drawable.draw(c);
         }
     }
 
     public void drawHorizontal(Canvas c, RecyclerView parent) {
-        int strokeWidth = this.mStrokeWidth;
+        int strokeWidth = this.strokeWidth;
         final int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
             final int left = child.getRight() + params.rightMargin + strokeWidth;
-            final int right = left + mDrawable.getIntrinsicWidth();
+            final int right = left + drawable.getIntrinsicWidth();
             final int top = child.getTop() - params.topMargin - strokeWidth;
             final int bottom = child.getBottom() + params.bottomMargin + strokeWidth;
-            mDrawable.setBounds(left, top, right, bottom);
-            mDrawable.draw(c);
+            drawable.setBounds(left, top, right, bottom);
+            drawable.draw(c);
         }
     }
 
@@ -189,12 +175,12 @@ public class SimpleItemDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
-        int strokeWidth = mStrokeWidth;
+        int strokeWidth = this.strokeWidth;
         RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view.getLayoutParams();
         int itemCount = state.getItemCount();
         int itemPosition = layoutParams.getViewLayoutPosition();
         if (needDraw(itemCount, itemPosition)) {
-            switch (mDivideMode) {
+            switch (divideMode) {
                 case VERTICAL:
                     outRect.set(0, 0, 0, strokeWidth);
                     break;
@@ -227,11 +213,11 @@ public class SimpleItemDecoration extends RecyclerView.ItemDecoration {
      * @return
      */
     private boolean needDraw(int itemCount, int itemPosition) {
-        boolean result = true;
-        if (mHeaderCount > itemPosition) {
-            result = mShowHeader;
-        } else if (mFooterCount >= itemCount - itemPosition) {
-            result = mShowFooter;
+        boolean result = null!=drawable;
+        if (headerCount > itemPosition) {
+            result = showHeader;
+        } else if (footerCount >= itemCount - itemPosition) {
+            result = showFooter;
         }
         return result;
     }

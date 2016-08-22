@@ -2,7 +2,6 @@ package com.ldzs.recyclerlibrary;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.IntDef;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,415 +10,283 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 
-import com.ldzs.recyclerlibrary.adapter.SelectAdapter;
-import com.ldzs.recyclerlibrary.adapter.tree.TreeAdapter;
-import com.ldzs.recyclerlibrary.callback.OnCheckListener;
+import com.ldzs.recyclerlibrary.adapter.RefreshAdapter;
 import com.ldzs.recyclerlibrary.callback.OnItemClickListener;
 import com.ldzs.recyclerlibrary.divide.SimpleItemDecoration;
-import com.ldzs.recyclerlibrary.header.BaseRefresh;
-import com.ldzs.recyclerlibrary.header.BaseRefreshFooter;
-import com.ldzs.recyclerlibrary.header.BaseRefreshHeader;
-import com.ldzs.recyclerlibrary.header.DefaultHeader;
-import com.ldzs.recyclerlibrary.header.LoadFooterView;
+import com.ldzs.recyclerlibrary.footer.RefreshFrameFooter;
 import com.ldzs.recyclerlibrary.observe.HeaderAdapterDataObserve;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorListenerAdapter;
-import com.nineoldandroids.animation.ValueAnimator;
+
+import cz.library.PullToRefreshLayout;
+import cz.library.RefreshMode;
+
 
 /**
- * RecyclerView
- * <p>
- * 以下修改
- * 1:修改刷新方式控件
- * 1.1:两边
- * 1.2:头
- * 1.3:尾
- * 1.4:不启用
- * 2:源码简化
- * <p>
- * 2016/3/3 增加列表选择模式
+ * Created by czz on 2016/8/13.
  */
-public class PullToRefreshRecyclerView extends RecyclerView {
-    private static final String TAG = "PullToRefreshRecyclerView";
-    //选择状态,默认点击
-    public static final int CLICK = 0;//单击
-    public static final int SINGLE_CHOICE = 1;//单选
-    public static final int MULTI_CHOICE = 2;//多选
-    public static final int RECTANGLE_CHOICE = 3;//块选择
-    //刷新模式
-    public static final int REFRESH_BOTH = 0x00;
-    public static final int REFRESH_HEADER = 0x01;
-    public static final int REFRESH_BOTTOM = 0x02;
-    public static final int REFRESH_NONE = 0x03;
+public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView> implements IRecyclerView{
+    public static final int END_NORMAL=0x00;
+    public static final int END_REFRESHING=0x01;
 
-    @IntDef(value = {CLICK, SINGLE_CHOICE, MULTI_CHOICE, RECTANGLE_CHOICE})
-    public @interface ChoiceMode {
+    public static final int CLICK=0x00;
+    public static final int SINGLE_CHOICE=0x01;
+    public static final int MULTI_CHOICE=0x02;
+    public static final int RECTANGLE_CHOICE=0x03;
+
+
+    @IntDef(value={CLICK,SINGLE_CHOICE,MULTI_CHOICE,RECTANGLE_CHOICE})
+    public @interface ChoiceMode{
     }
 
-    @IntDef(value = {REFRESH_BOTH, REFRESH_HEADER, REFRESH_BOTTOM, REFRESH_NONE})
-    public @interface RefreshMode {
-    }
 
-    private static final float RESISTANCE = 3;//阻力倍数
-    protected BaseRefreshHeader mRefreshHeader;
-    protected BaseRefreshFooter mRefreshFooter;
-    protected SimpleItemDecoration mSimpleItemDecoration;
-    protected OnPullUpToRefreshListener mUpListener;
-    protected OnPullDownToRefreshListener mDownListener;
-    protected SelectAdapter mAdapter;//继承自HeaderAdapter,并增加选择模式
-    private Mode mode;//刷新模式
-    private float mScrollOffset;//滑动距离
-    private float mLastY;
-
+    private final RefreshAdapter adapter;
+    private final SimpleItemDecoration itemDecoration;
+    private final RefreshFrameFooter refreshFooter;
+    private OnPullFooterToRefreshListener listener;
+    private Drawable choiceBackground;
+    private int refreshState;
+    private int choiceMode;
 
     public PullToRefreshRecyclerView(Context context) {
-        this(context, null);
+        this(context,null,0);
     }
 
     public PullToRefreshRecyclerView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        this(context, attrs,0);
     }
 
-    public PullToRefreshRecyclerView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        mode = Mode.BOTH;
-        mAdapter = new SelectAdapter(null);
-        mSimpleItemDecoration = new SimpleItemDecoration(this);//初始化分隔线
-        addItemDecoration(mSimpleItemDecoration);
-        //初始化header/footer
-        DefaultHeader refreshHeader = new DefaultHeader(context);
-        addHeaderView(refreshHeader);
-        mRefreshHeader = refreshHeader;
-        LoadFooterView footView = new LoadFooterView(context);
-        addFooterView(footView);
-        mRefreshFooter = footView;
-        //初始化自定义属性
+    public PullToRefreshRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        refreshState = END_NORMAL;
+        itemDecoration=new SimpleItemDecoration();
+        refreshFooter = new RefreshFrameFooter(context, this);
+        adapter = new RefreshAdapter(null);
+        initFooterViewByMode(getRefreshMode());
+        setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PullToRefreshRecyclerView);
-        setDivideDrawable(a.getResourceId(R.styleable.PullToRefreshRecyclerView_pv_listDivide, R.color.transparent));
-        setListDivideHeight(a.getDimension(R.styleable.PullToRefreshRecyclerView_pv_listDivideHeight, 0));
+        setListDivide(a.getDrawable(R.styleable.PullToRefreshRecyclerView_pv_listDivide));
+        setListDivideHeight(a.getDimension(R.styleable.PullToRefreshRecyclerView_pv_listDivideHeight, 0f));
         setDivideHorizontalPadding(a.getDimension(R.styleable.PullToRefreshRecyclerView_pv_divideHorizontalPadding, 0));
         setDivideVerticalPadding(a.getDimension(R.styleable.PullToRefreshRecyclerView_pv_divideVerticalPadding, 0));
-        setRefreshMode(Mode.values()[a.getInt(R.styleable.PullToRefreshRecyclerView_pv_refreshMode, REFRESH_BOTH)]);
-        mAdapter.setSelectMode(a.getInt(R.styleable.PullToRefreshRecyclerView_pv_choiceMode, CLICK));
+        setChoiceModeInner(a.getInt(R.styleable.PullToRefreshRecyclerView_pv_choiceMode, CLICK));
         setChoiceBackground(a.getDrawable(R.styleable.PullToRefreshRecyclerView_pv_choiceBackground));
         a.recycle();
-
-    }
-
-    /**
-     * 设置选中背景
-     *
-     * @param drawable
-     */
-    public void setChoiceBackground(Drawable drawable) {
-        mAdapter.setChoiceBackground(drawable);
-    }
-
-    /**
-     * 设置选中背景颜色
-     *
-     * @param color
-     */
-    public void setChoiceBackground(int color) {
-        mAdapter.setChoiceBackground(new ColorDrawable(color));
-    }
-
-    /**
-     * 设置选择模式
-     *
-     * @param mode
-     */
-    public void setChoiceMode(@ChoiceMode int mode) {
-        mAdapter.setSelectMode(mode);
     }
 
 
-    /**
-     * 添加顶部控件
-     *
-     * @param view
-     */
-    public void addHeaderView(View view) {
-        mAdapter.addHeaderView(view);
-        mSimpleItemDecoration.setHeaderCount(mAdapter.getHeadersCount());//更新分隔线顶部控件个数
-        invalidateItemDecorations();
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        this.targetView.addItemDecoration(itemDecoration);
     }
 
-
-    /**
-     * 添加底部控件
-     *
-     * @param view
-     */
-    public void addFooterView(final View view) {
-        mAdapter.addFooterView(view);
-        mSimpleItemDecoration.setFooterCount(mAdapter.getFootersCount());//更新分隔线底部控件个数
-        invalidateItemDecorations();
+    public void setListDivide(Drawable drawable) {
+        itemDecoration.setDrawable(drawable);
     }
-
-    /**
-     * 移除指定顶部控件
-     *
-     * @return
-     */
-    public void removeHeaderView(View view) {
-        mAdapter.removeHeaderView(view);
-    }
-
-    /**
-     * 移除指定位置顶部view
-     *
-     * @param position
-     */
-    public void removeHeaderView(int position) {
-        mAdapter.removeHeaderView(position);
-    }
-
-    /**
-     * 移除指定底部控件
-     *
-     * @return
-     */
-    public void removeFooterView(View view) {
-        mAdapter.removeFooterView(view);
-    }
-
-    /**
-     * 移除指定位置底部view
-     *
-     * @param position
-     */
-    public void removeFooterView(int position) {
-        mAdapter.removeFooterView(position);
-    }
-
-    /**
-     * 获得顶部控件个数
-     *
-     * @return
-     */
-    public int getHeaderViewCount() {
-        return mAdapter.getHeadersCount();
-    }
-
-    /**
-     * 获得底部控件个数
-     *
-     * @return
-     */
-    public int getFooterViewCount() {
-        return mAdapter.getFootersCount();
-    }
-
-    public void setDivideDrawable(int res) {
-        mSimpleItemDecoration.setDrawable(res);
-        invalidateItemDecorations();
-    }
-
-    public void setListDivideHeight(float height) {
-        mSimpleItemDecoration.setStrokeWidth(Math.round(height));
-        invalidateItemDecorations();
+    public void setListDivideHeight(float listDivideHeight) {
+        itemDecoration.setStrokeWidth(Math.round(listDivideHeight));
     }
 
     public void setDivideHorizontalPadding(float padding) {
-        mSimpleItemDecoration.setDivideHorizontalPadding(Math.round(padding));
-        invalidateItemDecorations();
+        this.itemDecoration.setDivideHorizontalPadding(Math.round(padding));
     }
-
     public void setDivideVerticalPadding(float padding) {
-        mSimpleItemDecoration.setDivideVerticalPadding(Math.round(padding));
-        invalidateItemDecorations();
+        this.itemDecoration.setDivideVerticalPadding(Math.round(padding));
     }
 
-    /**
-     * 顶部刷新完毕
-     */
-    public void onRefreshComplete() {
-        if (mRefreshHeader.isRefreshing()) {
-            mRefreshHeader.refreshComplete();
-        } else if (mRefreshFooter.isRefreshing()) {
-            mRefreshFooter.refreshComplete();
-        }
+    public void setChoiceMode(@ChoiceMode int mode){
+        setChoiceModeInner(mode);
+    }
+    private void setChoiceModeInner(int mode) {
+        this.choiceMode=mode;
+        invalidate();
     }
 
-    /**
-     * 手动通知刷新
-     */
-    public void setRefreshing() {
-        //正在刷新中,则不执行
-        if (mRefreshHeader.isRefreshing() || mRefreshHeader.isCurrentState(BaseRefresh.STATE_RELEASE_TO_REFRESH))
-            return;
-        scrollToPosition(0);
-        // TODO 以动画滑动到顶部,会出现延持不统一情况,待解决
-//        smoothScrollToPosition(0);
-//        ItemAnimator itemAnimator = getItemAnimator();
-//        long moveDuration = itemAnimator.getMoveDuration();
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(1.0f);
-        valueAnimator.setDuration(200);
-//        valueAnimator.setStartDelay(moveDuration);
-        final int originalHeight = mRefreshHeader.getOriginalHeight();//获得原始高度
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+    public void setChoiceBackground(Drawable choiceBackground) {
+        this.choiceBackground = choiceBackground;
+    }
+
+    @Override
+    protected RecyclerView getTargetView() {
+        RecyclerView recyclerView = new RecyclerView(getContext());
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float fraction = animation.getAnimatedFraction();
-                mRefreshHeader.pullToRefresh(fraction * originalHeight);
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                scrollStateChanged(RecyclerView.SCROLL_STATE_IDLE);
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                scrollStateChanged(newState);
             }
         });
-        valueAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                mRefreshHeader.setState(BaseRefresh.STATE_RELEASE_TO_REFRESH);
-            }
+        return recyclerView;
+    }
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                //动画结束后,改变刷新头状态,并执行回调
-                mRefreshHeader.setRefreshing();
-                mUpListener.onRefresh();
-            }
-        });
-        valueAnimator.start();
+    @Override
+    public void setItemAnimator(RecyclerView.ItemAnimator itemAnimator){
+        this.targetView.setItemAnimator(itemAnimator);
+    }
+
+
+    @Override
+    public void setLayoutManager(RecyclerView.LayoutManager layoutManager){
+        this.targetView.setLayoutManager(layoutManager);
+        if (layoutManager instanceof GridLayoutManager || layoutManager instanceof StaggeredGridLayoutManager) {
+            itemDecoration.setDivideMode(SimpleItemDecoration.GRID);
+        } else if (layoutManager instanceof LinearLayoutManager) {
+            LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
+            int orientation = linearLayoutManager.getOrientation();
+            itemDecoration.setDivideMode(OrientationHelper.HORIZONTAL == orientation ? SimpleItemDecoration.HORIZONTAL : SimpleItemDecoration.VERTICAL);
+        }
+    }
+
+    @Override
+    public int getHeaderViewCount() {
+        return this.adapter.getHeadersCount();
+    }
+
+    @Override
+    public void addHeaderView(View view) {
+        checkNullObjectRef(view);
+        adapter.addHeaderView(view);
+        itemDecoration.setHeaderCount(getHeaderViewCount());
+    }
+
+    @Override
+    public void removeHeaderView(View view) {
+        checkNullObjectRef(view);
+        adapter.removeHeaderView(view);
+        itemDecoration.setHeaderCount(getHeaderViewCount());
+    }
+
+    @Override
+    public void removeHeaderView(int index){
+        checkIndexInBounds(index,getHeaderViewCount());
+        adapter.removeHeaderView(index);
+        itemDecoration.setHeaderCount(getHeaderViewCount());
+    }
+
+
+    @Override
+    public int getFooterViewCount() {
+        return adapter.getFootersCount();
+    }
+
+    @Override
+    public void addFooterView(View view)  {
+        checkNullObjectRef(view);
+        adapter.addFooterView(view);
+        itemDecoration.setFooterCount(getFooterViewCount());
+    }
+
+    @Override
+    public void removeFooterView(View view)  {
+        checkNullObjectRef(view);
+        adapter.removeFooterView(view);
+        itemDecoration.setFooterCount(getFooterViewCount());
+    }
+
+    @Override
+    public void removeFooterView(int index)  {
+        checkIndexInBounds(index,getFooterViewCount());
+        adapter.removeFooterView(index);
+        itemDecoration.setFooterCount(getFooterViewCount());
+    }
+
+    @Override
+    public RecyclerView.ItemAnimator getItemAnimator() {
+        return this.targetView.getItemAnimator();
+    }
+
+    @Override
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.adapter.setOnItemClickListener(listener);
+    }
+
+    @Override
+    public void setOnFootRetryListener(OnClickListener listener) {
+        this.refreshFooter.setRefreshState(RefreshFrameFooter.FRAME_ERROR);
+        this.refreshFooter.setOnFootRetryListener(listener);
+    }
+
+    public void setAdapter(RecyclerView.Adapter adapter){
+        this.adapter.setAdapter(adapter);
+        this.targetView.setAdapter(this.adapter);
+        adapter.registerAdapterDataObserver(new HeaderAdapterDataObserve(this.adapter));
+    }
+
+    public void setRefreshFooterState(@RefreshFrameFooter.RefreshState int state){
+        refreshFooter.setRefreshState(state);
+    }
+
+    @Override
+    public void setRefreshMode(RefreshMode mode) {
+        super.setRefreshMode(mode);
+        initFooterViewByMode(mode);
+    }
+
+
+    private void initFooterViewByMode(RefreshMode mode) {
+        if(null==adapter) return;
+        boolean exist = this.adapter.hasRefreshFooterView();
+        if(!exist&&mode.enableFooter()){
+            addFooterView(refreshFooter.getFooterView());
+            scrollStateChanged(RecyclerView.SCROLL_STATE_IDLE);
+        } else if(exist){
+            removeFooterView(refreshFooter.getFooterView());
+        }
     }
 
     /**
-     * 设置底部加载完毕
+     * check object is a null,when object is null reference throw NullPointerException
+     * @param obj
      */
-    public void setFooterComplete() {
-        mRefreshFooter.setState(BaseRefresh.STATE_FINISH);
+    private void checkNullObjectRef(Object obj){
+        if(null==obj){
+            throw new NullPointerException("The header view is null!");
+        }
     }
-
     /**
-     * 设置底部重试
-     *
-     * @param listener
+     * check index is out of bounds,when object is out of bounds  throw IndexOutOfBoundsException
+     * @param index
+     * @param count
      */
-    public void setFooterRetryListener(OnClickListener listener) {
-        mRefreshFooter.setState(BaseRefresh.STATE_ERROR);
-        mRefreshFooter.setOnRetryListener(listener);
-    }
-
-    @Override
-    public void setLayoutManager(LayoutManager layout) {
-        super.setLayoutManager(layout);
-        if (layout instanceof GridLayoutManager || layout instanceof StaggeredGridLayoutManager) {
-            mSimpleItemDecoration.setDivideMode(SimpleItemDecoration.GRID);
-        } else if (layout instanceof LinearLayoutManager) {
-            LinearLayoutManager layoutManager = (LinearLayoutManager) layout;
-            int orientation = layoutManager.getOrientation();//与系统方向一致
-            mSimpleItemDecoration.setDivideMode(OrientationHelper.HORIZONTAL == orientation ? SimpleItemDecoration.HORIZONTAL : SimpleItemDecoration.VERTICAL);
+    private void checkIndexInBounds(int index,int count) {
+        if(0>index||index>=count){
+            throw new IndexOutOfBoundsException("index out of bounds!");
         }
     }
-
-
-    @Override
-    public void setAdapter(Adapter adapter) {
-        mAdapter.setAdapter(adapter);
-        super.setAdapter(mAdapter);
-        adapter.registerAdapterDataObserver(new HeaderAdapterDataObserve(mAdapter));
-        if (null != adapter) {
-            //避免包装子条目混乱
-            if (adapter instanceof TreeAdapter) {
-                TreeAdapter treeAdapter = (TreeAdapter) adapter;
-                treeAdapter.setHeaderCount(mAdapter.getHeadersCount());
-            }
-        }
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent e) {
-        float y = e.getRawY();
-        if (MotionEvent.ACTION_DOWN == e.getActionMasked()) {
-            mLastY = y;
-            mScrollOffset = mRefreshHeader.getRefreshHeight() * RESISTANCE;
-        }
-        return super.onInterceptTouchEvent(e);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        float y = ev.getRawY();
-        switch (ev.getActionMasked()) {
-            case MotionEvent.ACTION_MOVE:
-                final float deltaY = y - mLastY;
-                if (listOnTop()) {
-                    if (mode.disableHeader() && 0 < deltaY) {
-                        mRefreshHeader.pullToRefresh((deltaY + mScrollOffset) / RESISTANCE);
-                        if (mRefreshHeader.isCurrentState(DefaultHeader.STATE_RELEASE_TO_REFRESH) || mRefreshHeader.isCurrentState(BaseRefresh.STATE_NORMAL)) {
-                            return false;
-                        }
-                    }
-                } else {
-                    mLastY = y;//不在最顶端时,记录当前位置
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                if (listOnTop() && mode.disableHeader()) {
-                    if (mRefreshHeader.isCurrentState(BaseRefresh.STATE_RELEASE_TO_REFRESH) && null != mUpListener) {
-                        mRefreshHeader.setRefreshing();
-                        mUpListener.onRefresh();
-                    }
-                    mRefreshHeader.releaseToRefresh();//释放控制
-                }
-                break;
-        }
-        return super.onTouchEvent(ev);
-    }
-
-    @Override
-    public void onScrollStateChanged(int state) {
-        super.onScrollStateChanged(state);
-        refreshDown(state);
-    }
-
-    @Override
-    public void onScrolled(int dx, int dy) {
-        super.onScrolled(dx, dy);
-        refreshDown(RecyclerView.SCROLL_STATE_IDLE);
-    }
-
     /**
-     * 设置动画控制对象
-     * 复写进行劫持操作.用以局部制制动画展示
-     *
-     * @param animator
-     */
-    @Override
-    public void setItemAnimator(ItemAnimator animator) {
-        super.setItemAnimator(animator);
-    }
-
-    /**
-     * 底部刷新
-     *
+     * on recyclerView scroll state changed
      * @param state
      */
-    private void refreshDown(int state) {
-        if (state == RecyclerView.SCROLL_STATE_IDLE && null != mDownListener && mode.disableFooter()) {
-            LayoutManager layoutManager = getLayoutManager();
+    private void scrollStateChanged(int state) {
+        RefreshMode refreshMode = getRefreshMode();
+        if (state == RecyclerView.SCROLL_STATE_IDLE && null != listener && refreshMode.enableFooter()) {
+            RecyclerView.LayoutManager layoutManager = targetView.getLayoutManager();
             int lastVisibleItemPosition = getLastVisiblePosition();
             if (lastVisibleItemPosition >= layoutManager.getItemCount() - 1 &&
-                    layoutManager.getItemCount() >= layoutManager.getChildCount() && mRefreshFooter.isCurrentState(BaseRefresh.STATE_NORMAL)) {
-                if (mRefreshHeader.isRefreshing())
-                    mRefreshHeader.setState(BaseRefresh.STATE_COMPLETE);//取消上一个请求
-                mRefreshFooter.setState(BaseRefresh.STATE_REFRESHING);
-                mDownListener.onRefresh();
+                    layoutManager.getItemCount() >= layoutManager.getChildCount() && refreshState==END_NORMAL) {
+                refreshState = END_REFRESHING;
+                listener.onRefresh();
             }
         }
     }
 
 
     /**
-     * 获得底部可见位置
-     *
-     * @return
+     * get last visible position
+     * @return last visible position
      */
-    private int getLastVisiblePosition() {
+    public int getLastVisiblePosition() {
         int lastVisibleItemPosition;
-        LayoutManager layoutManager = getLayoutManager();
+        RecyclerView.LayoutManager layoutManager = targetView.getLayoutManager();
         if (layoutManager instanceof GridLayoutManager) {
             lastVisibleItemPosition = ((GridLayoutManager) layoutManager).findLastVisibleItemPosition();
         } else if (layoutManager instanceof StaggeredGridLayoutManager) {
@@ -437,84 +304,30 @@ public class PullToRefreshRecyclerView extends RecyclerView {
         return lastVisibleItemPosition;
     }
 
-
-    private boolean listOnTop() {
-        boolean onTop = false;
-        View view = mAdapter.getHeaderView(0);
-        if (null != view) {
-            onTop = null != view.getParent();
-        }
-        return onTop;
-    }
-
-
-    /**
-     * 设置刷新模式
-     *
-     * @param mode
-     */
-    public void setRefreshMode(@RefreshMode Mode mode) {
-        this.mode = mode;
-        if (mode.disableHeader()) {
-            mRefreshHeader.setState(BaseRefresh.STATE_NORMAL);
-        } else {
-            mRefreshHeader.setState(BaseRefresh.STATE_DONE);
-        }
-        if (mode.disableFooter()) {
-            mRefreshFooter.setState(BaseRefresh.STATE_NORMAL);//刷用底部刷新
-        } else {
-            mRefreshFooter.setState(BaseRefresh.STATE_DONE);//刷用底部刷新
+    public void onRefreshFootComplete(){
+        if(END_REFRESHING==refreshState){
+            refreshState=END_NORMAL;
+            this.targetView.requestLayout();
         }
     }
 
-    /**
-     * 设置顶部刷新
-     *
-     * @param listener
-     */
-    public void setOnPullUpToRefreshListener(OnPullUpToRefreshListener listener) {
-        this.mUpListener = listener;
+    public void setFooterRefreshDone(){
+        refreshFooter.setRefreshState(RefreshFrameFooter.FRAME_DONE);
+    }
+
+
+
+    public void setOnPullFooterToRefreshListener(OnPullFooterToRefreshListener listener){
+        this.listener=listener;
     }
 
     /**
-     * 设置底部刷新
-     *
-     * @param listener
+     * set bottom refresh listener
      */
-    public void setOnPullDownToRefreshListener(OnPullDownToRefreshListener listener) {
-        this.mDownListener = listener;
-    }
-
-    /**
-     * 设置条目点击
-     *
-     * @param listener
-     */
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        mAdapter.setOnItemClickListener(listener);
-    }
-
-    /**
-     * 设置选择监听
-     *
-     * @param listener
-     */
-    public void setOnCheckListener(OnCheckListener listener) {
-        mAdapter.setOnCheckListener(listener);
-    }
-
-    /**
-     * 顶部刷新监听
-     */
-    public interface OnPullUpToRefreshListener {
+    public interface OnPullFooterToRefreshListener {
         void onRefresh();
     }
 
-    /**
-     * 底部刷新监听
-     */
-    public interface OnPullDownToRefreshListener {
-        void onRefresh();
-    }
+
 
 }

@@ -1,6 +1,7 @@
 package com.ldzs.recyclerlibrary;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -14,7 +15,7 @@ import com.ldzs.recyclerlibrary.callback.OnExpandItemClickListener;
  */
 public class PullToRefreshExpandRecyclerView extends PullToRefreshRecyclerView {
     private OnExpandItemClickListener mExpandItemClickListener;
-    private ExpandAdapter mExpandAdapter;
+    private ExpandAdapter expandAdapter;
 
     public PullToRefreshExpandRecyclerView(Context context) {
         super(context);
@@ -29,22 +30,14 @@ public class PullToRefreshExpandRecyclerView extends PullToRefreshRecyclerView {
     }
 
     @Override
-    public void addHeaderView(View view) {
-        super.addHeaderView(view);
-        //设置headerView个数,用以解决局部刷新位置判断问题
-        if (null != mExpandAdapter) {
-            mExpandAdapter.setHeaderViewCount(getHeaderViewCount());
-            invalidateItemDecorations();
-        }
-    }
-
-    @Override
-    public void setAdapter(Adapter adapter) {
-        super.setAdapter(adapter);
-        if (adapter instanceof ExpandAdapter) {
-            mExpandAdapter = (ExpandAdapter) adapter;
-            mExpandAdapter.setHeaderViewCount(getHeaderViewCount());
-            mExpandAdapter.setOnExpandItemClickListener(new OnExpandItemClickListener() {
+    public void setAdapter(RecyclerView.Adapter adapter) {
+        if (!(adapter instanceof ExpandAdapter)) {
+            throw new IllegalArgumentException("Adapter must extend ExpandAdapter!");
+        } else {
+            super.setAdapter(adapter);
+            expandAdapter = (ExpandAdapter) adapter;
+            expandAdapter.setHeaderViewCount(getHeaderViewCount());
+            expandAdapter.setOnExpandItemClickListener(new OnExpandItemClickListener() {
                 @Override
                 public void onItemClick(View v, int groupPosition, int childPosition) {
                     if (null != mExpandItemClickListener) {
@@ -52,8 +45,6 @@ public class PullToRefreshExpandRecyclerView extends PullToRefreshRecyclerView {
                     }
                 }
             });
-        } else {
-            throw new IllegalArgumentException("Adapter must use ExpandAdapter!");
         }
     }
 

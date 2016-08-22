@@ -7,25 +7,25 @@ import android.view.View;
  */
 public class OnDelayItemClickListener implements OnItemClickListener {
     private static final int INTERVAL_TIME_MILLIS = 1 * 1000;
-    private OnItemClickListener mListener;
-    private static long mClickTimeMillis;//点击时间
+    private OnItemClickListener listener;
+    private static long clickTimeMillis;//点击时间
 
-    public OnDelayItemClickListener(OnItemClickListener mListener) {
-        this(mListener, INTERVAL_TIME_MILLIS);
+    public OnDelayItemClickListener(OnItemClickListener listener) {
+        this(listener, INTERVAL_TIME_MILLIS);
     }
 
-    public OnDelayItemClickListener(OnItemClickListener mListener, long clickTimeMillis) {
-        this.mListener = mListener;
-        this.mClickTimeMillis = clickTimeMillis;
+    public OnDelayItemClickListener(OnItemClickListener listener, long clickTimeMillis) {
+        this.listener = listener;
+        this.clickTimeMillis = clickTimeMillis;
     }
 
 
     @Override
     public void onItemClick(View v, int position) {
         long startTimeMillis = System.currentTimeMillis();
-        if (startTimeMillis - mClickTimeMillis > INTERVAL_TIME_MILLIS && null != mListener) {
-            mClickTimeMillis = startTimeMillis;
-            mListener.onItemClick(v, position);
+        if (startTimeMillis - clickTimeMillis > INTERVAL_TIME_MILLIS && null != listener) {
+            clickTimeMillis = startTimeMillis;
+            listener.onItemClick(v, position);
         }
     }
 }

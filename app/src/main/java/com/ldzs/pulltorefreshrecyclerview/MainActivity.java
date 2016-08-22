@@ -13,22 +13,21 @@ import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
 import com.ldzs.recyclerlibrary.anim.SlideInLeftAnimator;
 
 public class MainActivity extends AppCompatActivity {
-    private PullToRefreshRecyclerView mRecyclerView;
+    private PullToRefreshRecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mRecyclerView = (PullToRefreshRecyclerView) findViewById(R.id.recycler_view);
-        mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
-        mRecyclerView.getItemAnimator().setAddDuration(300);
-        mRecyclerView.getItemAnimator().setRemoveDuration(300);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(layoutManager);
+        recyclerView = (PullToRefreshRecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setItemAnimator(new SlideInLeftAnimator());
+        recyclerView.getItemAnimator().setAddDuration(300);
+        recyclerView.getItemAnimator().setRemoveDuration(300);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         SimpleAdapter adapter = SimpleAdapter.createFromResource(this, R.array.List);
-        mRecyclerView.setAdapter(adapter);
-        mRecyclerView.setOnItemClickListener((v, position) -> {
+        recyclerView.setAdapter(adapter);
+        recyclerView.setOnItemClickListener((v, position) -> {
             Intent intent = new Intent(this, ListActivity.class);
             intent.putExtra("position", position);
             intent.putExtra("title", adapter.getItem(position).toString());

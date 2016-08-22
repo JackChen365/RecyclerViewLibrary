@@ -10,10 +10,6 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        auto:pv_refreshMode="none"
-        auto:pv_listDivide="@color/divide"
-        auto:pv_listDivideHeight="1dp"
-        auto:pv_divideHorizontalPadding="@dimen/activity_horizontal_margin"
-        auto:pv_divideVerticalPadding="@dimen/activity_vertical_margin"/>
+        auto:pull_refreshMode="refresh_none"/>
 
 </RelativeLayout>

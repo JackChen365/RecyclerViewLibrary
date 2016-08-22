@@ -30,4 +30,9 @@
     <string name="auto_refresh">自动刷新</string>
     <string name="remove_item">移除条目</string>
     <string name="update_item">更新条目</string>
+    <string name="re_refresh">刷新</string>
+
+    <string name="click_load_more">点击加载更多</string>
+    <string name="load_error">加载失败,请检测网络</string>
+    <string name="re_try">重新加载</string>
 </resources>

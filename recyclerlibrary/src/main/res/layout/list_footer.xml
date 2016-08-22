@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="40dp">
+
+    <TextView
+        android:id="@+id/refresh_click_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="点击加载更多"
+        android:textSize="14sp"
+        android:visibility="gone"
+        android:textColor="@color/gray"
+        />
+
+    <LinearLayout
+        android:id="@+id/refresh_loading_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:padding="8dip">
+
+        <ProgressBar
+            android:id="@+id/footer_progressbar"
+            android:layout_width="20dp"
+            android:layout_height="20dp" />
+
+        <TextView
+            android:id="@+id/refresh_hint_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dip"
+            android:text="加载中..."
+            android:textSize="14sp"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/refresh_error_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/refresh_error_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="加载失败"
+            android:textColor="@color/gray"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_error_try"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dip"
+            android:paddingBottom="5dip"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip"
+            android:text="重试"
+            android:paddingTop="5dip"
+            android:textColor="@color/gray"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/refresh_complete_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="@string/pull_to_refresh_complete"
+        android:textColor="@color/gray"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+
+</RelativeLayout>
+
+<!--
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="?attr/refresh_footerHeight">
+
+<TextView
+    android:id="@+id/refresh_click_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:text="?refresh_clickTextHint"
+    android:textSize="?refresh_textSize"
+    android:textColor="?refresh_textColor"
+    />
+
+<LinearLayout
+    android:id="@+id/refresh_loading_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="8dip">
+
+    <ProgressBar
+        android:id="@+id/footer_progressbar"
+        android:layout_width="20dp"
+        android:layout_height="20dp" />
+
+    <TextView
+        android:id="@+id/refresh_hint_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dip"
+        android:text="@string/pull_to_refresh_loading"
+        android:textSize="?attr/refresh_textSize"
+        />
+</LinearLayout>
+
+<LinearLayout
+    android:id="@+id/refresh_error_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:visibility="gone">
+
+    <TextView
+        android:id="@+id/refresh_error_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="?refresh_errorHint"
+        android:textColor="?refresh_textColor"
+        android:textSize="?refresh_textSize" />
+
+    <TextView
+        android:id="@+id/tv_error_try"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="5dip"
+        android:background="?refresh_retryItemSelector"
+        android:paddingBottom="5dip"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
+        android:text="?pull_to_refresh_retry"
+        android:paddingTop="5dip"
+        android:textColor="?refresh_textColor"
+        android:textSize="?refresh_textSize" />
+</LinearLayout>
+
+
+<TextView
+    android:id="@+id/refresh_complete_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:padding="8dp"
+    android:text="@string/pull_to_refresh_complete"
+    android:textColor="?refresh_textColor"
+    android:textSize="?refresh_textSize"
+    android:visibility="gone" />
+
+
+</RelativeLayout>-->

@@ -33,25 +33,25 @@ import java.util.Arrays;
 public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "DynamicAdapter";
     protected final int START_POSITION = 1024;//超出其他Header/Footer范围,避免混乱
-    protected final SparseIntArray mFullItemTypes;
-    protected final SparseArray<View> mFullViews;
-    protected int[] mItemPositions;
-    private Context mContext;
-    private RecyclerView.Adapter mAdapter;
-    private int mItemViewCount;
-    private OnItemLongClickListener mLongItemListener;
-    private OnItemClickListener mItemClickListener;
+    protected final SparseIntArray fullItemTypes;
+    protected final SparseArray<View> fullViews;
+    protected int[] itemPositions;
+    private Context context;
+    private RecyclerView.Adapter adapter;
+    private int itemViewCount;
+    private OnItemLongClickListener longItemListener;
+    private OnItemClickListener itemClickListener;
 
 
     /**
      * @param adapter 包装数据适配器
      */
     public DynamicAdapter(Context context, RecyclerView.Adapter adapter) {
-        this.mContext = context;
-        this.mAdapter = adapter;
-        mItemPositions = new int[0];
-        mFullItemTypes = new SparseIntArray();
-        mFullViews = new SparseArray<>();
+        this.context = context;
+        this.adapter = adapter;
+        itemPositions = new int[0];
+        fullItemTypes = new SparseIntArray();
+        fullViews = new SparseArray<>();
         //子孩子添加时,动态更新插入条目
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
@@ -79,8 +79,8 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         int totalCount = getItemCount();
         //重置所有移除范围内的动态条信息
         ArrayList<Integer> itemPositionLists = new ArrayList<>();
-        for (int i = 0; i < mItemPositions.length; i++) {
-            itemPositionLists.add(mItemPositions[i]);
+        for (int i = 0; i < itemPositions.length; i++) {
+            itemPositionLists.add(itemPositions[i]);
         }
         for (int i = positionStart; i < totalCount; i++) {
             int position = getStartIndex(i) + i;
@@ -88,16 +88,16 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if (RecyclerView.NO_POSITION != index) {
                 //自定义条目,整体往后移动位置
                 int newPosition = i + itemCount;
-                int viewType = mFullItemTypes.get(position);
-                mFullItemTypes.removeAt(index);
-                mFullItemTypes.put(newPosition, viewType);
+                int viewType = fullItemTypes.get(position);
+                fullItemTypes.removeAt(index);
+                fullItemTypes.put(newPosition, viewType);
                 itemPositionLists.set(index, newPosition);
             }
         }
         int size = itemPositionLists.size();
-        mItemPositions = new int[size];
+        itemPositions = new int[size];
         for (int i = 0; i < size; i++) {
-            mItemPositions[i] = itemPositionLists.get(i);
+            itemPositions[i] = itemPositionLists.get(i);
         }
         notifyItemRangeChanged(positionStart, totalCount - positionStart);
     }
@@ -112,8 +112,8 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         int totalCount = getItemCount();
         //重置所有移除范围内的动态条信息
         ArrayList<Integer> itemPositionLists = new ArrayList<>();
-        for (int i = 0; i < mItemPositions.length; i++) {
-            itemPositionLists.add(mItemPositions[i]);
+        for (int i = 0; i < itemPositions.length; i++) {
+            itemPositionLists.add(itemPositions[i]);
         }
         for (int i = positionStart; i < totalCount; i++) {
             int position = getStartIndex(i) + i;
@@ -121,24 +121,24 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if (RecyclerView.NO_POSITION != index) {
                 if (i < positionStart + itemCount) {
                     //移除动态条目
-                    int viewType = mFullItemTypes.get(position);
-                    mFullViews.remove(viewType);
-                    mFullItemTypes.removeAt(index);
+                    int viewType = fullItemTypes.get(position);
+                    fullViews.remove(viewType);
+                    fullItemTypes.removeAt(index);
                     itemPositionLists.remove(index);
                 } else {
                     //范围外自定义条目,整体往前移动位置
                     int newPosition = i - itemCount;
-                    int viewType = mFullItemTypes.get(position);
-                    mFullItemTypes.removeAt(index);
-                    mFullItemTypes.put(newPosition, viewType);
+                    int viewType = fullItemTypes.get(position);
+                    fullItemTypes.removeAt(index);
+                    fullItemTypes.put(newPosition, viewType);
                     itemPositionLists.set(index, newPosition);
                 }
             }
         }
         int size = itemPositionLists.size();
-        mItemPositions = new int[size];
+        itemPositions = new int[size];
         for (int i = 0; i < size; i++) {
-            mItemPositions[i] = itemPositionLists.get(i);
+            itemPositions[i] = itemPositionLists.get(i);
         }
         notifyItemRangeChanged(positionStart, totalCount - positionStart);
     }
@@ -149,7 +149,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * @param layout
      */
     public void addFullItem(@LayoutRes int layout) {
-        View view = View.inflate(mContext, layout, null);
+        View view = View.inflate(context, layout, null);
         addFullItem(view, getItemCount());
     }
 
@@ -169,17 +169,17 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      */
     public void addFullItem(View view, int position) {
         if (RecyclerView.NO_POSITION != findPosition(position)) return;//己存在添加位置,则不添加
-        int length = mItemPositions.length;
+        int length = itemPositions.length;
         int[] newPositions = new int[length + 1];
         newPositions[length] = position;
-        System.arraycopy(mItemPositions, 0, newPositions, 0, mItemPositions.length);
+        System.arraycopy(itemPositions, 0, newPositions, 0, itemPositions.length);
         Arrays.sort(newPositions);
-        mItemPositions = newPositions;
-        int viewType = START_POSITION + mItemViewCount++;
-        mFullItemTypes.put(position, viewType);
-        mFullViews.put(viewType, view);
+        itemPositions = newPositions;
+        int viewType = START_POSITION + itemViewCount++;
+        fullItemTypes.put(position, viewType);
+        fullViews.put(viewType, view);
         //当只有一个时,通知插入
-        if (1 == mItemPositions.length) {
+        if (1 == itemPositions.length) {
             notifyItemInserted(position);
         } else {
             notifyItemChanged(position, null);
@@ -192,7 +192,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * @param view
      */
     public void removeFullItem(View view) {
-        removeFullItem(mFullViews.indexOfValue(view));
+        removeFullItem(fullViews.indexOfValue(view));
     }
 
     /**
@@ -203,19 +203,19 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void removeFullItem(int position) {
         if (isFullItem(position)) {
             int itemType = getItemViewType(position);
-            mFullViews.remove(itemType);
-            int index = mFullItemTypes.indexOfKey(position);
+            fullViews.remove(itemType);
+            int index = fullItemTypes.indexOfKey(position);
             if (0 <= index) {
-                mFullItemTypes.removeAt(index);
+                fullItemTypes.removeAt(index);
             }
-            int length = mItemPositions.length;
+            int length = itemPositions.length;
             int[] newPositions = new int[length - 1];
             for (int i = 0, k = 0; i < length; i++) {
-                if (position != mItemPositions[i]) {
-                    newPositions[k++] = mItemPositions[i];
+                if (position != itemPositions[i]) {
+                    newPositions[k++] = itemPositions[i];
                 }
             }
-            mItemPositions = newPositions;
+            itemPositions = newPositions;
             notifyItemRemoved(position);
         }
     }
@@ -259,28 +259,28 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder holder = null;
-        View view = mFullViews.get(viewType);
+        View view = fullViews.get(viewType);
         if (null != view) {
             holder = new BaseViewHolder(view);
-        } else if (null != mAdapter) {
-            holder = mAdapter.onCreateViewHolder(parent, viewType);
+        } else if (null != adapter) {
+            holder = adapter.onCreateViewHolder(parent, viewType);
         }
         return holder;
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        if (RecyclerView.NO_POSITION == findPosition(position) && null != mAdapter) {
+        if (RecyclerView.NO_POSITION == findPosition(position) && null != adapter) {
             int startIndex = getStartIndex(position);
-            mAdapter.onBindViewHolder(holder, position - startIndex);
+            adapter.onBindViewHolder(holder, position - startIndex);
             int findPosition = findPosition(position);
             if (RecyclerView.NO_POSITION == findPosition) {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (null != mItemClickListener) {
+                        if (null != itemClickListener) {
                             int itemPosition = holder.getAdapterPosition();
-                            mItemClickListener.onItemClick(v, itemPosition);
+                            itemClickListener.onItemClick(v, itemPosition);
                         }
                     }
                 });
@@ -293,19 +293,19 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         int viewType = 0;
         int index = findPosition(position);
         if (RecyclerView.NO_POSITION != index) {
-            viewType = mFullItemTypes.get(position);
-        } else if (null != mAdapter) {
+            viewType = fullItemTypes.get(position);
+        } else if (null != adapter) {
             int startIndex = getStartIndex(position);
-            viewType = mAdapter.getItemViewType(position - startIndex);
+            viewType = adapter.getItemViewType(position - startIndex);
         }
         return viewType;
     }
 
     @Override
     public int getItemCount() {
-        int itemCount = mFullViews.size();
-        if (null != mAdapter) {
-            itemCount += mAdapter.getItemCount();
+        int itemCount = fullViews.size();
+        if (null != adapter) {
+            itemCount += adapter.getItemCount();
         }
         return itemCount;
     }
@@ -317,7 +317,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * @return
      */
     public int getStartIndex(int position) {
-        int[] positions = mItemPositions;
+        int[] positions = itemPositions;
         int start = 0, end = positions.length - 1, result = -1;
         while (start <= end) {
             int middle = (start + end) / 2;
@@ -340,7 +340,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * @return
      */
     public int findPosition(int position) {
-        int[] positions = mItemPositions;
+        int[] positions = itemPositions;
         int start = 0, end = positions.length - 1, result = -1;
         while (start <= end) {
             int middle = (start + end) / 2;
@@ -363,7 +363,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * @return
      */
     public int getFullItemCount() {
-        return mFullViews.size();
+        return fullViews.size();
     }
 
     /**
@@ -372,7 +372,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * @param listener
      */
     public void setOnLongItemClickListener(OnItemLongClickListener listener) {
-        this.mLongItemListener = listener;
+        this.longItemListener = listener;
     }
 
     /**
@@ -381,6 +381,6 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * @param listener
      */
     public void setOnItemClickListener(OnItemClickListener listener) {
-        this.mItemClickListener = listener;
+        this.itemClickListener = listener;
     }
 }

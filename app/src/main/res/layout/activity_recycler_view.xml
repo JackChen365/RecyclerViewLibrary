@@ -4,7 +4,6 @@
     android:id="@+id/recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    auto:pv_divideHorizontalPadding="@dimen/activity_margin"
     auto:pv_divideVerticalPadding="@dimen/activity_margin"
-    auto:pv_listDivide="@color/divide"
+    auto:pv_listDivide="@color/transparent"
     auto:pv_listDivideHeight="0.8dp" />

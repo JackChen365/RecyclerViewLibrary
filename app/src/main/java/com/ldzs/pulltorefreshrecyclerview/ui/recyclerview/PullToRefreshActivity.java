@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,12 +18,14 @@ import com.ldzs.pulltorefreshrecyclerview.adapter.SimpleAdapter;
 import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
 import com.ldzs.recyclerlibrary.anim.SlideInLeftAnimator;
+import com.ldzs.recyclerlibrary.footer.RefreshFrameFooter;
 
 /**
  * 1:示例添加头,添加信息,以及自定义的Adapter使用.
  * 2:示例底部加载情况,加载中/加载异常/加载完毕
  */
 public class PullToRefreshActivity extends AppCompatActivity {
+    private static final String TAG = "PullToRefreshActivity";
     private PullToRefreshRecyclerView mRecyclerView;
     private SimpleAdapter mAdapter;
     private int times = 0;
@@ -36,9 +39,7 @@ public class PullToRefreshActivity extends AppCompatActivity {
         mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
         mRecyclerView.getItemAnimator().setAddDuration(300);
         mRecyclerView.getItemAnimator().setRemoveDuration(300);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mRecyclerView.setOnItemClickListener((v, position) -> Toast.makeText(getApplicationContext(), "Click:" + position, Toast.LENGTH_SHORT).show());
         View headerView = getHeaderView();
@@ -47,29 +48,30 @@ public class PullToRefreshActivity extends AppCompatActivity {
 
 
         //下拉加载
-        mRecyclerView.setOnPullUpToRefreshListener(() -> {
-            times = 0;
+        mRecyclerView.setOnPullToRefreshListener(() -> {
+            Log.e(TAG,"onHeaderRefresh!");
             mRecyclerView.postDelayed(() -> {
                 mAdapter.addItems(Data.createItems(this, 2), 0);
                 mRecyclerView.onRefreshComplete();
             }, 1000);
         });
         //上拉刷新
-        mRecyclerView.setOnPullDownToRefreshListener(() -> {
+        mRecyclerView.setOnPullFooterToRefreshListener(() -> {
+            Log.e(TAG,"onFooterRefresh!");
             if (times < 2) {
                 mRecyclerView.postDelayed(() -> {
                     mAdapter.addItems(Data.createItems(this, 4));
-                    mRecyclerView.onRefreshComplete();
+                    mRecyclerView.onRefreshFootComplete();
                 }, 1000);
             } else if (times < 4) {
                 mRecyclerView.postDelayed(() -> {
-                    mRecyclerView.setFooterRetryListener(v -> {
+                    mRecyclerView.setOnFootRetryListener(v -> {
                         mAdapter.addItems(Data.createItems(this, 4));
-                        mRecyclerView.onRefreshComplete();
+                        mRecyclerView.onRefreshFootComplete();
                     });
                 }, 1000);
             } else {
-                mRecyclerView.postDelayed(() -> mRecyclerView.setFooterComplete(), 1000);
+                mRecyclerView.postDelayed(() -> mRecyclerView.setFooterRefreshDone(), 1000);
             }
             times++;
         });
@@ -78,7 +80,7 @@ public class PullToRefreshActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
 
 
-        findViewById(R.id.btn_auto_refresh).setOnClickListener(v -> mRecyclerView.setRefreshing());
+        findViewById(R.id.btn_auto_refresh).setOnClickListener(v -> mRecyclerView.autoRefreshing(true));
     }
 
     /**

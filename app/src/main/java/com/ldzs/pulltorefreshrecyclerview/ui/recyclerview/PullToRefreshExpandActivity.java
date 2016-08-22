@@ -47,21 +47,21 @@ public class PullToRefreshExpandActivity extends AppCompatActivity {
         mRecyclerView.addHeaderView(getHeaderView());
 
 
-        mRecyclerView.setOnPullUpToRefreshListener(() -> {
+        mRecyclerView.setOnPullToRefreshListener(() -> {
             times = 0;
             mRecyclerView.postDelayed(() -> {
                 addGroupItem(true);
                 mRecyclerView.onRefreshComplete();
             }, 1000);
         });
-        mRecyclerView.setOnPullDownToRefreshListener(() -> {
+        mRecyclerView.setOnPullFooterToRefreshListener(() -> {
             if (times < 10) {
                 mRecyclerView.postDelayed(() -> {
                     addGroupItem(false);
                     mRecyclerView.onRefreshComplete();
                 }, 1000);
             } else {
-                mRecyclerView.postDelayed(() -> mRecyclerView.setFooterComplete(), 1000);
+                mRecyclerView.postDelayed(() -> mRecyclerView.setFooterRefreshDone(), 1000);
             }
             times++;
         });

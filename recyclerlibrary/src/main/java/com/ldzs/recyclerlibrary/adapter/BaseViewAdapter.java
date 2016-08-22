@@ -11,19 +11,19 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * An abstract mAdapter which can be extended for Recyclerview
+ * An abstract adapter which can be extended for RecyclerView
  */
 public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends RecyclerView.Adapter<H> {
 
     private static final String TAG = "BaseViewAdapter";
-    protected final ArrayList<E> mItems;
-    protected final LayoutInflater mInflater;
+    protected final ArrayList<E> items;
+    protected final LayoutInflater inflater;
 
     public BaseViewAdapter(Context context, List<E> items) {
-        this.mInflater = LayoutInflater.from(context);
-        this.mItems = new ArrayList<>();
+        this.inflater = LayoutInflater.from(context);
+        this.items = new ArrayList<>();
         if (null != items && !items.isEmpty()) {
-            this.mItems.addAll(items);
+            this.items.addAll(items);
         }
     }
 
@@ -35,7 +35,7 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
      * @return
      */
     protected View inflateView(ViewGroup parent, int layout) {
-        return mInflater.inflate(layout, parent, false);
+        return inflater.inflate(layout, parent, false);
     }
 
     @Override
@@ -46,7 +46,7 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
 
     @Override
     public int getItemCount() {
-        return mItems.size();
+        return items.size();
     }
 
     /**
@@ -63,7 +63,7 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
 
     public void addItem(E e, int index) {
         if (null != e) {
-            this.mItems.add(index, e);
+            this.items.add(index, e);
             notifyItemInserted(index);
         }
     }
@@ -71,21 +71,25 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
     public int indexOfItem(E e) {
         int index = -1;
         if (null != e) {
-            index = this.mItems.indexOf(e);
+            index = this.items.indexOf(e);
         }
         return index;
     }
 
+    public boolean contains(E e){
+        return -1!=indexOfItem(e);
+    }
+
     public void set(int index, E e) {
         if (index < getItemCount()) {
-            mItems.set(index, e);
+            items.set(index, e);
             notifyItemChanged(index);
         }
     }
 
     public void addItem(E e) {
         if (null != e) {
-            this.mItems.add(e);
+            this.items.add(e);
             int insertPosition = getItemCount() - 1;
             notifyItemInserted(insertPosition);
         }
@@ -94,7 +98,7 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
     public void addItems(List<E> items, int index) {
         if (null != items && !items.isEmpty()) {
             int size = items.size();
-            this.mItems.addAll(index, items);
+            this.items.addAll(index, items);
             notifyItemRangeInserted(index, size);
         }
     }
@@ -103,19 +107,19 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
         if (null != items && !items.isEmpty()) {
             int size = items.size();
             int itemCount = getItemCount();
-            this.mItems.addAll(items);
+            this.items.addAll(items);
             notifyItemRangeInserted(itemCount, size);
         }
     }
 
     public void remove(int index) {
-        mItems.remove(index);
+        items.remove(index);
         notifyItemRemoved(index);
     }
 
     public void remove(E e) {
         if (null != e) {
-            remove(mItems.indexOf(e));
+            remove(items.indexOf(e));
         }
     }
 
@@ -127,9 +131,9 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
      */
     public void updateItem(E e) {
         if (null != e) {
-            int index = mItems.indexOf(e);
+            int index = items.indexOf(e);
             if (-1 != index) {
-                mItems.set(index, e);
+                items.set(index, e);
                 notifyItemChanged(index);
             }
         }
@@ -137,8 +141,8 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
 
     public void swapItems(final ArrayList<E> items) {
         if (null != items && !items.isEmpty()) {
-            mItems.clear();
-            mItems.addAll(items);
+            this.items.clear();
+            this.items.addAll(items);
             notifyItemRangeChanged(0, items.size());
         }
     }
@@ -149,14 +153,14 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
      * @return
      */
     public ArrayList<E> getItems() {
-        return mItems;
+        return items;
     }
 
 
     public E getItem(int position) {
         E e = null;
         if (0 <= position && position < getItemsCount()) {
-            e = this.mItems.get(position);
+            e = this.items.get(position);
         }
         return e;
     }
@@ -169,7 +173,7 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
      * 互换元素
      */
     public void swapItem(int oldPosition, int newPosition) {
-        Collections.swap(mItems, oldPosition, newPosition);
+        Collections.swap(items, oldPosition, newPosition);
     }
 
     /**
@@ -184,7 +188,7 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
      * 移除所有条目
      */
     public void clear() {
-        this.mItems.clear();
+        this.items.clear();
         notifyItemRangeRemoved(0, getItemsCount());
     }
 
@@ -194,7 +198,7 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
 
 
     public int getItemsCount() {
-        return mItems.size();
+        return items.size();
     }
 
 }

@@ -5,26 +5,17 @@ import android.view.View;
 
 /**
  * Created by cz on 16/1/23.
- * 固定刷新头和尾的数据适配器
- * 永远固定第一个刷新头,与底部的刷新尾,不允许删除,配合PullToRefreshRecyclerView使用,而HeaderAdapter则可单独使用
+ * 固定刷新尾的数据适配器
+ * 永远固定与底部的刷新尾,不允许删除,配合PullToRefreshRecyclerView使用,而HeaderAdapter则可单独使用
  * 不会影响HeaderAdapter自身逻辑
+ *
+ *
  */
-public class RefreshHeaderAdapter extends HeaderAdapter {
+public class RefreshAdapter extends HeaderAdapter {
 
-    public RefreshHeaderAdapter(RecyclerView.Adapter adapter) {
+    public RefreshAdapter(RecyclerView.Adapter adapter) {
         super(adapter);
     }
-
-
-    @Override
-    public void removeHeaderView(int position) {
-        int headersCount = getHeadersCount();
-        if (1 < headersCount) {//第一个不允许删除
-            position = (0 == position) ? position + 1 : position;
-            super.removeHeaderView(position);
-        }
-    }
-
 
     @Override
     public void removeFooterView(int position) {
@@ -47,5 +38,9 @@ public class RefreshHeaderAdapter extends HeaderAdapter {
         } else {
             super.addFooterView(view);
         }
+    }
+
+    public boolean hasRefreshFooterView(){
+        return 1<=getFootersCount();
     }
 }

@@ -21,13 +21,13 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
     private static final String TAG = "ExpandAdapter";
     private static final int HEADER_ITEM = 0;//标题分类
     private static final int CHILD_ITEM = 1;//条目分类
-    private final LayoutInflater mLayoutInflater;
-    private final ArrayList<Entry<K, ArrayList<E>>> mItems;//数据集
-    private final ArrayList<Integer> mItemCounts;//每个分类个数
-    private final ArrayList<Integer> mItemSteps;//每个分类段个数
-    private final ArrayList<Boolean> mGroupStatus;//每个分组当前展开状态
-    private OnExpandItemClickListener mListener;
-    private int mHeaderCount;//顶部view总数
+    private final LayoutInflater layoutInflater;
+    private final ArrayList<Entry<K, ArrayList<E>>> items;//数据集
+    private final ArrayList<Integer> itemCounts;//每个分类个数
+    private final ArrayList<Integer> itemSteps;//每个分类段个数
+    private final ArrayList<Boolean> groupStatus;//每个分组当前展开状态
+    private OnExpandItemClickListener listener;
+    private int headerCount;//顶部view总数
 
     public ExpandAdapter(Context context, HashMap<K, ArrayList<E>> items) {
         this(context, items, false);
@@ -43,17 +43,17 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
     }
 
     public ExpandAdapter(Context context, ArrayList<Entry<K, ArrayList<E>>> items, boolean expand) {
-        mLayoutInflater = LayoutInflater.from(context);
-        mItems = new ArrayList<>();
-        mGroupStatus = new ArrayList<>();
-        mItemCounts = new ArrayList<>();
-        mItemSteps = new ArrayList<>();
+        layoutInflater = LayoutInflater.from(context);
+        this.items = new ArrayList<>();
+        groupStatus = new ArrayList<>();
+        itemCounts = new ArrayList<>();
+        itemSteps = new ArrayList<>();
         if (null != items) {
             //包装对象
-            mItems.addAll(items);
+            this.items.addAll(items);
             int size = items.size();
             for (int i = 0; i < size; i++) {
-                mGroupStatus.add(expand);//记录初始展开状态
+                groupStatus.add(expand);//记录初始展开状态
             }
             //初始化状态
             updateGroupItemInfo();
@@ -82,23 +82,23 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
      * 更新组信息
      */
     private void updateGroupItemInfo() {
-        mItemSteps.clear();
-        mItemCounts.clear();
+        itemSteps.clear();
+        itemCounts.clear();
         int total = 0;
-        int size = mItems.size();
+        int size = items.size();
         for (int i = 0; i < size; i++) {
-            Boolean expand = mGroupStatus.get(i);
-            ArrayList<E> childItems = mItems.get(i).items;
+            Boolean expand = groupStatus.get(i);
+            ArrayList<E> childItems = items.get(i).items;
             //记录初始个数
-            mItemSteps.add(total);//记录每个阶段总个数
+            itemSteps.add(total);//记录每个阶段总个数
             int itemSize = null == childItems || !expand ? 0 : childItems.size();
-            mItemCounts.add(itemSize);
+            itemCounts.add(itemSize);
             total += (itemSize + 1);
         }
     }
 
     public void setHeaderViewCount(int count) {
-        this.mHeaderCount = count;
+        this.headerCount = count;
     }
 
     /**
@@ -107,7 +107,7 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
      * @return
      */
     public int getGroupCount() {
-        return mItems.size();
+        return items.size();
     }
 
     /**
@@ -117,7 +117,7 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
      * @return
      */
     public int getChildrenCount(int groupPosition) {
-        return mItems.get(groupPosition).items.size();
+        return items.get(groupPosition).items.size();
     }
 
     /**
@@ -127,11 +127,11 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
      * @return
      */
     public K getGroup(int groupPosition) {
-        return mItems.get(groupPosition).k;
+        return items.get(groupPosition).k;
     }
 
     public ArrayList<E> getGroupItems(int groupPosition) {
-        return mItems.get(groupPosition).items;
+        return items.get(groupPosition).items;
     }
 
     public E getChild(int groupPosition, int childPosition) {
@@ -150,10 +150,10 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
                     @Override
                     public void onClick(View v) {
                         //展开.或关闭条目列
-                        int newPosition = holder.getAdapterPosition() - mHeaderCount;
+                        int newPosition = holder.getAdapterPosition() - headerCount;
                         int newGroupPosition = getGroupPosition(newPosition);
-                        Boolean expand = mGroupStatus.get(newGroupPosition);
-                        mGroupStatus.set(newGroupPosition, !expand);//状态置反
+                        Boolean expand = groupStatus.get(newGroupPosition);
+                        groupStatus.set(newGroupPosition, !expand);//状态置反
                         onGroupExpand(holder, !expand, newGroupPosition);
                         expandGroup(newPosition, newGroupPosition, expand);
                     }
@@ -165,8 +165,8 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (null != mListener) {
-                            mListener.onItemClick(v, groupPosition, childPosition);
+                        if (null != listener) {
+                            listener.onItemClick(v, groupPosition, childPosition);
                         }
                     }
                 });
@@ -190,7 +190,7 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
         ArrayList<E> childItems = getGroupItems(groupPosition);//关闭
         int expandCount = (null == childItems) ? 0 : childItems.size();
         //更新各节点起始位置,更新各节点个数
-        mItemCounts.set(groupPosition, expand ? 0 : expandCount);
+        itemCounts.set(groupPosition, expand ? 0 : expandCount);
         updateGroupItemInfo();
         if (expand) {
             notifyItemRangeRemoved(position + 1, expandCount);
@@ -249,10 +249,10 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
 
     @Override
     public int getItemCount() {
-        int totalCount = mGroupStatus.size();
-        for (int i = 0; i < mItems.size(); i++) {
-            ArrayList<E> items = mItems.get(i).items;
-            if (null != items && mGroupStatus.get(i)) {
+        int totalCount = groupStatus.size();
+        for (int i = 0; i < items.size(); i++) {
+            ArrayList<E> items = this.items.get(i).items;
+            if (null != items && groupStatus.get(i)) {
                 totalCount += items.size();
             }
         }
@@ -262,10 +262,10 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
     @Override
     public int getItemViewType(int position) {
         //根据快速滑动角位置,设置左边指示位置,使用二分查找
-        Integer[] positions = new Integer[mItemSteps.size()];
-        mItemSteps.toArray(positions);
+        Integer[] positions = new Integer[itemSteps.size()];
+        itemSteps.toArray(positions);
         int findPosition = getSelectPosition(positions, position);
-        Integer stepPosition = mItemSteps.get(findPosition);
+        Integer stepPosition = itemSteps.get(findPosition);
         int viewType = HEADER_ITEM;
         if (0 < position - stepPosition) {
             viewType = CHILD_ITEM;
@@ -280,8 +280,8 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
      * @return
      */
     private int getGroupPosition(int position) {
-        Integer[] positions = new Integer[mItemSteps.size()];
-        mItemSteps.toArray(positions);
+        Integer[] positions = new Integer[itemSteps.size()];
+        itemSteps.toArray(positions);
         return getSelectPosition(positions, position);
     }
 
@@ -292,10 +292,10 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
      * @return
      */
     private int getChildPosition(int position) {
-        Integer[] positions = new Integer[mItemSteps.size()];
-        mItemSteps.toArray(positions);
+        Integer[] positions = new Integer[itemSteps.size()];
+        itemSteps.toArray(positions);
         int findPosition = getSelectPosition(positions, position);
-        Integer stepPosition = mItemSteps.get(findPosition);
+        Integer stepPosition = itemSteps.get(findPosition);
         return position - stepPosition - 1;
     }
 
@@ -344,8 +344,8 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
     public void addGroupItems(K item, ArrayList<E> items, int index, boolean expand) {
         int groupCount = getGroupCount();//原来组个数
         Entry entry = new Entry(item, items);
-        mItems.add(index, entry);
-        mGroupStatus.add(index, expand);//添加展开状态
+        this.items.add(index, entry);
+        groupStatus.add(index, expand);//添加展开状态
         updateGroupItemInfo();//更新组信息
         int itemSize = null == items || !expand ? 0 : items.size();//添加个数
         int startIndex; //计算起始位置
@@ -354,7 +354,7 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
         } else if (index == groupCount) {
             startIndex = getItemCount(); //最后一个
         } else {
-            startIndex = mItemSteps.get(index);//中间
+            startIndex = itemSteps.get(index);//中间
         }
         notifyItemRangeInserted(startIndex, itemSize + 1);
     }
@@ -365,11 +365,11 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
      * @param groupPosition
      */
     public void removeGroup(int groupPosition) {
-        if (mItems.isEmpty()) return;
-        Integer startIndex = mItemSteps.remove(groupPosition);//起始位置
-        Boolean expand = mGroupStatus.remove(groupPosition);
-        int itemSize = mItemCounts.remove(groupPosition);//子孩子个数
-        mItems.remove(groupPosition);
+        if (items.isEmpty()) return;
+        Integer startIndex = itemSteps.remove(groupPosition);//起始位置
+        Boolean expand = groupStatus.remove(groupPosition);
+        int itemSize = itemCounts.remove(groupPosition);//子孩子个数
+        items.remove(groupPosition);
         updateGroupItemInfo();
         notifyItemRangeRemoved(startIndex, expand ? itemSize + 1 : 1);
     }
@@ -381,15 +381,15 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
      * @param childPosition
      */
     public void removeGroup(int groupPosition, int childPosition) {
-        if (mItems.isEmpty()) return;
-        Boolean expand = mGroupStatus.get(groupPosition);//当前分组展开状态
-        Entry<K, ArrayList<E>> entry = mItems.get(groupPosition);
+        if (items.isEmpty()) return;
+        Boolean expand = groupStatus.get(groupPosition);//当前分组展开状态
+        Entry<K, ArrayList<E>> entry = items.get(groupPosition);
         ArrayList items = entry.items;
         if (items.isEmpty()) return;
         items.remove(childPosition);
         if (expand) {
             updateGroupItemInfo();//更新所有检测信息
-            Integer startIndex = mItemSteps.get(groupPosition) + 1;//位置从大分组+1开始算
+            Integer startIndex = itemSteps.get(groupPosition) + 1;//位置从大分组+1开始算
             int removePosition = startIndex + childPosition;//移除的位置
             notifyItemRemoved(removePosition);
         }
@@ -410,14 +410,14 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
      */
     public void swapItems(ArrayList<Entry<K, ArrayList<E>>> items, boolean expand) {
         if (!items.isEmpty()) {
-            mGroupStatus.clear();
-            mItemCounts.clear();
-            mItemSteps.clear();
-            mItems.clear();
-            mItems.addAll(items);
+            groupStatus.clear();
+            itemCounts.clear();
+            itemSteps.clear();
+            this.items.clear();
+            this.items.addAll(items);
             int size = items.size();
             for (int i = 0; i < size; i++) {
-                mGroupStatus.add(expand);//记录初始展开状态
+                groupStatus.add(expand);//记录初始展开状态
             }
             //初始化状态
             updateGroupItemInfo();
@@ -434,11 +434,11 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
      * @return
      */
     protected View inflateView(ViewGroup parent, int layout) {
-        return mLayoutInflater.inflate(layout, parent, false);
+        return layoutInflater.inflate(layout, parent, false);
     }
 
     public void setOnExpandItemClickListener(OnExpandItemClickListener listener) {
-        this.mListener = listener;
+        this.listener = listener;
     }
 
     /**
@@ -448,10 +448,10 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
      */
     public void setExpand(boolean expand) {
         //展开所有
-        mGroupStatus.clear();
-        int size = mItems.size();
+        groupStatus.clear();
+        int size = items.size();
         for (int i = 0; i < size; i++) {
-            mGroupStatus.add(expand);//记录初始展开状态
+            groupStatus.add(expand);//记录初始展开状态
         }
         updateGroupItemInfo();//更新状态
         notifyDataSetChanged();
@@ -464,7 +464,7 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
      * @return
      */
     public boolean getGroupExpand(int groupPosition) {
-        return mGroupStatus.get(groupPosition);
+        return groupStatus.get(groupPosition);
     }
 
     /**

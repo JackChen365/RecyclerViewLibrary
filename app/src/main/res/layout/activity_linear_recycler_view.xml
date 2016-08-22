@@ -8,15 +8,26 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        auto:pv_divideHorizontalPadding="@dimen/activity_margin"
         auto:pv_divideVerticalPadding="@dimen/activity_margin"
-        auto:pv_listDivide="@color/divide"
-        auto:pv_listDivideHeight="0.8dp" />
+        auto:pv_listDivideHeight="0.8dp"
+        />
 
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btn_auto_refresh"
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|bottom"
-        android:text="@string/auto_refresh"/>
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_re_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/re_refresh" />
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_auto_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/auto_refresh" />
+    </LinearLayout>
 </FrameLayout>

@@ -9,9 +9,7 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        auto:pv_listDivide="@color/gray"
-        auto:pv_listDivideHeight="0.8dp"
-        auto:pv_refreshMode="none" />
+         />
 
     <LinearLayout
         android:layout_width="wrap_content"

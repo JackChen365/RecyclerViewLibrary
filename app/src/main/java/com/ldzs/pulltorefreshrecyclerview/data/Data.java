@@ -20,16 +20,15 @@ import java.util.Random;
  * Created by cz on 16/1/21.
  */
 public class Data {
-    private static int COUNT;
     private static Integer[] COLORS;
-    private static final HashMap<String, Integer> mTagCount;
+    private static final HashMap<String, Integer> tagCount;
     private static final int[] LAYOUTS;
-    private static final Random mRandom;
+    private static final Random random;
 
     static {
-        mTagCount = new HashMap<>();
+        tagCount = new HashMap<>();
         LAYOUTS = new int[]{R.layout.recyclerview_header1, R.layout.recyclerview_header2, R.layout.recyclerview_header3, R.layout.recyclerview_header4};
-        mRandom = new Random();
+        random = new Random();
         //取系统颜色集
         Class<Color> clazz = Color.class;
         try {
@@ -47,11 +46,17 @@ public class Data {
     }
 
     public static ArrayList<String> createItems(Object object, int count) {
-        COUNT = 0;
         String tag = object.toString();
+        Integer lastCount = tagCount.get(tag);
+        if(null==lastCount||0==lastCount){
+            lastCount=0;
+            tagCount.put(tag,count);
+        } else {
+            tagCount.put(tag,lastCount+count);
+        }
         ArrayList<String> items = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            items.add("Item:" + COUNT++);
+            items.add("Item:" + (lastCount+i));
         }
         return items;
     }
@@ -79,7 +84,7 @@ public class Data {
     public static View getHeaderItemView(Activity activity) {
         int color = Data.getRandomColor();
         int darkColor = Data.getDarkColor(color);
-        View header = LayoutInflater.from(activity).inflate(LAYOUTS[mRandom.nextInt(2)],
+        View header = LayoutInflater.from(activity).inflate(LAYOUTS[random.nextInt(2)],
                 (ViewGroup) activity.findViewById(android.R.id.content), false);
         TextView headerView = (TextView) header;
         header.setBackgroundColor(color);
@@ -92,7 +97,7 @@ public class Data {
      */
     public static View getRandomItemView(Activity activity) {
         int color = Data.getRandomColor();
-        View header = LayoutInflater.from(activity).inflate(LAYOUTS[mRandom.nextInt(LAYOUTS.length)],
+        View header = LayoutInflater.from(activity).inflate(LAYOUTS[random.nextInt(LAYOUTS.length)],
                 (ViewGroup) activity.findViewById(android.R.id.content), false);
         header.setBackgroundColor(color);
         return header;

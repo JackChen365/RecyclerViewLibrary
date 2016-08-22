@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.ldzs.pulltorefreshrecyclerview.R;
 import com.ldzs.pulltorefreshrecyclerview.adapter.SimpleAdapter;
 import com.ldzs.pulltorefreshrecyclerview.data.Data;
-import com.ldzs.recyclerlibrary.Mode;
 import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
 import com.ldzs.recyclerlibrary.anim.SlideInLeftAnimator;
 
@@ -37,7 +36,6 @@ public class HeaderAdapterActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setRefreshMode(Mode.DISABLED);//禁用刷新
 
 
         SimpleAdapter adapter = new SimpleAdapter(this, Data.createItems(this, 10));

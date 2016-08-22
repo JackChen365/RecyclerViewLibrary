@@ -23,8 +23,8 @@ import com.ldzs.recyclerlibrary.observe.DynamicAdapterDataObserve;
  * <p>
  */
 public class DragRecyclerView extends RecyclerView implements CallbackItemTouch {
-    private MyItemTouchHelperCallback mHelperCallback;
-    private DragAdapter mAdapter;
+    private MyItemTouchHelperCallback helperCallback;
+    private DragAdapter adapter;
 
     public DragRecyclerView(Context context) {
         this(context, null, 0);
@@ -36,8 +36,8 @@ public class DragRecyclerView extends RecyclerView implements CallbackItemTouch 
 
     public DragRecyclerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mHelperCallback = new MyItemTouchHelperCallback(this);
-        mHelperCallback.setLongPressDrawEnable(true);
+        helperCallback = new MyItemTouchHelperCallback(this);
+        helperCallback.setLongPressDrawEnable(true);
     }
 
     /**
@@ -47,7 +47,7 @@ public class DragRecyclerView extends RecyclerView implements CallbackItemTouch 
      * @return
      */
     public int getItemPosition(int position) {
-        return position - mAdapter.getStartIndex(position);
+        return position - adapter.getStartIndex(position);
     }
 
     /**
@@ -58,10 +58,10 @@ public class DragRecyclerView extends RecyclerView implements CallbackItemTouch 
     @Override
     public void setAdapter(Adapter adapter) {
         if (adapter instanceof BaseViewAdapter) {
-            super.setAdapter(mAdapter = new DragAdapter(getContext(), (BaseViewAdapter) adapter));
-            mHelperCallback.setAdapter(mAdapter);
-            adapter.registerAdapterDataObserver(new DynamicAdapterDataObserve(mAdapter));
-            new ItemTouchHelper(mHelperCallback).attachToRecyclerView(this);
+            super.setAdapter(this.adapter = new DragAdapter(getContext(), (BaseViewAdapter) adapter));
+            helperCallback.setAdapter(this.adapter);
+            adapter.registerAdapterDataObserver(new DynamicAdapterDataObserve(this.adapter));
+            new ItemTouchHelper(helperCallback).attachToRecyclerView(this);
         } else {
             throw new IllegalArgumentException("adapter must be extends BaseViewAdapter!");
         }
@@ -73,7 +73,7 @@ public class DragRecyclerView extends RecyclerView implements CallbackItemTouch 
      * @param listener
      */
     public void setOnDragItemEnableListener(OnDragItemEnableListener listener) {
-        mHelperCallback.setDragItemEnableListener(listener);
+        helperCallback.setDragItemEnableListener(listener);
     }
 
     /**
@@ -82,7 +82,7 @@ public class DragRecyclerView extends RecyclerView implements CallbackItemTouch 
      * @param enable
      */
     public void setLongPressDrawEnable(boolean enable) {
-        mHelperCallback.setLongPressDrawEnable(enable);
+        helperCallback.setLongPressDrawEnable(enable);
     }
 
     /**
@@ -92,14 +92,14 @@ public class DragRecyclerView extends RecyclerView implements CallbackItemTouch 
      * @param newPosition
      */
     public void setItemMove(int oldPosition, final int newPosition) {
-        if (null != mAdapter) {
-            mAdapter.swap(oldPosition, newPosition);
-            mAdapter.notifyItemMoved(oldPosition, newPosition);
+        if (null != adapter) {
+            adapter.swap(oldPosition, newPosition);
+            adapter.notifyItemMoved(oldPosition, newPosition);
             //动态结束后,刷新条目
             postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mAdapter.notifyItemChanged(newPosition);
+                    adapter.notifyItemChanged(newPosition);
                 }
             }, getItemAnimator().getMoveDuration());
         }
@@ -116,8 +116,8 @@ public class DragRecyclerView extends RecyclerView implements CallbackItemTouch 
      * @param layout
      */
     public void addDynamicView(@LayoutRes int layout, int position) {
-        if (null != mAdapter) {
-            mAdapter.addFullItem(LayoutInflater.from(getContext()).inflate(layout, this, false), position);
+        if (null != adapter) {
+            adapter.addFullItem(LayoutInflater.from(getContext()).inflate(layout, this, false), position);
         }
     }
 
@@ -127,8 +127,8 @@ public class DragRecyclerView extends RecyclerView implements CallbackItemTouch 
      * @param view
      */
     public void addDynamicView(View view, int position) {
-        if (null != mAdapter) {
-            mAdapter.addFullItem(view, position);
+        if (null != adapter) {
+            adapter.addFullItem(view, position);
         }
     }
 
@@ -138,9 +138,9 @@ public class DragRecyclerView extends RecyclerView implements CallbackItemTouch 
      * @param listener
      */
     public void setOnItemClickListener(OnItemClickListener listener) {
-        if (null != mAdapter) {
-            mAdapter.setOnItemClickListener(listener);
-//            mAdapter.setOnItemClickListener(new OnDelayItemClickListener(listener, getItemAnimator().getMoveDuration()));
+        if (null != adapter) {
+            adapter.setOnItemClickListener(listener);
+//            adapter.setOnItemClickListener(new OnDelayItemClickListener(listener, getItemAnimator().getMoveDuration()));
         }
     }
 

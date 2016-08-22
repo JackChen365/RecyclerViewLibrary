@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
 
 public class GridPullToRefreshActivity extends AppCompatActivity {
+    private static final String TAG = "GridPullToRefreshActivity";
     private PullToRefreshRecyclerView mRecyclerView;
     private SimpleAdapter mAdapter;
     private int times = 0;
@@ -34,21 +36,20 @@ public class GridPullToRefreshActivity extends AppCompatActivity {
         headerView.setBackgroundColor(Color.BLUE);
         mRecyclerView.addHeaderView(headerView);
 
-        mRecyclerView.setOnPullUpToRefreshListener(() -> {
-            times = 0;
+        mRecyclerView.setOnPullToRefreshListener(() -> {
             mRecyclerView.postDelayed(() -> {
                 mAdapter.addItems(Data.createItems(this, 10), 0);
                 mRecyclerView.onRefreshComplete();
             }, 1000);
         });
-        mRecyclerView.setOnPullDownToRefreshListener(() -> {
+        mRecyclerView.setOnPullFooterToRefreshListener(() -> {
             if (times < 2) {
                 mRecyclerView.postDelayed(() -> {
                     mAdapter.addItems(Data.createItems(this, 10));
-                    mRecyclerView.onRefreshComplete();
+                    mRecyclerView.onRefreshFootComplete();
                 }, 1000);
             } else {
-                mRecyclerView.postDelayed(() -> mRecyclerView.setFooterComplete(), 1000);
+                mRecyclerView.postDelayed(() -> mRecyclerView.setFooterRefreshDone(), 1000);
             }
             times++;
         });

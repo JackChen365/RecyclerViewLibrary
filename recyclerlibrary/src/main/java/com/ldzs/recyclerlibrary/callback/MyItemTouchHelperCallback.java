@@ -12,14 +12,14 @@ import com.ldzs.recyclerlibrary.adapter.drag.DragAdapter;
 public class MyItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     private static final String TAG = "MyItemTouchHelperCallback";
-    private CallbackItemTouch mCallbackItemTouch;
-    private OnDragItemEnableListener mDragListener;
-    private boolean mLongPressDragEnable;//长按是否启用拖动
-    private boolean mDynamicViewDragEnable;//动态添加view是否启用拖动
-    private DragAdapter mAdapter;
+    private CallbackItemTouch callbackItemTouch;
+    private OnDragItemEnableListener dragListener;
+    private boolean longPressDragEnable;//长按是否启用拖动
+    private boolean dynamicViewDragEnable;//动态添加view是否启用拖动
+    private DragAdapter adapter;
 
     public MyItemTouchHelperCallback(CallbackItemTouch callbackItemTouch) {
-        this.mCallbackItemTouch = callbackItemTouch;
+        this.callbackItemTouch = callbackItemTouch;
     }
 
     /**
@@ -28,12 +28,12 @@ public class MyItemTouchHelperCallback extends ItemTouchHelper.Callback {
      * @param enable
      */
     public void setLongPressDrawEnable(boolean enable) {
-        this.mLongPressDragEnable = enable;
+        this.longPressDragEnable = enable;
     }
 
     @Override
     public boolean isLongPressDragEnabled() {
-        return mLongPressDragEnable;
+        return longPressDragEnable;
     }
 
 
@@ -41,11 +41,11 @@ public class MyItemTouchHelperCallback extends ItemTouchHelper.Callback {
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         int position = viewHolder.getAdapterPosition();
         int flag = makeFlag(ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
-        if (null != mAdapter) {
-            int index = mAdapter.findPosition(position);
+        if (null != adapter) {
+            int index = adapter.findPosition(position);
             //动态添加的并启用的,可以拖动.或者自身条目本身启用可以拖动的.
-            if (RecyclerView.NO_POSITION != index && mDynamicViewDragEnable ||
-                    null != mDragListener && !mDragListener.itemEnable(position - mAdapter.getStartIndex(position))) {
+            if (RecyclerView.NO_POSITION != index && dynamicViewDragEnable ||
+                    null != dragListener && !dragListener.itemEnable(position - adapter.getStartIndex(position))) {
                 flag = makeFlag(ItemTouchHelper.ACTION_STATE_IDLE, ItemTouchHelper.DOWN);
             }
         }
@@ -58,7 +58,7 @@ public class MyItemTouchHelperCallback extends ItemTouchHelper.Callback {
      * @param listener
      */
     public void setDragItemEnableListener(OnDragItemEnableListener listener) {
-        this.mDragListener = listener;
+        this.dragListener = listener;
     }
 
     /**
@@ -67,7 +67,7 @@ public class MyItemTouchHelperCallback extends ItemTouchHelper.Callback {
      * @param enable
      */
     public void setDynamicViewDragEnable(boolean enable) {
-        this.mDynamicViewDragEnable = enable;
+        this.dynamicViewDragEnable = enable;
     }
 
     @Override
@@ -75,18 +75,18 @@ public class MyItemTouchHelperCallback extends ItemTouchHelper.Callback {
         int position = viewHolder.getAdapterPosition();
         int targetPosition = target.getAdapterPosition();
         boolean itemEnable = false;
-        if (null != mAdapter) {
-            int index = mAdapter.findPosition(targetPosition);
+        if (null != adapter) {
+            int index = adapter.findPosition(targetPosition);
             if (RecyclerView.NO_POSITION != index) {
-                itemEnable = mDynamicViewDragEnable;
-            } else if (null != mDragListener && mDragListener.itemEnable(targetPosition - mAdapter.getStartIndex(position))) {
+                itemEnable = dynamicViewDragEnable;
+            } else if (null != dragListener && dragListener.itemEnable(targetPosition - adapter.getStartIndex(position))) {
                 itemEnable = true;
             }
         } else {
-            itemEnable = null != mDragListener && mDragListener.itemEnable(targetPosition);
+            itemEnable = null != dragListener && dragListener.itemEnable(targetPosition);
         }
         if (itemEnable) {
-            mCallbackItemTouch.onItemMove(position, targetPosition);
+            callbackItemTouch.onItemMove(position, targetPosition);
         }
         return itemEnable;
     }
@@ -97,6 +97,6 @@ public class MyItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
 
     public void setAdapter(DragAdapter adapter) {
-        this.mAdapter = adapter;
+        this.adapter = adapter;
     }
 }

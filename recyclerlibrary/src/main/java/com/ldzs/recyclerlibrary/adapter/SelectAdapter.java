@@ -10,7 +10,6 @@ import android.util.StateSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
 import com.ldzs.recyclerlibrary.callback.OnCheckListener;
 
 import java.util.ArrayList;
@@ -20,6 +19,7 @@ import java.util.ArrayList;
  * 一个可设置选择模式的数据乱配器
  * 如果本身是StateListDrawable,则需要自己设置select颜色
  */
+/*
 public class SelectAdapter extends HeaderAdapter {
     // 三种选择状态
     public static final int CLICK = PullToRefreshRecyclerView.CLICK;//单击
@@ -41,28 +41,34 @@ public class SelectAdapter extends HeaderAdapter {
         realyMultiSelectItems = new ArrayList<>();
     }
 
-    /**
+    */
+/**
      * 设置选择模式
      *
      * @param mode
-     */
+     *//*
+
     public void setSelectMode(int mode) {
         clearSelect();
         this.mode = mode;
     }
 
-    /**
+    */
+/**
      * 设置选中背景
      *
      * @param drawable
-     */
+     *//*
+
     public void setChoiceBackground(Drawable drawable) {
         this.drawable = drawable;
     }
 
-    /**
+    */
+/**
      * 清除选择状态
-     */
+     *//*
+
     private void clearSelect() {
         int headersCount = getHeadersCount();
         switch (mode) {
@@ -116,11 +122,13 @@ public class SelectAdapter extends HeaderAdapter {
         }
     }
 
-    /**
+    */
+/**
      * 重设条目背景,如果本身是StateListDrawable,则需要自己设置select颜色
      *
      * @param itemView
-     */
+     *//*
+
     private void setItemBackground(View itemView) {
         Drawable background = itemView.getBackground();
         if (null != background && background instanceof StateListDrawable) return;
@@ -187,13 +195,16 @@ public class SelectAdapter extends HeaderAdapter {
         return CLICK != mode;
     }
 
-    /**
+    */
+/**
      * 设置选择监听
      *
      * @param listener
-     */
+     *//*
+
     public void setOnCheckListener(OnCheckListener listener) {
         this.listener = listener;
     }
 
 }
+*/

@@ -46,34 +46,34 @@ public class SelectAdapterActivity extends AppCompatActivity {
         mRecyclerView.addHeaderView(getHeaderView());
         mRecyclerView.addFooterView(getFooterView());
         RadioLayout layout = (RadioLayout) findViewById(R.id.rl_choice);
-        layout.setOnCheckedListener(new RadioLayout.OnCheckedListener() {
-            @Override
-            public void onChecked(View v, int position, boolean isChecked) {
-                mRecyclerView.setChoiceMode(position);
-            }
-        });
-        mRecyclerView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-                Toast.makeText(getApplicationContext(), "Click:" + position, Toast.LENGTH_SHORT).show();
-            }
-        });
-        mRecyclerView.setOnCheckListener(new OnCheckListener() {
-            @Override
-            public void onSingleChoice(View v, int newPosition, int oldPosition) {
-                Toast.makeText(getApplicationContext(), "SingleChoice:" + newPosition, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onMultiChoice(View v, ArrayList<Integer> choicePositions) {
-                Toast.makeText(getApplicationContext(), "MultiChoice:" + choicePositions, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onRectangleChoice(int startPosition, int endPosition) {
-                Toast.makeText(getApplicationContext(), "Start:" + startPosition + " End:" + endPosition, Toast.LENGTH_SHORT).show();
-            }
-        });
+//        layout.setOnCheckedListener(new RadioLayout.OnCheckedListener() {
+//            @Override
+//            public void onChecked(View v, int position, boolean isChecked) {
+//                mRecyclerView.setChoiceMode(position);
+//            }
+//        });
+//        mRecyclerView.setOnItemClickListener(new OnItemClickListener() {
+//            @Override
+//            public void onItemClick(View v, int position) {
+//                Toast.makeText(getApplicationContext(), "Click:" + position, Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//        mRecyclerView.setOnCheckListener(new OnCheckListener() {
+//            @Override
+//            public void onSingleChoice(View v, int newPosition, int oldPosition) {
+//                Toast.makeText(getApplicationContext(), "SingleChoice:" + newPosition, Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onMultiChoice(View v, ArrayList<Integer> choicePositions) {
+//                Toast.makeText(getApplicationContext(), "MultiChoice:" + choicePositions, Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onRectangleChoice(int startPosition, int endPosition) {
+//                Toast.makeText(getApplicationContext(), "Start:" + startPosition + " End:" + endPosition, Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
     /**

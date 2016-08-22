@@ -11,14 +11,14 @@ import com.ldzs.recyclerlibrary.adapter.BaseViewAdapter;
  * @param
  */
 public class DragAdapter extends DynamicAdapter {
-    private BaseViewAdapter mAdapter;
+    private BaseViewAdapter adapter;
 
     /**
      * @param adapter 包装数据适配器
      */
     public DragAdapter(Context context, BaseViewAdapter adapter) {
         super(context, adapter);
-        mAdapter = adapter;
+        this.adapter = adapter;
     }
 
 
@@ -55,17 +55,17 @@ public class DragAdapter extends DynamicAdapter {
         } else if (endDynamic) {
             itemsDy(oldIndex, newIndex);
         } else {
-            mAdapter.swapItem(oldIndex - getStartIndex(oldIndex), newIndex - getStartIndex(newIndex));
+            adapter.swapItem(oldIndex - getStartIndex(oldIndex), newIndex - getStartIndex(newIndex));
         }
     }
 
     private void itemsDy(int oldIndex, int newIndex) {
         int position = findPosition(newIndex);
-        int newViewType = mFullItemTypes.get(newIndex);
-        int index = mFullItemTypes.indexOfKey(newIndex);
-        mFullItemTypes.removeAt(index);
-        mFullItemTypes.put(oldIndex, newViewType);
-        mItemPositions[position] = oldIndex;//重置角标位置
+        int newViewType = fullItemTypes.get(newIndex);
+        int index = fullItemTypes.indexOfKey(newIndex);
+        fullItemTypes.removeAt(index);
+        fullItemTypes.put(oldIndex, newViewType);
+        itemPositions[position] = oldIndex;//重置角标位置
     }
 
     /**
@@ -77,11 +77,11 @@ public class DragAdapter extends DynamicAdapter {
      */
     private void dysItem(int oldPosition, int newPosition, int position1) {
         //直接更换插入对象到指定位置,装饰对象不用改动
-        int newViewType = mFullItemTypes.get(oldPosition);
-        int index = mFullItemTypes.indexOfKey(oldPosition);
-        mFullItemTypes.removeAt(index);
-        mFullItemTypes.put(newPosition, newViewType);
-        mItemPositions[position1] = newPosition;//重置角标位置
+        int newViewType = fullItemTypes.get(oldPosition);
+        int index = fullItemTypes.indexOfKey(oldPosition);
+        fullItemTypes.removeAt(index);
+        fullItemTypes.put(newPosition, newViewType);
+        itemPositions[position1] = newPosition;//重置角标位置
     }
 
     /**
@@ -91,15 +91,15 @@ public class DragAdapter extends DynamicAdapter {
      * @param newPosition
      */
     private void dysDy(int oldPosition, int newPosition) {
-        int oldViewType = mFullItemTypes.get(oldPosition);
-        int newViewType = mFullItemTypes.get(newPosition);
-        mFullItemTypes.put(oldPosition, newViewType);
-        mFullItemTypes.put(newPosition, oldViewType);
+        int oldViewType = fullItemTypes.get(oldPosition);
+        int newViewType = fullItemTypes.get(newPosition);
+        fullItemTypes.put(oldPosition, newViewType);
+        fullItemTypes.put(newPosition, oldViewType);
         //替换view
-        View oldView = mFullViews.get(oldViewType);
-        View newView = mFullViews.get(newViewType);
-        mFullViews.put(oldViewType, newView);
-        mFullViews.put(newViewType, oldView);
+        View oldView = fullViews.get(oldViewType);
+        View newView = fullViews.get(newViewType);
+        fullViews.put(oldViewType, newView);
+        fullViews.put(newViewType, oldView);
     }
 
 }
