@@ -110,9 +110,7 @@ public class HeaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      * @param index
      */
     protected void addFooterView(View view, int index) {
-        //固定第一个
         int viewType = TYPE_FOOTER + footerCount;
-        index = index > footViews.size() ? footViews.size() : index;
         this.footViews.add(index, new HeaderViewItem(viewType, view));//越界处理
         notifyItemInserted(getFooterStartIndex() + index);
         footerCount++;
@@ -174,6 +172,9 @@ public class HeaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         removeHeaderView(indexOfValue(headerViews, view));
     }
 
+    public int indexOfHeaderView(View view){
+        return indexOfValue(headerViews, view);
+    }
 
     /**
      * 移除指定的HeaderView对象
@@ -196,6 +197,11 @@ public class HeaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         removeFooterView(indexOfValue(footViews, view));
     }
 
+
+
+    public int indexOfFooterView(View view){
+        return indexOfValue(footViews, view);
+    }
     /**
      * 移除指定的HeaderView对象
      *
@@ -204,7 +210,7 @@ public class HeaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void removeFooterView(int position) {
         if (0 > position || footViews.size() <= position) return;
         footViews.remove(position);
-        notifyItemRemoved(getItemCount() - getFootersCount() - position);
+        notifyItemRemoved(getFooterStartIndex()+position);
     }
 
     @Override

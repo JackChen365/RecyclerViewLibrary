@@ -12,6 +12,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.ldzs.recyclerlibrary.adapter.HeaderAdapter;
 import com.ldzs.recyclerlibrary.adapter.RefreshAdapter;
 import com.ldzs.recyclerlibrary.callback.OnItemClickListener;
 import com.ldzs.recyclerlibrary.divide.SimpleItemDecoration;
@@ -26,8 +27,9 @@ import cz.library.RefreshMode;
  * Created by czz on 2016/8/13.
  */
 public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView> implements IRecyclerView{
-    public static final int END_NORMAL=0x00;
-    public static final int END_REFRESHING=0x01;
+    public static final int END_NONE=0x00;
+    public static final int END_NORMAL=0x01;
+    public static final int END_REFRESHING=0x02;
 
     public static final int CLICK=0x00;
     public static final int SINGLE_CHOICE=0x01;
@@ -59,9 +61,9 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
     public PullToRefreshRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         refreshState = END_NORMAL;
+        adapter = new RefreshAdapter(null);
         itemDecoration=new SimpleItemDecoration();
         refreshFooter = new RefreshFrameFooter(context, this);
-        adapter = new RefreshAdapter(null);
         initFooterViewByMode(getRefreshMode());
         setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
 
@@ -234,12 +236,16 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
 
     private void initFooterViewByMode(RefreshMode mode) {
         if(null==adapter) return;
-        boolean exist = this.adapter.hasRefreshFooterView();
-        if(!exist&&mode.enableFooter()){
-            addFooterView(refreshFooter.getFooterView());
+        View footerView = refreshFooter.getFooterView();
+        int index = adapter.indexOfFooterView(footerView);
+        if(mode.enableFooter()){
+            refreshState = END_NORMAL;
+            if(-1==index)  adapter.addRefreshFooterView(footerView,getFooterViewCount());
+            refreshFooter.setRefreshState(RefreshFrameFooter.FRAME_LOAD);
             scrollStateChanged(RecyclerView.SCROLL_STATE_IDLE);
-        } else if(exist){
-            removeFooterView(refreshFooter.getFooterView());
+        } else {
+            refreshState = END_NONE;
+            if(-1!=index) adapter.removeRefreshFooterView(footerView);
         }
     }
 

@@ -10,12 +10,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.ldzs.pulltorefreshrecyclerview.R;
 import com.ldzs.pulltorefreshrecyclerview.adapter.SimpleAdapter;
 import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
+
+import cz.library.RefreshMode;
 
 public class GridPullToRefreshActivity extends AppCompatActivity {
     private static final String TAG = "GridPullToRefreshActivity";
@@ -26,15 +29,36 @@ public class GridPullToRefreshActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recycler_view);
+        setContentView(R.layout.activity_grid_recycler_view);
         setTitle(getIntent().getStringExtra("title"));
         mRecyclerView = (PullToRefreshRecyclerView) this.findViewById(R.id.recycler_view);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         mRecyclerView.setLayoutManager(layoutManager);
 
+        RadioGroup layout= (RadioGroup) findViewById(R.id.rg_refresh_mode);
+        layout.setOnCheckedChangeListener((radioGroup, i) -> {
+            switch (i){
+                case R.id.rb_refresh_both:
+                    mRecyclerView.setRefreshMode(RefreshMode.BOTH);
+                    break;
+                case R.id.rb_refresh_start:
+                    mRecyclerView.setRefreshMode(RefreshMode.PULL_FROM_START);
+                    break;
+                case R.id.rb_refresh_end:
+                    mRecyclerView.setRefreshMode(RefreshMode.PULL_FROM_END);
+                    break;
+                case R.id.rb_refresh_none:
+                    mRecyclerView.setRefreshMode(RefreshMode.DISABLED);
+                    break;
+            }
+        });
+
         View headerView = getHeaderView();
         headerView.setBackgroundColor(Color.BLUE);
         mRecyclerView.addHeaderView(headerView);
+        mRecyclerView.addFooterView(getHeaderView());
+        mRecyclerView.addFooterView(getHeaderView());
+        mRecyclerView.addFooterView(getHeaderView());
 
         mRecyclerView.setOnPullToRefreshListener(() -> {
             mRecyclerView.postDelayed(() -> {

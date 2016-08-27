@@ -28,6 +28,14 @@ public class RefreshAdapter extends HeaderAdapter {
         }
     }
 
+    public void addRefreshFooterView(View view,int index){
+        super.addFooterView(view,index);
+    }
+
+    public void removeRefreshFooterView(View view){
+        super.removeFooterView(view);
+    }
+
 
     @Override
     public void addFooterView(View view, int index) {
@@ -40,7 +48,4 @@ public class RefreshAdapter extends HeaderAdapter {
         }
     }
 
-    public boolean hasRefreshFooterView(){
-        return 1<=getFootersCount();
-    }
 }

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.ldzs.recyclerlibrary.PullToRefreshRecyclerView
+        xmlns:auto="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        auto:pv_divideVerticalPadding="@dimen/activity_margin"
+        auto:pv_listDivide="@color/transparent"
+        auto:pv_listDivideHeight="0.8dp" />
+
+    <RadioGroup
+        android:id="@+id/rg_refresh_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="right|bottom">
+
+        <RadioButton
+            android:id="@+id/rb_refresh_both"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Both"/>
+
+        <RadioButton
+            android:id="@+id/rb_refresh_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start"/>
+
+        <RadioButton
+            android:id="@+id/rb_refresh_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="End"/>
+
+        <RadioButton
+            android:id="@+id/rb_refresh_none"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="None"/>
+    </RadioGroup>
+</FrameLayout>

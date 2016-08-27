@@ -2,10 +2,12 @@ package com.ldzs.recyclerlibrary.footer;
 
 import android.content.Context;
 import android.support.annotation.IntDef;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
 import com.ldzs.recyclerlibrary.R;
 
 
@@ -18,12 +20,11 @@ public class RefreshFrameFooter {
     public static final int FRAME_LOAD = 1;
     public static final int FRAME_ERROR = 2;
     public static final int FRAME_DONE = 3;
-    public static final int FRAME_HIDE = 4;
 
-    @IntDef(value={FRAME_CLICK, FRAME_LOAD,FRAME_ERROR,FRAME_DONE,FRAME_HIDE})
+    @IntDef(value={FRAME_CLICK, FRAME_LOAD,FRAME_ERROR,FRAME_DONE})
     public @interface RefreshState {
     }
-
+    private PullToRefreshRecyclerView parent;
     private View[] frameGroup;
     private int refreshState = FRAME_CLICK;
     private View.OnClickListener mListener;
@@ -34,7 +35,8 @@ public class RefreshFrameFooter {
      * @param context
      * @param parent
      */
-    public RefreshFrameFooter(Context context, ViewGroup parent) {
+    public RefreshFrameFooter(Context context, PullToRefreshRecyclerView parent) {
+        this.parent=parent;
         this.container = LayoutInflater.from(context).inflate(R.layout.list_footer, parent, false);
         frameGroup = new View[4];
         frameGroup[FRAME_CLICK] = this.container.findViewById(R.id.refresh_click_view);
@@ -74,16 +76,11 @@ public class RefreshFrameFooter {
      */
     public void setRefreshState(@RefreshState int state) {
         if (refreshState == state) return;
-        if(FRAME_HIDE==refreshState){
-            this.container.setVisibility(View.GONE);
-        } else if(View.VISIBLE!=this.container.getVisibility()){
-            this.container.setVisibility(View.VISIBLE);
-        }
+        frameGroup[state].setVisibility(View.VISIBLE);
+        lastFrame= frameGroup[refreshState];
         if(null!=lastFrame){
             lastFrame.setVisibility(View.GONE);
         }
-        frameGroup[state].setVisibility(View.VISIBLE);
-        lastFrame= frameGroup[state];
         refreshState = state;
     }
 
