@@ -14,6 +14,7 @@ import android.widget.Filter;
 import android.widget.FilterQueryProvider;
 import android.widget.Filterable;
 
+import com.ldzs.recyclerlibrary.callback.OnItemClickListener;
 import com.ldzs.recyclerlibrary.filter.CursorFilter;
 
 /**
@@ -203,7 +204,7 @@ public abstract class CursorRecyclerAdapter<H extends RecyclerView.ViewHolder> e
 
 
     @Override
-    public void onBindViewHolder(H holder, int position) {
+    public void onBindViewHolder(final H holder, int position) {
         if (!mDataValid) {
             throw new IllegalStateException("this should only be called when the cursor is valid");
         }

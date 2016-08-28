@@ -256,7 +256,7 @@ public class HeaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             position -= getHeadersCount();
             if (null != adapter && position < adapter.getItemCount()) {
                 adapter.onBindViewHolder(holder, position);
-                if (adapter instanceof BaseViewAdapter) {
+                if (adapter instanceof BaseViewAdapter||adapter instanceof CursorRecyclerAdapter) {
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

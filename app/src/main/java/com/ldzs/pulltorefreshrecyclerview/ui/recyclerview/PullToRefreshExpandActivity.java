@@ -17,6 +17,7 @@ import com.ldzs.pulltorefreshrecyclerview.adapter.FriendAdapter;
 import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.recyclerlibrary.PullToRefreshExpandRecyclerView;
 import com.ldzs.recyclerlibrary.anim.SlideInLeftAnimator;
+import com.ldzs.recyclerlibrary.callback.OnExpandItemClickListener;
 
 import java.util.Random;
 
@@ -43,6 +44,12 @@ public class PullToRefreshExpandActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(layoutManager);
 
         mRecyclerView.setOnItemClickListener((v, position) -> Toast.makeText(getApplicationContext(), "Click:" + position, Toast.LENGTH_SHORT).show());
+        mRecyclerView.setOnExpandItemClickListener(new OnExpandItemClickListener() {
+            @Override
+            public void onItemClick(View v, int groupPosition, int childPosition) {
+                Toast.makeText(getApplicationContext(), "Click:" + groupPosition+" childPosition:"+childPosition, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         mRecyclerView.addHeaderView(getHeaderView());
 
