@@ -11,6 +11,7 @@ import com.ldzs.recyclerlibrary.callback.OnNodeItemClickListener;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by cz on 16/1/23.
@@ -18,29 +19,24 @@ import java.util.LinkedList;
  */
 public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder> {
     private static final String TAG = "TreeAdapter";
-    protected final ArrayList<TreeNode<E>> mNodeItems;//树的列表展示节点
-    protected final ArrayList<E> mItems;
-    protected final TreeNode<E> mRootNode;
-    private final LayoutInflater mLayoutInflater;
-    private int mHeaderCount;//头控件数
-    private OnNodeItemClickListener mListener;
+    protected final ArrayList<TreeNode<E>> nodeItems;//树的列表展示节点
+    protected final ArrayList<E> items;
+    protected final TreeNode<E> rootNode;
+    private final LayoutInflater layoutInflater;
+    private int headerCount;//头控件数
+    private OnNodeItemClickListener listener;
 
 
     public TreeAdapter(Context context, TreeNode<E> rootNode) {
-        this.mLayoutInflater = LayoutInflater.from(context);
-        this.mRootNode = rootNode;
-        this.mNodeItems = new ArrayList<>();
-        this.mItems = new ArrayList<>();
-        ArrayList<TreeNode<E>> nodes = getNodeItems(mRootNode);
-        if (null != nodes) {
-            this.mItems.addAll(getItems(nodes));
-            this.mNodeItems.addAll(nodes);
-        }
-
+        this.layoutInflater = LayoutInflater.from(context);
+        this.rootNode = rootNode;
+        this.nodeItems = new ArrayList<>();
+        this.items = new ArrayList<>();
+        refreshItems();
     }
 
     public void setHeaderCount(int headerCount) {
-        this.mHeaderCount = headerCount;
+        this.headerCount = headerCount;
     }
 
     /**
@@ -53,7 +49,7 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
         nodes.add(rootNode);
         while (!nodes.isEmpty()) {
             TreeNode<E> node = nodes.pollFirst();
-            if (mRootNode == node || node.expand && !node.child.isEmpty()) {
+            if (this.rootNode == node || node.expand && !node.child.isEmpty()) {
                 ArrayList<TreeNode<E>> child = node.child;
                 int size = child.size();
                 for (int i = size - 1; i >= 0; i--) {
@@ -85,7 +81,7 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int itemPosition = holder.getAdapterPosition() - mHeaderCount;
+                int itemPosition = holder.getAdapterPosition() - headerCount;
                 TreeNode<E> node = getNode(itemPosition);
                 boolean expand = node.expand;
                 node.expand = true;//置为true,取得当前展开后的节点
@@ -96,22 +92,24 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
                     int size = addNodes.size();
                     onNodeExpand(node, holder, !expand);
                     if (expand) {
-                        mItems.removeAll(items);
-                        mNodeItems.removeAll(addNodes);
+                        TreeAdapter.this.items.removeAll(items);
+                        nodeItems.removeAll(addNodes);
                         //关闭动作
                         notifyItemRangeRemoved(itemPosition + 1, size);
                     } else {
-                        mItems.addAll(itemPosition + 1, items);
-                        mNodeItems.addAll(itemPosition + 1, addNodes);
+                        TreeAdapter.this.items.addAll(itemPosition + 1, items);
+                        nodeItems.addAll(itemPosition + 1, addNodes);
                         //展开动作
                         notifyItemRangeInserted(itemPosition + 1, size);
                     }
-                } else if (null != mListener) {
-                    mListener.onNodeItemClick(node, v, itemPosition);
+                } else if (null != listener) {
+                    listener.onNodeItemClick(node, v, itemPosition);
                 }
             }
         });
     }
+
+
 
     /**
      * 子类实现,节点展开或关闭
@@ -130,7 +128,7 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
      * @return
      */
     public TreeNode<E> getNode(int position) {
-        return mNodeItems.get(position);
+        return nodeItems.get(position);
     }
 
     /**
@@ -140,12 +138,16 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
      * @return
      */
     public E getItem(int position) {
-        return mNodeItems.get(position).e;
+        return nodeItems.get(position).e;
+    }
+
+    public List<E> getItems(){
+        return items;
     }
 
     @Override
     public int getItemCount() {
-        return mNodeItems.size();
+        return nodeItems.size();
     }
 
     /**
@@ -154,11 +156,10 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
      * @param level
      */
     public void setLevelExpand(int level, boolean expand) {
-
     }
 
     public void setOnNodeItemClickListener(OnNodeItemClickListener listener) {
-        this.mListener = listener;
+        this.listener = listener;
     }
 
     /**
@@ -171,7 +172,7 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
         nodes.add(rootNode);
         while (!nodes.isEmpty()) {
             TreeNode<E> node = nodes.pollFirst();
-            if (mRootNode == node || node.expand && !node.child.isEmpty()) {
+            if (this.rootNode == node || node.expand && !node.child.isEmpty()) {
                 ArrayList<TreeNode<E>> child = node.child;
                 int size = child.size();
                 for (int i = size - 1; i >= 0; i--) {
@@ -212,7 +213,7 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
                     removeNode(treeNode);
                 }
             }
-            int index = mNodeItems.indexOf(node);
+            int index = nodeItems.indexOf(node);
             if (0 <= index) {
                 remove(index);
             }
@@ -220,7 +221,7 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
     }
 
     public void removeNode(int position) {
-        removeNode(mNodeItems.get(position));
+        removeNode(nodeItems.get(position));
     }
 
     /**
@@ -230,7 +231,7 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
      * @return
      */
     public int indexOfItem(E e) {
-        return mItems.indexOf(e);
+        return items.indexOf(e);
     }
 
     /**
@@ -240,8 +241,8 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
      * @param e
      */
     public void set(int index, E e) {
-        mItems.set(index, e);
-        TreeNode<E> node = mNodeItems.get(index);
+        items.set(index, e);
+        TreeNode<E> node = nodeItems.get(index);
         node.e = e;
         notifyItemChanged(index);
     }
@@ -252,20 +253,20 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
      * @param position
      */
     private void remove(int position) {
-        mItems.remove(position);
-        TreeNode<E> node = mNodeItems.remove(position);
+        items.remove(position);
+        TreeNode<E> node = nodeItems.remove(position);
         notifyItemRemoved(position);
         //移除根节点内节点指向
         TreeNode<E> parent = node.parent;
         if (null != parent) {
             parent.child.remove(node);
             //通知父条目改动
-            notifyItemChanged(mNodeItems.indexOf(parent));
+            notifyItemChanged(nodeItems.indexOf(parent));
         }
     }
 
     public void insertNode(E e) {
-        insertNode(new TreeNode(mRootNode, e));
+        insertNode(new TreeNode(rootNode, e));
     }
 
     /**
@@ -275,8 +276,8 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
      */
     public void insertNode(TreeNode<E> node) {
         //这是认祖归宗罗
-        node.parent = mRootNode;
-        mRootNode.child.add(node);
+        node.parent = rootNode;
+        rootNode.child.add(node);
         ArrayList<TreeNode<E>> nodeItems = new ArrayList<>();
         nodeItems.add(node);
         ArrayList<TreeNode<E>> items = getNodeItems(node);
@@ -284,8 +285,8 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
             nodeItems.addAll(items);
         }
         int itemCount = getItemCount();
-        mNodeItems.addAll(nodeItems);
-        mItems.addAll(getItems(nodeItems));
+        this.nodeItems.addAll(nodeItems);
+        this.items.addAll(getItems(nodeItems));
         notifyItemRangeInserted(itemCount, nodeItems.size());
     }
 
@@ -298,7 +299,17 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
      * @return
      */
     protected View createView(ViewGroup parent, int layout) {
-        return mLayoutInflater.inflate(layout, parent, false);
+        return layoutInflater.inflate(layout, parent, false);
+    }
+
+    public void refreshItems(){
+        this.items.clear();
+        this.nodeItems.clear();
+        ArrayList<TreeNode<E>> nodes = getNodeItems(this.rootNode);
+        if (null != nodes) {
+            this.items.addAll(getItems(nodes));
+            this.nodeItems.addAll(nodes);
+        }
     }
 
     /**
