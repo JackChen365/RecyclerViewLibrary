@@ -1,6 +1,7 @@
 package com.ldzs.pulltorefreshrecyclerview.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ public class ChannelAdapter extends BaseViewAdapter<ChannelAdapter.ViewHolder, C
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.e(TAG,"onCreateViewHolder:");
         return new ViewHolder(inflateView(parent, R.layout.channel_item));
     }
 
@@ -36,6 +38,13 @@ public class ChannelAdapter extends BaseViewAdapter<ChannelAdapter.ViewHolder, C
         holder.deleteView.setVisibility(mDragStatus && item.use ? View.VISIBLE : View.GONE);
     }
 
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
+        Log.e(TAG,"onViewRecycled");
+    }
+
+
     /**
      * 设置当前拖动状态
      *
@@ -43,7 +52,7 @@ public class ChannelAdapter extends BaseViewAdapter<ChannelAdapter.ViewHolder, C
      */
     public void setDragStatus(boolean drag) {
         this.mDragStatus = drag;
-        notifyItemRangeChanged(0,getItemsCount(),null);
+        notifyItemRangeChanged(0,getItemsCount());
     }
 
     public static class ViewHolder extends BaseViewHolder {

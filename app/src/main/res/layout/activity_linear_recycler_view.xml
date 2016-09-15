@@ -10,24 +10,41 @@
         android:layout_height="match_parent"
         auto:pv_divideVerticalPadding="@dimen/activity_margin"
         auto:pv_listDivideHeight="0.8dp"
+        auto:pv_listDivide="@color/gray"
+        auto:pull_headerStrategy="overlap"
+        auto:pull_headerType="flip"
         />
 
 
-    <LinearLayout
+    <RadioGroup
+        android:id="@+id/rg_refresh_mode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:layout_gravity="right|bottom">
 
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_re_refresh"
+        <RadioButton
+            android:id="@+id/rb_refresh_both"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/re_refresh" />
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_auto_refresh"
+            android:text="Both"/>
+
+        <RadioButton
+            android:id="@+id/rb_refresh_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/auto_refresh" />
-    </LinearLayout>
+            android:text="Start"/>
+
+        <RadioButton
+            android:id="@+id/rb_refresh_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="End"/>
+
+        <RadioButton
+            android:id="@+id/rb_refresh_none"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="None"/>
+    </RadioGroup>
 </FrameLayout>

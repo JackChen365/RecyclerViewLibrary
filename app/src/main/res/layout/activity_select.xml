@@ -16,5 +16,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="right|bottom"
-        auto:rl_items="@array/choice" />
+        auto:rl_items="@array/choice"
+        />
 </FrameLayout>

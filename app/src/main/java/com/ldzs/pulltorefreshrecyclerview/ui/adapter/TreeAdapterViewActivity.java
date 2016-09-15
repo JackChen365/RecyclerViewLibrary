@@ -52,8 +52,9 @@ public class TreeAdapterViewActivity extends AppCompatActivity {
             if (isDestroy) return;
             progressDialog.dismiss();
             TreeAdapter.TreeNode<File> node = (TreeAdapter.TreeNode<File>) result;
-            mAdapter = new FileAdapter(this, node);
-            mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView.setAdapter(mAdapter = new FileAdapter(this, node));
+        },throwable -> {
+            throwable.printStackTrace();
         });
     }
 
@@ -92,7 +93,12 @@ public class TreeAdapterViewActivity extends AppCompatActivity {
             File file = files.pollFirst();
             TreeAdapter.TreeNode<File> fileTreeNode = fileNodes.removeFirst();
             if (file.isDirectory()) {
-                File[] filesArray = file.listFiles();
+                File[] filesArray =null;
+                try{
+                    filesArray = file.listFiles();
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
                 if (null != filesArray) {
                     int length = filesArray.length;
                     for (int i = length - 1; i >= 0; i--) {
@@ -109,7 +115,7 @@ public class TreeAdapterViewActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_refresh, menu);
+        getMenuInflater().inflate(R.menu.menu_item, menu);
         return true;
     }
 

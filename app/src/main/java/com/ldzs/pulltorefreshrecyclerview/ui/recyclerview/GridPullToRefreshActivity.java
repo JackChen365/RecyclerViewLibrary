@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,20 +35,23 @@ public class GridPullToRefreshActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(layoutManager);
 
         RadioGroup layout= (RadioGroup) findViewById(R.id.rg_refresh_mode);
-        layout.setOnCheckedChangeListener((radioGroup, i) -> {
-            switch (i){
-                case R.id.rb_refresh_both:
-                    mRecyclerView.setRefreshMode(RefreshMode.BOTH);
-                    break;
-                case R.id.rb_refresh_start:
-                    mRecyclerView.setRefreshMode(RefreshMode.PULL_FROM_START);
-                    break;
-                case R.id.rb_refresh_end:
-                    mRecyclerView.setRefreshMode(RefreshMode.PULL_FROM_END);
-                    break;
-                case R.id.rb_refresh_none:
-                    mRecyclerView.setRefreshMode(RefreshMode.DISABLED);
-                    break;
+        layout.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch (i){
+                    case R.id.rb_refresh_both:
+                        mRecyclerView.setRefreshMode(RefreshMode.BOTH);
+                        break;
+                    case R.id.rb_refresh_start:
+                        mRecyclerView.setRefreshMode(RefreshMode.PULL_FROM_START);
+                        break;
+                    case R.id.rb_refresh_end:
+                        mRecyclerView.setRefreshMode(RefreshMode.PULL_FROM_END);
+                        break;
+                    case R.id.rb_refresh_none:
+                        mRecyclerView.setRefreshMode(RefreshMode.DISABLED);
+                        break;
+                }
             }
         });
 
@@ -90,13 +92,18 @@ public class GridPullToRefreshActivity extends AppCompatActivity {
         TextView headerView = (TextView) header;
         headerView.setTextColor(textColor);
         headerView.setText("HeaderView:" + mRecyclerView.getHeaderViewCount());
-        headerView.setOnClickListener(v -> mRecyclerView.addHeaderView(getHeaderView()));
+        headerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mRecyclerView.addHeaderView(getHeaderView());
+            }
+        });
         return headerView;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_refresh, menu);
+        getMenuInflater().inflate(R.menu.menu_item, menu);
         return true;
     }
 

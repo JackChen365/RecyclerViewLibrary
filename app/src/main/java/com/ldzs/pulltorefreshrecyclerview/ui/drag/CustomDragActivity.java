@@ -51,9 +51,7 @@ public class CustomDragActivity extends AppCompatActivity {
         mRecyclerView.getItemAnimator().setRemoveDuration(300);
         mRecyclerView.getItemAnimator().setMoveDuration(300);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
-        layoutManager.setRecycleChildrenOnDetach(true);
         mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setHasFixedSize(true);
         Observable.create(sub -> sub.onNext(getContentFromAssets(getResources(), "item.json"))).
                 map(text -> JsonUtils.getLists(text.toString(), Channel.class)).
                 observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(items -> {

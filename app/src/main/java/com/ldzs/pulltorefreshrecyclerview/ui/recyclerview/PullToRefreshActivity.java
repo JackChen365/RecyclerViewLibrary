@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,7 +19,8 @@ import com.ldzs.pulltorefreshrecyclerview.adapter.SimpleAdapter;
 import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
 import com.ldzs.recyclerlibrary.anim.SlideInLeftAnimator;
-import com.ldzs.recyclerlibrary.footer.RefreshFrameFooter;
+
+import cz.library.RefreshMode;
 
 /**
  * 1:示例添加头,添加信息,以及自定义的Adapter使用.
@@ -79,8 +81,26 @@ public class PullToRefreshActivity extends AppCompatActivity {
         mAdapter = new SimpleAdapter(this, Data.createItems(this, 2));
         mRecyclerView.setAdapter(mAdapter);
 
-
-        findViewById(R.id.btn_auto_refresh).setOnClickListener(v -> mRecyclerView.autoRefreshing(true));
+        RadioGroup layout= (RadioGroup) findViewById(R.id.rg_refresh_mode);
+        layout.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch (i){
+                    case R.id.rb_refresh_both:
+                        mRecyclerView.setRefreshMode(RefreshMode.BOTH);
+                        break;
+                    case R.id.rb_refresh_start:
+                        mRecyclerView.setRefreshMode(RefreshMode.PULL_FROM_START);
+                        break;
+                    case R.id.rb_refresh_end:
+                        mRecyclerView.setRefreshMode(RefreshMode.PULL_FROM_END);
+                        break;
+                    case R.id.rb_refresh_none:
+                        mRecyclerView.setRefreshMode(RefreshMode.DISABLED);
+                        break;
+                }
+            }
+        });
     }
 
     /**
@@ -106,11 +126,11 @@ public class PullToRefreshActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_add) {
-            mAdapter.addItem(getString(R.string.header) + mAdapter.getItemCount(), 0);
+        if (id == R.id.action_refresh) {
+            mRecyclerView.autoRefreshing(true);
             return true;
-        } else if (id == R.id.action_remove) {
-            mAdapter.remove(0);
+        } else if (id == R.id.action_re_refresh) {
+            mRecyclerView.autoRefreshing(false);
             return true;
         }
 

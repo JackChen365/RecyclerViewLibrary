@@ -12,12 +12,13 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.ldzs.recyclerlibrary.adapter.HeaderAdapter;
-import com.ldzs.recyclerlibrary.adapter.RefreshAdapter;
+import com.ldzs.recyclerlibrary.adapter.SelectAdapter;
 import com.ldzs.recyclerlibrary.callback.OnItemClickListener;
 import com.ldzs.recyclerlibrary.divide.SimpleItemDecoration;
 import com.ldzs.recyclerlibrary.footer.RefreshFrameFooter;
 import com.ldzs.recyclerlibrary.observe.HeaderAdapterDataObserve;
+
+import java.util.ArrayList;
 
 import cz.library.PullToRefreshLayout;
 import cz.library.RefreshMode;
@@ -32,23 +33,20 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
     public static final int END_REFRESHING=0x02;
 
     public static final int CLICK=0x00;
-    public static final int SINGLE_CHOICE=0x01;
-    public static final int MULTI_CHOICE=0x02;
-    public static final int RECTANGLE_CHOICE=0x03;
+    public static final int SINGLE_SELECT =0x01;
+    public static final int MULTI_SELECT =0x02;
+    public static final int RECTANGLE_SELECT =0x03;
 
 
-    @IntDef(value={CLICK,SINGLE_CHOICE,MULTI_CHOICE,RECTANGLE_CHOICE})
-    public @interface ChoiceMode{
+    @IntDef(value={CLICK, SINGLE_SELECT, MULTI_SELECT, RECTANGLE_SELECT})
+    public @interface SelectMode {
     }
 
-
-    private final RefreshAdapter adapter;
+    private final SelectAdapter adapter;
     private final SimpleItemDecoration itemDecoration;
     private final RefreshFrameFooter refreshFooter;
     private OnPullFooterToRefreshListener listener;
-    private Drawable choiceBackground;
     private int refreshState;
-    private int choiceMode;
 
     public PullToRefreshRecyclerView(Context context) {
         this(context,null,0);
@@ -61,7 +59,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
     public PullToRefreshRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         refreshState = END_NORMAL;
-        adapter = new RefreshAdapter(null);
+        adapter = new SelectAdapter(null);
         itemDecoration=new SimpleItemDecoration();
         refreshFooter = new RefreshFrameFooter(context, this);
         initFooterViewByMode(getRefreshMode());
@@ -72,8 +70,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
         setListDivideHeight(a.getDimension(R.styleable.PullToRefreshRecyclerView_pv_listDivideHeight, 0f));
         setDivideHorizontalPadding(a.getDimension(R.styleable.PullToRefreshRecyclerView_pv_divideHorizontalPadding, 0));
         setDivideVerticalPadding(a.getDimension(R.styleable.PullToRefreshRecyclerView_pv_divideVerticalPadding, 0));
-        setChoiceModeInner(a.getInt(R.styleable.PullToRefreshRecyclerView_pv_choiceMode, CLICK));
-        setChoiceBackground(a.getDrawable(R.styleable.PullToRefreshRecyclerView_pv_choiceBackground));
+        setSelectModeInner(a.getInt(R.styleable.PullToRefreshRecyclerView_pv_choiceMode, CLICK));
         a.recycle();
     }
 
@@ -99,16 +96,12 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
         this.itemDecoration.setDivideVerticalPadding(Math.round(padding));
     }
 
-    public void setChoiceMode(@ChoiceMode int mode){
-        setChoiceModeInner(mode);
+    public void setSelectMode(@SelectMode int mode){
+        setSelectModeInner(mode);
     }
-    private void setChoiceModeInner(int mode) {
-        this.choiceMode=mode;
+    private void setSelectModeInner(int mode) {
+        adapter.setSelectMode(mode);
         invalidate();
-    }
-
-    public void setChoiceBackground(Drawable choiceBackground) {
-        this.choiceBackground = choiceBackground;
     }
 
     @Override
@@ -321,10 +314,35 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
         refreshFooter.setRefreshState(RefreshFrameFooter.FRAME_DONE);
     }
 
-
-
     public void setOnPullFooterToRefreshListener(OnPullFooterToRefreshListener listener){
         this.listener=listener;
+    }
+
+    /*
+     * 设置单选选择监听
+     *
+     * @param singleSelectListener
+     */
+    public void setOnSingleSelectListener(OnSingleSelectListener singleSelectListener) {
+        adapter.setOnSingleSelectListener(singleSelectListener);
+    }
+
+    /*
+    * 设置多选选择监听
+    *
+    * @param singleSelectListener
+    */
+    public void setOnMultiSelectListener(OnMultiSelectListener multiSelectListener) {
+        adapter.setOnMultiSelectListener(multiSelectListener);
+    }
+
+    /*
+    * 设置截取选择监听
+    *
+    * @param singleSelectListener
+    */
+    public void setOnRectangleSelectListener(OnRectangleSelectListener rectangleSelectListener) {
+        adapter.setOnRectangleSelectListener(rectangleSelectListener);
     }
 
     /**
@@ -332,6 +350,21 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
      */
     public interface OnPullFooterToRefreshListener {
         void onRefresh();
+    }
+
+    /**
+     * 选择监听器
+     */
+    public interface OnSingleSelectListener {
+        void onSingleSelect(View v, int newPosition, int oldPosition);
+    }
+
+    public interface OnMultiSelectListener{
+        void onMultiSelect(View v, ArrayList<Integer> selectPositions);
+    }
+
+    public interface OnRectangleSelectListener{
+        void onRectangleSelect(int startPosition, int endPosition);
     }
 
 

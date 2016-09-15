@@ -1,7 +1,10 @@
 package com.ldzs.recyclerlibrary.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import java.util.List;
 
 /**
  * Created by cz on 16/1/23.
@@ -12,23 +15,11 @@ import android.view.View;
  *
  */
 public class RefreshAdapter extends HeaderAdapter {
-
     public RefreshAdapter(RecyclerView.Adapter adapter) {
         super(adapter);
     }
 
-    @Override
-    public void removeFooterView(int position) {
-        //必须剩下最后一个,且移除最后一个时减1
-        int footersCount = getFootersCount();
-        if (1 < footersCount) {
-            //移除最后一个时-1,因为这个并不是用户添加的.也不在用户操作范围内
-            position = (position == footersCount) ? position - 1 : position;
-            super.removeFooterView(position);
-        }
-    }
-
-    public void addRefreshFooterView(View view,int index){
+    public void addRefreshFooterView(View view, int index){
         super.addFooterView(view,index);
     }
 

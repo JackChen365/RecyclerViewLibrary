@@ -10,12 +10,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ldzs.pulltorefreshrecyclerview.R;
-import com.ldzs.pulltorefreshrecyclerview.adapter.SimpleAdapter;
+import com.ldzs.pulltorefreshrecyclerview.adapter.SimpleSelectAdapter;
 import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.pulltorefreshrecyclerview.widget.RadioLayout;
 import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
 import com.ldzs.recyclerlibrary.anim.SlideInLeftAnimator;
-import com.ldzs.recyclerlibrary.callback.OnCheckListener;
 import com.ldzs.recyclerlibrary.callback.OnItemClickListener;
 
 import java.util.ArrayList;
@@ -41,39 +40,41 @@ public class SelectAdapterActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        SimpleAdapter adapter = new SimpleAdapter(this, Data.createItems(this, 100));
+        SimpleSelectAdapter adapter = new SimpleSelectAdapter(this, Data.createItems(this, 100));
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.addHeaderView(getHeaderView());
         mRecyclerView.addFooterView(getFooterView());
         RadioLayout layout = (RadioLayout) findViewById(R.id.rl_choice);
-//        layout.setOnCheckedListener(new RadioLayout.OnCheckedListener() {
-//            @Override
-//            public void onChecked(View v, int position, boolean isChecked) {
-//                mRecyclerView.setChoiceMode(position);
-//            }
-//        });
-//        mRecyclerView.setOnItemClickListener(new OnItemClickListener() {
-//            @Override
-//            public void onItemClick(View v, int position) {
-//                Toast.makeText(getApplicationContext(), "Click:" + position, Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//        mRecyclerView.setOnCheckListener(new OnCheckListener() {
-//            @Override
-//            public void onSingleChoice(View v, int newPosition, int oldPosition) {
-//                Toast.makeText(getApplicationContext(), "SingleChoice:" + newPosition, Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onMultiChoice(View v, ArrayList<Integer> choicePositions) {
-//                Toast.makeText(getApplicationContext(), "MultiChoice:" + choicePositions, Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onRectangleChoice(int startPosition, int endPosition) {
-//                Toast.makeText(getApplicationContext(), "Start:" + startPosition + " End:" + endPosition, Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        layout.setOnCheckedListener(new RadioLayout.OnCheckedListener() {
+            @Override
+            public void onChecked(View v, int position, boolean isChecked) {
+                mRecyclerView.setSelectMode(position);
+            }
+        });
+        mRecyclerView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                Toast.makeText(getApplicationContext(), "Click:" + position, Toast.LENGTH_SHORT).show();
+            }
+        });
+        mRecyclerView.setOnSingleSelectListener(new PullToRefreshRecyclerView.OnSingleSelectListener() {
+            @Override
+            public void onSingleSelect(View v, int newPosition, int oldPosition) {
+                Toast.makeText(getApplicationContext(), "SingleSelect:" + newPosition, Toast.LENGTH_SHORT).show();
+            }
+        });
+        mRecyclerView.setOnMultiSelectListener(new PullToRefreshRecyclerView.OnMultiSelectListener() {
+            @Override
+            public void onMultiSelect(View v, ArrayList<Integer> selectPositions) {
+                Toast.makeText(getApplicationContext(), "MultiSelect:" + selectPositions, Toast.LENGTH_SHORT).show();
+            }
+        });
+        mRecyclerView.setOnRectangleSelectListener(new PullToRefreshRecyclerView.OnRectangleSelectListener() {
+            @Override
+            public void onRectangleSelect(int startPosition, int endPosition) {
+                Toast.makeText(getApplicationContext(), "Start:" + startPosition + " End:" + endPosition, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**

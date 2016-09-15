@@ -22,7 +22,7 @@ public class HeaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final int TYPE_NORMAL = 0;//默认从0开始
     private final int TYPE_NORMAL_ITEM_COUNT = 12;//随意取的值,确保装饰Adapter对象不会超过此界即可
     private final int TYPE_FOOTER = TYPE_NORMAL_ITEM_COUNT + 1;
-    private RecyclerView.Adapter adapter;
+    protected RecyclerView.Adapter adapter;
     private final ArrayList<HeaderViewItem> headerViews;
     private final ArrayList<HeaderViewItem> footViews;
     private int headerCount, footerCount;//头/尾的总个数
@@ -208,9 +208,10 @@ public class HeaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      * @param position
      */
     public void removeFooterView(int position) {
-        if (0 > position || footViews.size() <= position) return;
-        footViews.remove(position);
-        notifyItemRemoved(getFooterStartIndex()+position);
+        if (-1< position && position<footViews.size() ){
+            footViews.remove(position);
+            notifyItemRemoved(getFooterStartIndex()+position);
+        }
     }
 
     @Override
