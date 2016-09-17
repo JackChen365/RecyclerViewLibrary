@@ -43,7 +43,9 @@ public class ExpandAdapterActivity extends AppCompatActivity {
         Random random = new Random();
         findViewById(R.id.btn_add).setOnClickListener(v -> mAdapter.addFullItem(getFullItemView(), random.nextInt(mAdapter.getItemCount())));
 //        findViewById(R.id.btn_last_add).setOnClickListener(v -> mAdapter.addFullItem(getFullItemView(), mAddIndex + 1));
-        findViewById(R.id.btn_remove).setOnClickListener(v -> mAdapter.removeFullItem(mViews.get(0)));
+        findViewById(R.id.btn_remove).setOnClickListener(v -> {
+            mAdapter.removeFullItem(mViews.get(0));
+        });
     }
 
     /**

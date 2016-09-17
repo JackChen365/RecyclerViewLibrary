@@ -14,6 +14,7 @@ import com.ldzs.pulltorefreshrecyclerview.adapter.SimpleAdapter;
 import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.recyclerlibrary.adapter.drag.DynamicAdapter;
 import com.ldzs.recyclerlibrary.anim.SlideInLeftAnimator;
+import com.ldzs.recyclerlibrary.observe.DynamicAdapterDataObserve;
 
 import java.util.LinkedList;
 import java.util.Random;
@@ -23,43 +24,51 @@ import java.util.Random;
  */
 public class DynamicAdapterActivity extends AppCompatActivity {
     private static final String TAG = "DynamicAdapterActivity";
-    private RecyclerView mRecyclerView;
-    private DynamicAdapter mAdapter;
-    private LinkedList<Integer> mAddItems;
+    private RecyclerView recyclerView;
+    private DynamicAdapter adapter;
+    private LinkedList<View> addViews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_adapter);
-        mAddItems = new LinkedList<>();
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
-        mRecyclerView.getItemAnimator().setAddDuration(300);
-        mRecyclerView.getItemAnimator().setRemoveDuration(300);
+        addViews = new LinkedList<>();
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setItemAnimator(new SlideInLeftAnimator());
+        recyclerView.getItemAnimator().setAddDuration(300);
+        recyclerView.getItemAnimator().setRemoveDuration(300);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 4);
-        mRecyclerView.setLayoutManager(layoutManager);
-        final SimpleAdapter adapter = new SimpleAdapter(this, Data.createItems(this, 40));
-        mAdapter = new DynamicAdapter(this, adapter);
-        mRecyclerView.setAdapter(mAdapter);
+        recyclerView.setLayoutManager(layoutManager);
+        final SimpleAdapter adapter = new SimpleAdapter(this, Data.createItems(this, 100));
+        this.adapter = new DynamicAdapter(this, adapter);
+        adapter.registerAdapterDataObserver(new DynamicAdapterDataObserve(this.adapter));
+        recyclerView.setAdapter(this.adapter);
         Random random = new Random();
-        findViewById(R.id.btn_item_add).setOnClickListener(v -> adapter.addItems(Data.createItems(this, 4),0));
-        findViewById(R.id.btn_item_remove).setOnClickListener(v -> adapter.remove(2));
-        View addView = findViewById(R.id.btn_add);
-        addView.setOnClickListener(v -> addView(random.nextInt(mAdapter.getItemCount())));
-        View removeView = findViewById(R.id.btn_remove);
-        removeView.setOnClickListener(v -> {
-            if (!mAddItems.isEmpty()) {
-                mAdapter.removeFullItem(mAddItems.pollFirst());
+        int[] array=new int[]{1,3,4,7,10,12,15,18,20};
+        for(int i=0;i<array.length;addView(array[i]),i++);
+        findViewById(R.id.btn_item_add).setOnClickListener(v -> adapter.addItem("new:"+adapter.getItemCount(),random.nextInt(adapter.getItemCount())));
+        findViewById(R.id.btn_item_remove).setOnClickListener(v -> {
+            if(0!=this.adapter.getItemCount()){
+                adapter.removeNotifyItem(0,8);
+            }
+        });
+        findViewById(R.id.btn_global_item_remove).setOnClickListener(v->{
+            adapter.remove(0,8);
+            this.adapter.itemRangeGlobalRemoved(0,8);
+        });
+        findViewById(R.id.btn_add).setOnClickListener(v -> addView(random.nextInt(this.adapter.getItemCount())));
+        findViewById(R.id.btn_remove).setOnClickListener(v -> {
+            if (!addViews.isEmpty()) {
+                this.adapter.removeFullItem(addViews.pollFirst());
             }
         });
     }
 
-
     private void addView(int position) {
         View view = getFullItemView();
-        if (!mAddItems.contains(position)) {
-            mAddItems.add(position);
-            mAdapter.addFullItem(view, position);
+        if (!addViews.contains(position)) {
+            addViews.add(view);
+            adapter.addFullItem(view, position);
         }
     }
 
@@ -73,7 +82,7 @@ public class DynamicAdapterActivity extends AppCompatActivity {
         TextView headerView = (TextView) header;
         header.setBackgroundColor(color);
         headerView.setTextColor(darkColor);
-        headerView.setText("HeaderView:" + mAdapter.getFullItemCount());
+        headerView.setText("HeaderView:" + adapter.getFullItemCount());
         return headerView;
     }
 }

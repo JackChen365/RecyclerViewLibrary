@@ -15,6 +15,8 @@ import java.util.ArrayList;
 /**
  * 包装RecyclerView的数据适配器,添加头和尾操作
  * 利用adapter的分类达到
+ * @deprecated
+ * @see com.ldzs.recyclerlibrary.adapter.drag.DynamicAdapter
  */
 public class HeaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "HeaderAdapter";

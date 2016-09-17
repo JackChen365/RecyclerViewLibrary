@@ -5,6 +5,7 @@ import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.ldzs.recyclerlibrary.callback.OnItemLongClickListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 一个可以在RecyclerView 己有的Adapter,添加任一的其他条目的Adapter对象
@@ -52,21 +54,6 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         itemPositions = new int[0];
         fullItemTypes = new SparseIntArray();
         fullViews = new SparseArray<>();
-        //子孩子添加时,动态更新插入条目
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
-                super.onItemRangeInserted(positionStart, itemCount);
-                itemRangeInsert(positionStart, itemCount);
-            }
-
-            @Override
-            public void onItemRangeRemoved(int positionStart, int itemCount) {
-                super.onItemRangeRemoved(positionStart, itemCount);
-                itemRangeRemove(positionStart, itemCount);
-            }
-
-        });
     }
 
     /**
@@ -75,73 +62,179 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * @param positionStart
      * @param itemCount
      */
-    private void itemRangeInsert(int positionStart, int itemCount) {
-        int totalCount = getItemCount();
+    public void itemRangeInsert(int positionStart, int itemCount) {
         //重置所有移除范围内的动态条信息
         ArrayList<Integer> itemPositionLists = new ArrayList<>();
-        for (int i = 0; i < itemPositions.length; i++) {
-            itemPositionLists.add(itemPositions[i]);
-        }
-        for (int i = positionStart; i < totalCount; i++) {
-            int position = getStartIndex(i) + i;
-            int index = findPosition(position);
-            if (RecyclerView.NO_POSITION != index) {
-                //自定义条目,整体往后移动位置
-                int newPosition = i + itemCount;
-                int viewType = fullItemTypes.get(position);
-                fullItemTypes.removeAt(index);
-                fullItemTypes.put(newPosition, viewType);
-                itemPositionLists.set(index, newPosition);
+        int length = itemPositions.length;
+        int startIndex = getStartIndex(positionStart);
+        positionStart+=startIndex;
+        SparseIntArray newFullItems=new SparseIntArray();
+        for(int i=0;i<length;i++){
+            int position = itemPositions[i];
+            int newPosition = position;
+            //范围外条目,整体后退
+            if(positionStart<=position){
+                newPosition=position+itemCount;
             }
+            newFullItems.put(newPosition,fullItemTypes.get(position));
+            itemPositionLists.add(newPosition);
+        }
+        fullItemTypes.clear();
+        for(int i=0;i<newFullItems.size();i++){
+            fullItemTypes.append(newFullItems.keyAt(i),newFullItems.valueAt(i));
         }
         int size = itemPositionLists.size();
+        Log.e(TAG,"position:"+Arrays.toString(itemPositions)+" itemPositions:"+itemPositionLists+" positionStart:"+positionStart+" startIndex:"+startIndex);
         itemPositions = new int[size];
         for (int i = 0; i < size; i++) {
             itemPositions[i] = itemPositionLists.get(i);
         }
-        notifyItemRangeChanged(positionStart, totalCount - positionStart);
     }
 
     /**
-     * 条目范围移动
-     *
+     * 全局范围内条目删除
+     * 范围内删除所有条目,包括自定义添加条目
      * @param positionStart
      * @param itemCount
      */
-    private void itemRangeRemove(int positionStart, int itemCount) {
-        int totalCount = getItemCount();
+    public void itemRangeGlobalRemoved(int positionStart, int itemCount) {
         //重置所有移除范围内的动态条信息
-        ArrayList<Integer> itemPositionLists = new ArrayList<>();
-        for (int i = 0; i < itemPositions.length; i++) {
-            itemPositionLists.add(itemPositions[i]);
+        int startIndex = getStartIndex(positionStart);
+        positionStart+=startIndex;
+        //计算出最后移除范围
+        int index=0;
+        int positionEnd=positionStart;
+        while(index<itemCount){
+            if(!isFullItem(positionEnd++))index++;
         }
-        for (int i = positionStart; i < totalCount; i++) {
-            int position = getStartIndex(i) + i;
-            int index = findPosition(position);
-            if (RecyclerView.NO_POSITION != index) {
-                if (i < positionStart + itemCount) {
-                    //移除动态条目
-                    int viewType = fullItemTypes.get(position);
-                    fullViews.remove(viewType);
-                    fullItemTypes.removeAt(index);
-                    itemPositionLists.remove(index);
-                } else {
-                    //范围外自定义条目,整体往前移动位置
-                    int newPosition = i - itemCount;
-                    int viewType = fullItemTypes.get(position);
-                    fullItemTypes.removeAt(index);
-                    fullItemTypes.put(newPosition, viewType);
-                    itemPositionLists.set(index, newPosition);
-                }
+        itemCount=positionEnd-positionStart;
+
+        List<Integer> positionList=new ArrayList<>();
+        for(int i=0;i<itemPositions.length;positionList.add(itemPositions[i++]));
+
+        int fullItemCount=startIndex;
+        int size = fullItemTypes.size();
+        for(int position=positionStart;position<positionEnd;position++){
+            if(isFullItem(position)) {
+                fullItemTypes.removeAt(startIndex);
+                positionList.remove(startIndex);
+                fullItemCount++;
             }
         }
-        int size = itemPositionLists.size();
-        itemPositions = new int[size];
-        for (int i = 0; i < size; i++) {
-            itemPositions[i] = itemPositionLists.get(i);
+        for(int i=fullItemCount;i<size;i++,startIndex++){
+            Integer position = positionList.get(startIndex);
+            int newPosition=position-itemCount;
+            int value = fullItemTypes.get(position);
+            fullItemTypes.delete(position);
+            fullItemTypes.put(newPosition,value);
+            positionList.set(startIndex,newPosition);
         }
-        notifyItemRangeChanged(positionStart, totalCount - positionStart);
+        size=fullItemTypes.size();
+        itemPositions=new int[size];
+        for(int i=0;i<size;itemPositions[i]=positionList.get(i),i++);
+        notifyItemRangeRemoved(positionStart,positionEnd);
+        Log.e(TAG,"position:"+Arrays.toString(itemPositions)+" positionStart:"+positionStart+" startIndex:"+startIndex);
     }
+
+    /**
+     * 条目范围内删除,用户条目,不包含自定义插入条目
+     * like remove 0 from 8
+     *  --0--
+     *  1 2 3
+     *  --4--
+     *  5 6
+     *  --7--
+     *  8 9 10
+     *  11 12 13
+     * result:
+     *  --0--
+     *  (1 2 3)
+     *  --4--
+     *  (5 6)
+     *  --7--
+     *  (8 9 10)
+     *  11 12 13
+     *
+     *  难度最大的地方在于.动态移除.以及动态插件条目信息更新
+     *  1:先计算出,当前移除位置,到指定需要移除位置条目数的最终位置.上面示例是从从0开始,移除8个,那么最终位置为11
+     *  2:范围移除.但是中间有自定义条目插入.所以其中移除还是分段移除.并且更新信息.这里需要算一步,更新信息,再删一步.
+     *      如(1,2,3)这一段.起始位置为1(--0--),需要删除3个,会记录删除偏移量3,然后检测到(--4--),动态更新(--4--)条目信息.
+     *      将其往前移3,删除1-3元素后,(--4--)的起始变为1,后续逻辑相同.
+     *  3:任何范围外的超出的,都会直接减去最终的startOffset值,形成插入信息一致更新.
+     *
+     *  为实现此效果.中间修改代码很多次.主要是没想通具体逻辑.就是第二步的逻辑.只有达到此效果.才是真正的动态化.
+     * @param positionStart
+     * @param itemCount
+     */
+    public void itemRangeRemoved(int positionStart, int itemCount) {
+        //重置所有移除范围内的动态条信息
+        int startIndex = getStartIndex(positionStart);
+        positionStart+=startIndex;
+        //计算出最后移除范围
+        int index=0;
+        int positionEnd=positionStart;
+        while(index<itemCount){
+            if(!isFullItem(positionEnd++))index++;
+        }
+
+        int length = itemPositions.length;
+        final int[] finalArray=new int[length];
+        System.arraycopy(itemPositions,0,finalArray,0,length);
+
+        int start=0,startOffset=0,totalOffset=0;
+        for(int position=positionStart;position<positionEnd;position++){
+            if(position+1!=positionEnd&&RecyclerView.NO_POSITION==findPosition(finalArray,position)) {
+                if(0==startOffset) start=position-totalOffset;
+                startOffset++;
+                totalOffset++;
+            } else {
+                for(int i=startIndex;i<length;i++){
+                    int itemPosition = itemPositions[i];
+                    itemPositions[i]-=startOffset;
+                    int value = fullItemTypes.get(itemPosition);
+                    fullItemTypes.delete(itemPosition);
+                    fullItemTypes.put(itemPositions[i],value);
+                }
+                notifyItemRangeRemoved(start,startOffset);
+                startIndex++;
+                startOffset=0;
+            }
+        }
+        Log.e(TAG,"position:"+Arrays.toString(itemPositions)+" positionStart:"+positionStart+" startIndex:"+startIndex);
+        //之前实现方式,存在不足,但思考了很久.不舍得删了.
+        //这里运算比较复杂,需要时时更新所有ItemPosition以及fullItemType信息.整个动态化逻辑里,这里最复杂.
+//        for(int i=0;i<length;i++){
+//            final int position = itemPositions[i];
+//            if(position>positionStart&&position<=positionEnd){
+//                //置换ItemPosition位置
+//                int deleteStart=-1,deleteCount=0;
+//                for(index=start;index<position;index++){
+//                    //移除中间条目.这里不能采用rangeRemove,因为条目插入中间.采用这个方法.会直接导致中间条目无法保留
+//                    if(RecyclerView.NO_POSITION==findPosition(finalArray,index)){
+//                        if(-1==deleteStart) deleteStart=index-startOffset;
+//                        deleteCount++;
+//                        startOffset++;
+//                    }
+//                }
+//                start=position;
+//                //范围内条目,整体前进
+//                int newPosition=position-startOffset;
+//                int value = fullItemTypes.get(position);
+//                fullItemTypes.delete(position);
+//                fullItemTypes.put(newPosition,value);
+//                itemPositions[i]=newPosition;
+//                notifyItemRangeRemoved(deleteStart,deleteCount);
+//            } else if(position>positionEnd){
+//                //大于移除范围条目
+//                int newPosition=position-startOffset;
+//                int value = fullItemTypes.get(position);
+//                fullItemTypes.delete(position);
+//                fullItemTypes.put(newPosition,value);
+//                itemPositions[i]=newPosition;
+//            }
+//        }
+    }
+
 
     /**
      * 添加一个自定义view到末尾
@@ -192,31 +285,47 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * @param view
      */
     public void removeFullItem(View view) {
-        removeFullItem(fullViews.indexOfValue(view));
+        int index = fullViews.indexOfValue(view);
+        if(-1<index){
+            int viewType = fullViews.keyAt(index);
+            index=fullItemTypes.indexOfValue(viewType);
+            if(-1<index){
+                int position = fullItemTypes.keyAt(index);
+                removeFullItem(position);
+            }
+        }
     }
 
     /**
      * 移除指定位置view
      *
-     * @param position
+     * @param removePosition
      */
-    public void removeFullItem(int position) {
-        if (isFullItem(position)) {
-            int itemType = getItemViewType(position);
-            fullViews.remove(itemType);
-            int index = fullItemTypes.indexOfKey(position);
-            if (0 <= index) {
-                fullItemTypes.removeAt(index);
-            }
+    public void removeFullItem(int removePosition) {
+        if (isFullItem(removePosition)) {
+            int itemType = getItemViewType(removePosition);
+            fullViews.delete(itemType);
             int length = itemPositions.length;
             int[] newPositions = new int[length - 1];
+            SparseIntArray newFullItems=new SparseIntArray();
             for (int i = 0, k = 0; i < length; i++) {
-                if (position != itemPositions[i]) {
-                    newPositions[k++] = itemPositions[i];
+                int position = itemPositions[i];
+                if (removePosition != position) {
+                    int newPosition=position;
+                    if(removePosition<position){
+                        newPosition=position-1;
+                    }
+                    newPositions[k++] = newPosition;
+                    newFullItems.put(newPosition,fullItemTypes.get(position));
                 }
             }
+            fullItemTypes.clear();
+            for(int i=0;i<newFullItems.size();i++){
+                fullItemTypes.append(newFullItems.keyAt(i),newFullItems.valueAt(i));
+            }
+            Log.e(TAG,"position:"+removePosition+" array:"+Arrays.toString(newPositions)+" old:"+Arrays.toString(itemPositions));
             itemPositions = newPositions;
-            notifyItemRemoved(position);
+            notifyItemRemoved(removePosition);
         }
     }
 
@@ -330,17 +439,32 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 start = middle + 1;
             }
         }
-        return -1 == result ? start : result;
+        if(-1 == result){
+            result=start;
+        } else {
+            start=result-1;
+            end = positions.length - 1;
+            //当position为0时,插入条目为0,1 这时候应该取得2
+            while(start<end&&positions[start]+1==positions[start+1]){
+                start++;
+                result++;
+            }
+        }
+        return result;
+    }
+
+    public int findPosition(int position) {
+        return findPosition(itemPositions,position);
     }
 
     /**
      * 查找当前是否有返回值
-     *
+     * @param array
      * @param position
      * @return
      */
-    public int findPosition(int position) {
-        int[] positions = itemPositions;
+    public int findPosition(int[] array,int position) {
+        int[] positions = array;
         int start = 0, end = positions.length - 1, result = -1;
         while (start <= end) {
             int middle = (start + end) / 2;

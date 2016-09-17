@@ -2,6 +2,7 @@ package com.ldzs.recyclerlibrary.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,8 +114,27 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
     }
 
     public void remove(int index) {
-        items.remove(index);
-        notifyItemRemoved(index);
+        if(!items.isEmpty()&&index<items.size()){
+            items.remove(index);
+            notifyItemRemoved(index);
+        }
+    }
+
+    public void remove(int start,int count){
+        int index=0;
+        int minCount=Math.min(items.size(),count);
+        while(index++<minCount){
+            items.remove(start);
+        }
+    }
+
+    public void removeNotifyItem(int start,int count){
+        int index=0;
+        int minCount=Math.min(items.size(),count);
+        while(index++<minCount){
+            items.remove(start);
+        }
+        notifyItemRangeRemoved(start,minCount);
     }
 
     public void remove(E e) {

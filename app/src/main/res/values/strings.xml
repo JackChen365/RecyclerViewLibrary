@@ -35,4 +35,5 @@
     <string name="click_load_more">点击加载更多</string>
     <string name="load_error">加载失败,请检测网络</string>
     <string name="re_try">重新加载</string>
+    <string name="item_global_remove">条目全局移除</string>
 </resources>

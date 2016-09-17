@@ -21,24 +21,35 @@
             android:id="@+id/btn_item_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="9dp"
             android:text="@string/item_add" />
 
         <Button
             android:id="@+id/btn_item_remove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="9dp"
             android:text="@string/item_remove" />
+
+        <Button
+            android:id="@+id/btn_global_item_remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="9dp"
+            android:text="@string/item_global_remove" />
 
         <Button
             android:id="@+id/btn_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="9dp"
             android:text="@string/random_add" />
 
         <Button
             android:id="@+id/btn_remove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="9dp"
             android:text="@string/random_remove" />
     </LinearLayout>
 
