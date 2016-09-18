@@ -16,7 +16,9 @@ import com.ldzs.recyclerlibrary.adapter.drag.DynamicAdapter;
 import com.ldzs.recyclerlibrary.anim.SlideInLeftAnimator;
 import com.ldzs.recyclerlibrary.observe.DynamicAdapterDataObserve;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -44,9 +46,14 @@ public class DynamicAdapterActivity extends AppCompatActivity {
         adapter.registerAdapterDataObserver(new DynamicAdapterDataObserve(this.adapter));
         recyclerView.setAdapter(this.adapter);
         Random random = new Random();
-        int[] array=new int[]{1,3,4,7,10,12,15,18,20};
-        for(int i=0;i<array.length;addView(array[i]),i++);
-        findViewById(R.id.btn_item_add).setOnClickListener(v -> adapter.addItem("new:"+adapter.getItemCount(),random.nextInt(adapter.getItemCount())));
+        //随机添加一批
+        List<Integer> items=new ArrayList<>();
+        for(int i=0,count=0;i<30;items.add(count+=1+random.nextInt(3)),i++);
+        for(int i=0;i<items.size();addView(items.get(i)),i++);
+        findViewById(R.id.btn_item_add).setOnClickListener(v -> {
+            int itemCount = adapter.getItemCount();
+            adapter.addItem("new:"+adapter.getItemCount(),random.nextInt(0==itemCount?1:itemCount));
+        });
         findViewById(R.id.btn_item_remove).setOnClickListener(v -> {
             if(0!=this.adapter.getItemCount()){
                 adapter.removeNotifyItem(0,8);

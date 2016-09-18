@@ -95,45 +95,47 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * 全局范围内条目删除
      * 范围内删除所有条目,包括自定义添加条目
      * @param positionStart
-     * @param itemCount
+     * @param removeCount
      */
-    public void itemRangeGlobalRemoved(int positionStart, int itemCount) {
+    public void itemRangeGlobalRemoved(int positionStart, int removeCount) {
         //重置所有移除范围内的动态条信息
         int startIndex = getStartIndex(positionStart);
         positionStart+=startIndex;
         //计算出最后移除范围
         int index=0;
         int positionEnd=positionStart;
-        while(index<itemCount){
+        while(index<removeCount){
             if(!isFullItem(positionEnd++))index++;
         }
-        itemCount=positionEnd-positionStart;
+        removeCount=positionEnd-positionStart;
 
         List<Integer> positionList=new ArrayList<>();
         for(int i=0;i<itemPositions.length;positionList.add(itemPositions[i++]));
 
-        int fullItemCount=startIndex;
-        int size = fullItemTypes.size();
         for(int position=positionStart;position<positionEnd;position++){
             if(isFullItem(position)) {
+                int value = fullItemTypes.valueAt(startIndex);
+                fullViews.remove(value);
                 fullItemTypes.removeAt(startIndex);
                 positionList.remove(startIndex);
-                fullItemCount++;
             }
         }
-        for(int i=fullItemCount;i<size;i++,startIndex++){
-            Integer position = positionList.get(startIndex);
-            int newPosition=position-itemCount;
+        Log.e(TAG,"array:"+positionList);
+        int size = fullItemTypes.size();
+        for(int i=startIndex;i<size;i++){
+            Integer position = positionList.get(i);
+            int newPosition=position-removeCount;
             int value = fullItemTypes.get(position);
             fullItemTypes.delete(position);
             fullItemTypes.put(newPosition,value);
-            positionList.set(startIndex,newPosition);
+            positionList.set(i,newPosition);
         }
-        size=fullItemTypes.size();
         itemPositions=new int[size];
         for(int i=0;i<size;itemPositions[i]=positionList.get(i),i++);
-        notifyItemRangeRemoved(positionStart,positionEnd);
-        Log.e(TAG,"position:"+Arrays.toString(itemPositions)+" positionStart:"+positionStart+" startIndex:"+startIndex);
+        if(0<removeCount){
+            notifyItemRangeRemoved(positionStart,removeCount);
+        }
+        Log.e(TAG,"position:"+Arrays.toString(itemPositions)+" positionStart:"+positionStart+" positionEnd:"+positionEnd+" startIndex:"+startIndex+" realCount:"+getItemCount()+" itemCount:"+removeCount);
     }
 
     /**
@@ -176,6 +178,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         while(index<itemCount){
             if(!isFullItem(positionEnd++))index++;
         }
+        Log.e(TAG,"itemCount:"+itemCount+" adapterCount:"+adapter.getItemCount()+" start:"+positionStart+" end:"+positionEnd);
 
         int length = itemPositions.length;
         final int[] finalArray=new int[length];
@@ -183,11 +186,14 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         int start=0,startOffset=0,totalOffset=0;
         for(int position=positionStart;position<positionEnd;position++){
-            if(position+1!=positionEnd&&RecyclerView.NO_POSITION==findPosition(finalArray,position)) {
+            boolean isDefaultItem = RecyclerView.NO_POSITION == findPosition(finalArray, position);
+            if(isDefaultItem) {
                 if(0==startOffset) start=position-totalOffset;
                 startOffset++;
                 totalOffset++;
-            } else {
+            }
+            //判断为插入条目,或者最后一个时,执行偏移运算
+            if(!isDefaultItem||positionEnd-1==position){
                 for(int i=startIndex;i<length;i++){
                     int itemPosition = itemPositions[i];
                     itemPositions[i]-=startOffset;
@@ -195,6 +201,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     fullItemTypes.delete(itemPosition);
                     fullItemTypes.put(itemPositions[i],value);
                 }
+                Log.e(TAG,"start:"+start+" offset:"+startOffset+" index:"+startIndex);
                 notifyItemRangeRemoved(start,startOffset);
                 startIndex++;
                 startOffset=0;
