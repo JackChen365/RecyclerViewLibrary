@@ -39,6 +39,17 @@ import cz.library.RefreshMode;
  * 2:顶部以及,底部的控件自由添加,删除,中间任一位置控件添加,此为确保RecyclerView数据一致性.比如新闻类应用.可能为了广告,为了某些提示条目,还需要去适合到逻辑Adapter内.导致条目很难看.
  * 3:Adapter的条目选择功能.
  * 4:类ListView的Divide封装
+ *
+ * 待优化/注意事件:
+ *  1:当使用addDynamicView功能时,设置OnItemClickListener事件返回的position为插入的顺移的位置,
+ *  比如1,9插入两个元素,当点击子元素为10位置元素时,将返回12,这时候如果想获取子条目位置,可以使用#getItemPosition方法.
+ *  具体原因为,1 9 位置各插入一个条目,此时,点击第10个位置条目,真实子Adapter条目位置为8,取得8,但很难根据8还原为10.还原方式为while(0->8) !isDynamicItem()++ 效率很低.
+ *  故此.只传回子类,也使用原始Position,使用时,调用DragRecyclerView的getItemPosition方法获取具体子条目位置
+ *
+ *  2:addDynamicView此方法,有一个问题,暂时未找到原因:如果谁清楚,请帮助解决一下,所以不用notifyItemInserted改用notifyDataSetChanged,性能差一点,但不会报错.
+ // java.lang.IllegalArgumentException: Called removeDetachedView with a view which is not flagged as tmp detached.ViewHolder{3c6be8ee position=17 id=-1, oldPos=-1, pLpos:-1}
+ *
+ *
  * 以上.2016/9/24
  */
 public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView> implements IRecyclerView{
@@ -305,6 +316,16 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
         if(0>index||index>=count){
             throw new IndexOutOfBoundsException("index out of bounds!");
         }
+    }
+
+    /**
+     * 获得子条目的位置
+     *
+     * @param position
+     * @return
+     */
+    public int getItemPosition(int position) {
+        return position - adapter.getStartIndex(position);
     }
     /**
      * on recyclerView scroll state changed

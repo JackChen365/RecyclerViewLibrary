@@ -1,6 +1,5 @@
 package com.ldzs.recyclerlibrary.adapter.drag;
 
-import android.content.Context;
 import android.view.View;
 
 import com.ldzs.recyclerlibrary.adapter.BaseViewAdapter;

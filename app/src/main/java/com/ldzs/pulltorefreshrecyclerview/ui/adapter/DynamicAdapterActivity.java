@@ -4,16 +4,19 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ldzs.pulltorefreshrecyclerview.R;
 import com.ldzs.pulltorefreshrecyclerview.adapter.SimpleAdapter;
 import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.recyclerlibrary.adapter.drag.DynamicAdapter;
 import com.ldzs.recyclerlibrary.anim.SlideInLeftAnimator;
+import com.ldzs.recyclerlibrary.callback.OnItemClickListener;
 import com.ldzs.recyclerlibrary.observe.DynamicAdapterDataObserve;
 
 import java.util.ArrayList;
@@ -43,6 +46,12 @@ public class DynamicAdapterActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         final SimpleAdapter adapter = new SimpleAdapter(this, Data.createItems(this, 100));
         this.adapter = new DynamicAdapter(adapter);
+        this.adapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                Toast.makeText(DynamicAdapterActivity.this, "position:"+position, Toast.LENGTH_SHORT).show();
+            }
+        });
         adapter.registerAdapterDataObserver(new DynamicAdapterDataObserve(this.adapter));
         recyclerView.setAdapter(this.adapter);
         Random random = new Random();

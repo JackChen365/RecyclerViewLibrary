@@ -41,7 +41,7 @@ public class DragRecyclerView extends RecyclerView implements CallbackItemTouch 
     }
 
     /**
-     * 获得真实的位置
+     * 获得子条目的位置
      *
      * @param position
      * @return
@@ -91,7 +91,7 @@ public class DragRecyclerView extends RecyclerView implements CallbackItemTouch 
      * @param oldPosition
      * @param newPosition
      */
-    public void setItemMove(int oldPosition, final int newPosition) {
+    public void setItemMove(int oldPosition,final int newPosition) {
         if (null != adapter) {
             adapter.swap(oldPosition, newPosition);
             adapter.notifyItemMoved(oldPosition, newPosition);

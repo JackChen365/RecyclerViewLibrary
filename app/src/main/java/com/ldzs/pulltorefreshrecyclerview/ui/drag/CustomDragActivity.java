@@ -90,7 +90,6 @@ public class CustomDragActivity extends AppCompatActivity {
                     channels.add(item);
                     mRecyclerView.setItemMove(position, count + 1);
                 }
-//                mRecyclerView.postDelayed(() -> mRecyclerView.invalidateItemDecorations(), mRecyclerView.getItemAnimator().getMoveDuration());
             });
             mRecyclerView.addDynamicView(view, 0);
             mRecyclerView.addDynamicView(R.layout.recyclerview_header4, channels.size() + 1);

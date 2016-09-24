@@ -417,7 +417,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (!isDynamicItem(position)&&null != adapter) {
             int startIndex = getStartIndex(position);
             adapter.onBindViewHolder(holder, position - startIndex);
@@ -425,8 +425,10 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        int itemPosition = holder.getAdapterPosition()-getHeaderViewCount();
-                        if (onItemClick(v, itemPosition)) {
+                        //这里看起来很矛盾,其实是必然的设计,因为position可以往下减为真实的子Adapter的位置,但是往上,无法逆反,为实现drag条目转换功能,所以只能传递真实位置回具体条目
+                        int itemPosition = holder.getAdapterPosition();
+                        int realPosition=itemPosition-getStartIndex(itemPosition);
+                        if (onItemClick(v, realPosition)) {
                             itemClickListener.onItemClick(v, itemPosition);
                         }
                     }
