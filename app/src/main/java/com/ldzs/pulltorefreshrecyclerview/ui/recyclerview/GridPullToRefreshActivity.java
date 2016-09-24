@@ -17,6 +17,7 @@ import com.ldzs.pulltorefreshrecyclerview.adapter.SimpleAdapter;
 import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
 
+import cz.library.PullToRefreshLayout;
 import cz.library.RefreshMode;
 
 public class GridPullToRefreshActivity extends AppCompatActivity {
@@ -54,6 +55,31 @@ public class GridPullToRefreshActivity extends AppCompatActivity {
                 }
             }
         });
+        mRecyclerView.setOnPullToRefreshListener(new PullToRefreshLayout.OnPullToRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mRecyclerView.postDelayed(() -> {
+                    mAdapter.addItems(Data.createItems(this, 10), 0);
+                    mRecyclerView.onRefreshComplete();
+                }, 1000);
+            }
+        });
+        mRecyclerView.setOnPullFooterToRefreshListener(new PullToRefreshRecyclerView.OnPullFooterToRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (times < 2) {
+                    mRecyclerView.postDelayed(() -> {
+                        mAdapter.addItems(Data.createItems(this, 10));
+                        mRecyclerView.onRefreshFootComplete();
+                    }, 1000);
+                } else {
+                    mRecyclerView.postDelayed(() -> mRecyclerView.setFooterRefreshDone(), 1000);
+                }
+                times++;
+            }
+        });
+
+        mRecyclerView.setAdapter(mAdapter = new SimpleAdapter(this, R.layout.grid_text_item, Data.createItems(this, 10)));
 
         View headerView = getHeaderView();
         headerView.setBackgroundColor(Color.BLUE);
@@ -62,25 +88,6 @@ public class GridPullToRefreshActivity extends AppCompatActivity {
         mRecyclerView.addFooterView(getHeaderView());
         mRecyclerView.addFooterView(getHeaderView());
 
-        mRecyclerView.setOnPullToRefreshListener(() -> {
-            mRecyclerView.postDelayed(() -> {
-                mAdapter.addItems(Data.createItems(this, 10), 0);
-                mRecyclerView.onRefreshComplete();
-            }, 1000);
-        });
-        mRecyclerView.setOnPullFooterToRefreshListener(() -> {
-            if (times < 2) {
-                mRecyclerView.postDelayed(() -> {
-                    mAdapter.addItems(Data.createItems(this, 10));
-                    mRecyclerView.onRefreshFootComplete();
-                }, 1000);
-            } else {
-                mRecyclerView.postDelayed(() -> mRecyclerView.setFooterRefreshDone(), 1000);
-            }
-            times++;
-        });
-
-        mRecyclerView.setAdapter(mAdapter = new SimpleAdapter(this, R.layout.grid_text_item, Data.createItems(this, 10)));
     }
 
     /**
@@ -91,7 +98,7 @@ public class GridPullToRefreshActivity extends AppCompatActivity {
         View header = LayoutInflater.from(this).inflate(R.layout.recyclerview_header1, (ViewGroup) findViewById(android.R.id.content), false);
         TextView headerView = (TextView) header;
         headerView.setTextColor(textColor);
-        headerView.setText("HeaderView:" + mRecyclerView.getHeaderViewCount());
+        headerView.setText("HeaderView:" + (mRecyclerView.getHeaderViewCount()+mRecyclerView.getFooterViewCount()));
         headerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

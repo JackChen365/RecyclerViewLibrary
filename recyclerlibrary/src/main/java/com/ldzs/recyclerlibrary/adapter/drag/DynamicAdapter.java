@@ -37,9 +37,9 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     protected final int START_POSITION = 1024;//超出其他Header/Footer范围,避免混乱
     protected final SparseIntArray fullItemTypes;
     protected final SparseArray<View> fullViews;
+    private int headerViewCount;
     protected int[] itemPositions;
-    private Context context;
-    private RecyclerView.Adapter adapter;
+    protected RecyclerView.Adapter adapter;
     private int itemViewCount;
     private OnItemLongClickListener longItemListener;
     private OnItemClickListener itemClickListener;
@@ -48,12 +48,16 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     /**
      * @param adapter 包装数据适配器
      */
-    public DynamicAdapter(Context context, RecyclerView.Adapter adapter) {
-        this.context = context;
+    public DynamicAdapter(RecyclerView.Adapter adapter) {
         this.adapter = adapter;
         itemPositions = new int[0];
         fullItemTypes = new SparseIntArray();
         fullViews = new SparseArray<>();
+    }
+
+    public void setAdapter(RecyclerView.Adapter adapter){
+        this.adapter=adapter;
+        notifyDataSetChanged();
     }
 
     /**
@@ -65,10 +69,8 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void itemRangeInsert(int positionStart, int itemCount) {
         //重置所有移除范围内的动态条信息
         ArrayList<Integer> itemPositionLists = new ArrayList<>();
-        int length = itemPositions.length;
-        int startIndex = getStartIndex(positionStart);
-        positionStart+=startIndex;
         SparseIntArray newFullItems=new SparseIntArray();
+        int length = itemPositions.length;
         for(int i=0;i<length;i++){
             int position = itemPositions[i];
             int newPosition = position;
@@ -84,11 +86,12 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             fullItemTypes.append(newFullItems.keyAt(i),newFullItems.valueAt(i));
         }
         int size = itemPositionLists.size();
-        Log.e(TAG,"position:"+Arrays.toString(itemPositions)+" itemPositions:"+itemPositionLists+" positionStart:"+positionStart+" startIndex:"+startIndex);
+        Log.e(TAG,"position:"+Arrays.toString(itemPositions)+" itemPositions:"+itemPositionLists+" positionStart:"+positionStart);
         itemPositions = new int[size];
         for (int i = 0; i < size; i++) {
             itemPositions[i] = itemPositionLists.get(i);
         }
+        notifyItemRangeInserted(positionStart, itemCount);
     }
 
     /**
@@ -105,7 +108,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         int index=0;
         int positionEnd=positionStart;
         while(index<removeCount){
-            if(!isFullItem(positionEnd++))index++;
+            if(!isDynamicItem(positionEnd++))index++;
         }
         removeCount=positionEnd-positionStart;
 
@@ -113,7 +116,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         for(int i=0;i<itemPositions.length;positionList.add(itemPositions[i++]));
 
         for(int position=positionStart;position<positionEnd;position++){
-            if(isFullItem(position)) {
+            if(isDynamicItem(position)) {
                 int value = fullItemTypes.valueAt(startIndex);
                 fullViews.remove(value);
                 fullItemTypes.removeAt(startIndex);
@@ -135,7 +138,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if(0<removeCount){
             notifyItemRangeRemoved(positionStart,removeCount);
         }
-        Log.e(TAG,"position:"+Arrays.toString(itemPositions)+" positionStart:"+positionStart+" positionEnd:"+positionEnd+" startIndex:"+startIndex+" realCount:"+getItemCount()+" itemCount:"+removeCount);
+        Log.e(TAG,"position:"+Arrays.toString(itemPositions)+" positionStart:"+positionStart+" positionEnd:"+positionEnd+" startIndex:"+startIndex+" realCount:"+getRealItemCount()+" itemCount:"+removeCount);
     }
 
     /**
@@ -171,12 +174,11 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void itemRangeRemoved(int positionStart, int itemCount) {
         //重置所有移除范围内的动态条信息
         int startIndex = getStartIndex(positionStart);
-        positionStart+=startIndex;
         //计算出最后移除范围
         int index=0;
         int positionEnd=positionStart;
         while(index<itemCount){
-            if(!isFullItem(positionEnd++))index++;
+            if(!isDynamicItem(positionEnd++))index++;
         }
         Log.e(TAG,"itemCount:"+itemCount+" adapterCount:"+adapter.getItemCount()+" start:"+positionStart+" end:"+positionEnd);
 
@@ -248,18 +250,17 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      *
      * @param layout
      */
-    public void addFullItem(@LayoutRes int layout) {
+    public void addDynamicView(Context context,@LayoutRes int layout) {
         View view = View.inflate(context, layout, null);
-        addFullItem(view, getItemCount());
+        addDynamicView(view, getRealItemCount());
     }
 
-    /**
-     * 添加一个自定义view到末尾
-     *
-     * @param view
-     */
-    public void addFullItem(View view) {
-        addFullItem(view, getItemCount());
+    public void addHeaderView(View view){
+        addDynamicView(view,getHeaderViewCount());
+    }
+
+    public int getHeaderViewCount(){
+        return headerViewCount;
     }
 
     /**
@@ -267,7 +268,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      *
      * @param position
      */
-    public void addFullItem(View view, int position) {
+    public void addDynamicView(View view, int position) {
         if (RecyclerView.NO_POSITION != findPosition(position)) return;//己存在添加位置,则不添加
         int length = itemPositions.length;
         int[] newPositions = new int[length + 1];
@@ -278,12 +279,28 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         int viewType = START_POSITION + itemViewCount++;
         fullItemTypes.put(position, viewType);
         fullViews.put(viewType, view);
-        //当只有一个时,通知插入
-        if (1 == itemPositions.length) {
-            notifyItemInserted(position);
-        } else {
-            notifyItemChanged(position, null);
+
+        //update header view count;
+        headerViewCount=0;
+        length=itemPositions.length;
+        int index=0;
+        while(index<length&&index==itemPositions[index]){
+            index++;
+            headerViewCount++;
         }
+
+        //当只有一个时,通知插入,这里有一个问题,暂时未找到原因:如果谁清楚,请帮助解决一下,所以不用notifyItemInserted改用notifyDataSetChanged,性能差一点,但不会报错.
+        // java.lang.IllegalArgumentException: Called removeDetachedView with a view which is not flagged as tmp detached.ViewHolder{3c6be8ee position=17 id=-1, oldPos=-1, pLpos:-1}
+//        notifyItemInserted(position);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * 由子类复写.返回装饰底部控件个数
+     * @return
+     */
+    public int getFooterViewCount(){
+        return 0;
     }
 
     /**
@@ -291,25 +308,30 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      *
      * @param view
      */
-    public void removeFullItem(View view) {
+    public void removeDynamicView(View view) {
         int index = fullViews.indexOfValue(view);
         if(-1<index){
             int viewType = fullViews.keyAt(index);
             index=fullItemTypes.indexOfValue(viewType);
             if(-1<index){
                 int position = fullItemTypes.keyAt(index);
-                removeFullItem(position);
+                removeDynamicView(position);
             }
         }
     }
+
+    public int indexOfDynamicView(View view){
+        return fullViews.indexOfValue(view);
+    }
+
 
     /**
      * 移除指定位置view
      *
      * @param removePosition
      */
-    public void removeFullItem(int removePosition) {
-        if (isFullItem(removePosition)) {
+    public void removeDynamicView(int removePosition) {
+        if (isDynamicItem(removePosition)) {
             int itemType = getItemViewType(removePosition);
             fullViews.delete(itemType);
             int length = itemPositions.length;
@@ -341,11 +363,11 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         super.onAttachedToRecyclerView(recyclerView);
         RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
         if (manager instanceof GridLayoutManager) {
-            final GridLayoutManager gridManager = ((GridLayoutManager) manager);
-            gridManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            final GridLayoutManager gridLayoutManager = ((GridLayoutManager) manager);
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
-                    return isFullItem(position) ? gridManager.getSpanCount() : 1;
+                    return isDynamicItem(position)||isFullItem(position) ? gridLayoutManager.getSpanCount() : 1;
                 }
             });
         }
@@ -355,11 +377,21 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
         int position = holder.getLayoutPosition();
-        ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
-        if (lp != null && lp instanceof StaggeredGridLayoutManager.LayoutParams && (isFullItem(position))) {
-            StaggeredGridLayoutManager.LayoutParams p = (StaggeredGridLayoutManager.LayoutParams) lp;
+        ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+        if (null!=layoutParams && layoutParams instanceof StaggeredGridLayoutManager.LayoutParams && ((isDynamicItem(position))||isFullItem(position))) {
+            StaggeredGridLayoutManager.LayoutParams p = (StaggeredGridLayoutManager.LayoutParams) layoutParams;
             p.setFullSpan(true);
         }
+    }
+
+    /**
+     * 由子类实现,条目是否铺满
+     * @see #onViewAttachedToWindow #onAttachedToRecyclerView
+     * @param position
+     * @return
+     */
+    protected boolean isFullItem(int position){
+        return false;
     }
 
     /**
@@ -368,7 +400,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * @param position
      * @return
      */
-    private boolean isFullItem(int position) {
+    private boolean isDynamicItem(int position) {
         return RecyclerView.NO_POSITION != findPosition(position);
     }
 
@@ -386,16 +418,15 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        if (RecyclerView.NO_POSITION == findPosition(position) && null != adapter) {
+        if (!isDynamicItem(position)&&null != adapter) {
             int startIndex = getStartIndex(position);
             adapter.onBindViewHolder(holder, position - startIndex);
-            int findPosition = findPosition(position);
-            if (RecyclerView.NO_POSITION == findPosition) {
+            if(null != itemClickListener){
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (null != itemClickListener) {
-                            int itemPosition = holder.getAdapterPosition();
+                        int itemPosition = holder.getAdapterPosition()-getHeaderViewCount();
+                        if (onItemClick(v, itemPosition)) {
                             itemClickListener.onItemClick(v, itemPosition);
                         }
                     }
@@ -417,13 +448,28 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return viewType;
     }
 
+    private int getRealItemCount(){
+        return getItemCount()- getFooterViewCount();
+    }
+
     @Override
     public int getItemCount() {
         int itemCount = fullViews.size();
         if (null != adapter) {
             itemCount += adapter.getItemCount();
         }
+        Log.e(TAG,"Dynamic itemCount:"+itemCount+" fullView:"+fullViews.size());
         return itemCount;
+    }
+
+    /**
+     * 子类点击使用
+     *
+     * @param v
+     * @param position
+     */
+    protected boolean onItemClick(View v, int position) {
+        return true;
     }
 
 
@@ -493,7 +539,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      *
      * @return
      */
-    public int getFullItemCount() {
+    public int getDynamicItemCount() {
         return fullViews.size();
     }
 

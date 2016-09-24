@@ -20,6 +20,9 @@ import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
 import com.ldzs.recyclerlibrary.anim.SlideInLeftAnimator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cz.library.RefreshMode;
 
 /**
@@ -44,9 +47,13 @@ public class PullToRefreshActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mRecyclerView.setOnItemClickListener((v, position) -> Toast.makeText(getApplicationContext(), "Click:" + position, Toast.LENGTH_SHORT).show());
-        View headerView = getHeaderView();
-        headerView.setBackgroundColor(Color.BLUE);
-        mRecyclerView.addHeaderView(headerView);
+        mRecyclerView.addHeaderView(getHeaderView());
+        mRecyclerView.addHeaderView(getHeaderView());
+        mRecyclerView.addHeaderView(getHeaderView());
+
+        mRecyclerView.addFooterView(getHeaderView());
+        mRecyclerView.addFooterView(getHeaderView());
+        mRecyclerView.addFooterView(getHeaderView());
 
 
         //下拉加载
@@ -111,7 +118,8 @@ public class PullToRefreshActivity extends AppCompatActivity {
         View header = LayoutInflater.from(this).inflate(R.layout.recyclerview_header1, (ViewGroup) findViewById(android.R.id.content), false);
         TextView headerView = (TextView) header;
         headerView.setTextColor(textColor);
-        headerView.setText("HeaderView:" + mRecyclerView.getHeaderViewCount());
+        header.setBackgroundColor(Color.BLUE);
+        headerView.setText("HeaderView:" + (mRecyclerView.getHeaderViewCount()+mRecyclerView.getFooterViewCount()));
         headerView.setOnClickListener(v -> mRecyclerView.addHeaderView(getHeaderView()));
         return headerView;
     }
@@ -133,7 +141,6 @@ public class PullToRefreshActivity extends AppCompatActivity {
             mRecyclerView.autoRefreshing(false);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

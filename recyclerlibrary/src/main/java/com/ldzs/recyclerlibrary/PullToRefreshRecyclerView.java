@@ -10,13 +10,14 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.ldzs.recyclerlibrary.adapter.SelectAdapter;
 import com.ldzs.recyclerlibrary.callback.OnItemClickListener;
 import com.ldzs.recyclerlibrary.divide.SimpleItemDecoration;
 import com.ldzs.recyclerlibrary.footer.RefreshFrameFooter;
-import com.ldzs.recyclerlibrary.observe.HeaderAdapterDataObserve;
+import com.ldzs.recyclerlibrary.observe.DynamicAdapterDataObserve;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,19 @@ import cz.library.RefreshMode;
 
 /**
  * Created by czz on 2016/8/13.
+ * 这个控件,主要由几部分组成
+ * 1:PullToRefreshLayout:另一个下拉刷新的加载库
+ * 2:隔离封装的Adapter支持:
+ *  其中控件内,提供的Adapter为:SelectAdapter,层级判断为:DynamicAdapter->RefreshAdapter->SelectAdapter
+ *  其中DynamicAdapter为负责任一元素位置插入条目的扩展数据适配器.
+ *  RefreshAdapter为固定底部的Footer的数据适配器.
+ *  而最上层的SelectAdapter,则提供类似ListView的selectMode选择功能的数据适配器.适配器需实现Selectable接口
+ * 实现的功能为:
+ * 1:recyclerView的下拉刷新,上拉加载,
+ * 2:顶部以及,底部的控件自由添加,删除,中间任一位置控件添加,此为确保RecyclerView数据一致性.比如新闻类应用.可能为了广告,为了某些提示条目,还需要去适合到逻辑Adapter内.导致条目很难看.
+ * 3:Adapter的条目选择功能.
+ * 4:类ListView的Divide封装
+ * 以上.2016/9/24
  */
 public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView> implements IRecyclerView{
     public static final int END_NONE=0x00;
@@ -36,6 +50,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
     public static final int SINGLE_SELECT =0x01;
     public static final int MULTI_SELECT =0x02;
     public static final int RECTANGLE_SELECT =0x03;
+    private static final String TAG = "PullToRefreshRecyclerView";
 
 
     @IntDef(value={CLICK, SINGLE_SELECT, MULTI_SELECT, RECTANGLE_SELECT})
@@ -96,6 +111,16 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
         this.itemDecoration.setDivideVerticalPadding(Math.round(padding));
     }
 
+    public void showHeaderViewDivide(boolean show){
+        this.itemDecoration.showHeaderDecoration(show);
+        this.targetView.invalidateItemDecorations();
+    }
+
+    public void showFooterViewDivide(boolean show){
+        this.itemDecoration.showFooterDecoration(show);
+        this.targetView.invalidateItemDecorations();
+    }
+
     public void setSelectMode(@SelectMode int mode){
         setSelectModeInner(mode);
     }
@@ -143,7 +168,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
 
     @Override
     public int getHeaderViewCount() {
-        return this.adapter.getHeadersCount();
+        return this.adapter.getHeaderViewCount();
     }
 
     @Override
@@ -156,7 +181,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
     @Override
     public void removeHeaderView(View view) {
         checkNullObjectRef(view);
-        adapter.removeHeaderView(view);
+        adapter.removeDynamicView(view);
         itemDecoration.setHeaderCount(getHeaderViewCount());
     }
 
@@ -170,7 +195,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
 
     @Override
     public int getFooterViewCount() {
-        return adapter.getFootersCount();
+        return adapter.getFooterViewCount();
     }
 
     @Override
@@ -213,7 +238,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
     public void setAdapter(RecyclerView.Adapter adapter){
         this.adapter.setAdapter(adapter);
         this.targetView.setAdapter(this.adapter);
-        adapter.registerAdapterDataObserver(new HeaderAdapterDataObserve(this.adapter));
+        adapter.registerAdapterDataObserver(new DynamicAdapterDataObserve(this.adapter));
     }
 
     public void setRefreshFooterState(@RefreshFrameFooter.RefreshState int state){
@@ -226,19 +251,39 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
         initFooterViewByMode(mode);
     }
 
+    /**
+     * 滚动到指定位置
+     * @param position
+     */
+    public void scrollToPosition(int position){
+        RecyclerView.LayoutManager layoutManager = targetView.getLayoutManager();
+        if(layoutManager instanceof LinearLayoutManager){
+            LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
+            int firstItem = linearLayoutManager.findFirstVisibleItemPosition();
+            int lastItem = linearLayoutManager.findLastVisibleItemPosition();
+            if (position <= firstItem ){
+                targetView.scrollToPosition(position);
+            }else if ( position <= lastItem ){
+                int top = targetView.getChildAt(position - firstItem).getTop();
+                targetView.scrollBy(0, top);
+            }else{
+                targetView.scrollToPosition(position);
+            }
+        }
+    }
+
 
     private void initFooterViewByMode(RefreshMode mode) {
         if(null==adapter) return;
         View footerView = refreshFooter.getFooterView();
-        int index = adapter.indexOfFooterView(footerView);
         if(mode.enableFooter()){
             refreshState = END_NORMAL;
-            if(-1==index)  adapter.addRefreshFooterView(footerView,getFooterViewCount());
+            adapter.addRefreshFooterView(footerView);
             refreshFooter.setRefreshState(RefreshFrameFooter.FRAME_LOAD);
             scrollStateChanged(RecyclerView.SCROLL_STATE_IDLE);
         } else {
             refreshState = END_NONE;
-            if(-1!=index) adapter.removeRefreshFooterView(footerView);
+            adapter.removeRefreshFooterView(footerView);
         }
     }
 
@@ -278,7 +323,6 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
         }
     }
 
-
     /**
      * get last visible position
      * @return last visible position
@@ -301,6 +345,41 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
             lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
         }
         return lastVisibleItemPosition;
+    }
+
+    /**
+     * get first visible position
+     * @return last visible position
+     */
+    public int getFirstVisiblePosition() {
+        int lastVisibleItemPosition;
+        RecyclerView.LayoutManager layoutManager = targetView.getLayoutManager();
+        if (layoutManager instanceof GridLayoutManager) {
+            lastVisibleItemPosition = ((GridLayoutManager) layoutManager).findFirstVisibleItemPosition();
+        } else if (layoutManager instanceof StaggeredGridLayoutManager) {
+            int[] spanCount = new int[((StaggeredGridLayoutManager) layoutManager).getSpanCount()];
+            ((StaggeredGridLayoutManager) layoutManager).findFirstVisibleItemPositions(spanCount);
+            lastVisibleItemPosition = spanCount[0];
+            for (int value : spanCount) {
+                if (value > lastVisibleItemPosition) {
+                    lastVisibleItemPosition = value;
+                }
+            }
+        } else {
+            lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
+        }
+        return lastVisibleItemPosition;
+    }
+
+    @Override
+    public void autoRefreshing(final boolean anim) {
+        scrollToPosition(0);//执行自动滚动时,自动将条目滑到0,这里自动刷新之所以post事件,是因为同时执行.scroll事件会被屏蔽.导致失效
+        post(new Runnable() {
+            @Override
+            public void run() {
+                PullToRefreshRecyclerView.super.autoRefreshing(anim);
+            }
+        });
     }
 
     public void onRefreshFootComplete(){

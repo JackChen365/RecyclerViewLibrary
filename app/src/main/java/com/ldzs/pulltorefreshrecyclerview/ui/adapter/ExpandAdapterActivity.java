@@ -22,29 +22,28 @@ import java.util.Random;
  * Created by cz on 16/1/24.
  */
 public class ExpandAdapterActivity extends AppCompatActivity {
-    private RecyclerView mRecyclerView;
-    private DynamicAdapter mAdapter;
-    private ArrayList<View> mViews;
-    private int mAddIndex;
+    private RecyclerView recyclerView;
+    private DynamicAdapter adapter;
+    private ArrayList<View> views;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_adapter);
-        mViews = new ArrayList<>();
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
-        mRecyclerView.getItemAnimator().setAddDuration(300);
-        mRecyclerView.getItemAnimator().setRemoveDuration(300);
+        views = new ArrayList<>();
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setItemAnimator(new SlideInLeftAnimator());
+        recyclerView.getItemAnimator().setAddDuration(300);
+        recyclerView.getItemAnimator().setRemoveDuration(300);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mAdapter = new DynamicAdapter(this,new SimpleAdapter(this, Data.createItems(this, 150)));
-        mRecyclerView.setAdapter(mAdapter);
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new DynamicAdapter(new SimpleAdapter(this, Data.createItems(this, 150)));
+        recyclerView.setAdapter(adapter);
         Random random = new Random();
-        findViewById(R.id.btn_add).setOnClickListener(v -> mAdapter.addFullItem(getFullItemView(), random.nextInt(mAdapter.getItemCount())));
-//        findViewById(R.id.btn_last_add).setOnClickListener(v -> mAdapter.addFullItem(getFullItemView(), mAddIndex + 1));
+        findViewById(R.id.btn_add).setOnClickListener(v -> adapter.addDynamicView(getFullItemView(), random.nextInt(adapter.getItemCount())));
+//        findViewById(R.id.btn_last_add).setOnClickListener(v -> adapter.addDynamicView(getFullItemView(), mAddIndex + 1));
         findViewById(R.id.btn_remove).setOnClickListener(v -> {
-            mAdapter.removeFullItem(mViews.get(0));
+            adapter.removeDynamicView(views.get(0));
         });
     }
 
@@ -58,8 +57,8 @@ public class ExpandAdapterActivity extends AppCompatActivity {
         TextView headerView = (TextView) header;
         header.setBackgroundColor(color);
         headerView.setTextColor(darkColor);
-        headerView.setText("HeaderView:" + mAdapter.getFullItemCount());
-        mViews.add(header);
+        headerView.setText("HeaderView:" + adapter.getDynamicItemCount());
+        views.add(header);
         return headerView;
     }
 }

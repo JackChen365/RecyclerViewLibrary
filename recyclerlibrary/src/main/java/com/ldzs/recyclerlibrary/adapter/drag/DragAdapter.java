@@ -16,8 +16,8 @@ public class DragAdapter extends DynamicAdapter {
     /**
      * @param adapter 包装数据适配器
      */
-    public DragAdapter(Context context, BaseViewAdapter adapter) {
-        super(context, adapter);
+    public DragAdapter(BaseViewAdapter adapter) {
+        super(adapter);
         this.adapter = adapter;
     }
 

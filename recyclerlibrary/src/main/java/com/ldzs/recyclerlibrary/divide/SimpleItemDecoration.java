@@ -51,11 +51,11 @@ public class SimpleItemDecoration extends RecyclerView.ItemDecoration {
         this.verticalPadding = padding;
     }
 
-    public void setShowHeader(boolean showHeader) {
+    public void showHeaderDecoration(boolean showHeader) {
         this.showHeader = showHeader;
     }
 
-    public void setShowFooter(boolean showFooter) {
+    public void showFooterDecoration(boolean showFooter) {
         this.showFooter = showFooter;
     }
 

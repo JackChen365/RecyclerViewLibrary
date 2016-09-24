@@ -24,9 +24,7 @@ public class DynamicAdapterDataObserve extends RecyclerView.AdapterDataObserver 
 
     @Override
     public void onItemRangeInserted(int positionStart, int itemCount) {
-        int startIndex = dynamicAdapter.getStartIndex(positionStart);
-        dynamicAdapter.itemRangeInsert(positionStart,itemCount);
-        dynamicAdapter.notifyItemRangeInserted(startIndex + positionStart, itemCount);
+        dynamicAdapter.itemRangeInsert(dynamicAdapter.getStartIndex(positionStart)+positionStart,itemCount);
     }
 
     @Override
@@ -41,11 +39,11 @@ public class DynamicAdapterDataObserve extends RecyclerView.AdapterDataObserver 
 
     @Override
     public void onItemRangeRemoved(int positionStart, int itemCount) {
-        dynamicAdapter.itemRangeRemoved(positionStart,itemCount);
+        dynamicAdapter.itemRangeRemoved(dynamicAdapter.getStartIndex(positionStart) +positionStart,itemCount);
     }
 
     @Override
     public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-        dynamicAdapter.notifyItemMoved(dynamicAdapter.getStartIndex(fromPosition) + fromPosition, toPosition);
+        dynamicAdapter.notifyItemMoved(dynamicAdapter.getStartIndex(fromPosition) + fromPosition, dynamicAdapter.getStartIndex(toPosition)+toPosition);
     }
 }

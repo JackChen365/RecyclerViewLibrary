@@ -43,7 +43,6 @@ public class PullToRefreshExpandActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        mRecyclerView.setOnItemClickListener((v, position) -> Toast.makeText(getApplicationContext(), "Click:" + position, Toast.LENGTH_SHORT).show());
         mRecyclerView.setOnExpandItemClickListener(new OnExpandItemClickListener() {
             @Override
             public void onItemClick(View v, int groupPosition, int childPosition) {
@@ -52,6 +51,13 @@ public class PullToRefreshExpandActivity extends AppCompatActivity {
         });
 
         mRecyclerView.addHeaderView(getHeaderView());
+        mRecyclerView.addHeaderView(getHeaderView());
+        mRecyclerView.addHeaderView(getHeaderView());
+
+        mRecyclerView.addFooterView(getHeaderView());
+        mRecyclerView.addFooterView(getHeaderView());
+        mRecyclerView.addFooterView(getHeaderView());
+
 
 
         mRecyclerView.setOnPullToRefreshListener(() -> {
@@ -73,7 +79,7 @@ public class PullToRefreshExpandActivity extends AppCompatActivity {
             times++;
         });
 
-        mAdapter = new FriendAdapter(this, Data.createExpandItems(10, 4), true);
+        mAdapter = new FriendAdapter(this, Data.createExpandItems(10, 10), true);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -105,8 +111,7 @@ public class PullToRefreshExpandActivity extends AppCompatActivity {
             addGroupItem(true);
             return true;
         } else if (id == R.id.action_remove) {
-//            mAdapter.removeGroup(0);
-            mAdapter.swapItems(Data.createExpandItems(this,10));
+            mAdapter.removeGroup(0);
             return true;
         }
         return super.onOptionsItemSelected(item);

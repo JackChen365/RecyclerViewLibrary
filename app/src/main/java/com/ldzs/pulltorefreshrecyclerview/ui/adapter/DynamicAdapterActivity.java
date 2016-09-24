@@ -42,14 +42,14 @@ public class DynamicAdapterActivity extends AppCompatActivity {
         GridLayoutManager layoutManager = new GridLayoutManager(this, 4);
         recyclerView.setLayoutManager(layoutManager);
         final SimpleAdapter adapter = new SimpleAdapter(this, Data.createItems(this, 100));
-        this.adapter = new DynamicAdapter(this, adapter);
+        this.adapter = new DynamicAdapter(adapter);
         adapter.registerAdapterDataObserver(new DynamicAdapterDataObserve(this.adapter));
         recyclerView.setAdapter(this.adapter);
         Random random = new Random();
         //随机添加一批
         List<Integer> items=new ArrayList<>();
-        for(int i=0,count=0;i<30;items.add(count+=1+random.nextInt(3)),i++);
-        for(int i=0;i<items.size();addView(items.get(i)),i++);
+//        for(int i=0,count=0;i<30;items.add(count+=1+random.nextInt(3)),i++);
+//        for(int i=0;i<items.size();addView(items.get(i)),i++);
         findViewById(R.id.btn_item_add).setOnClickListener(v -> {
             int itemCount = adapter.getItemCount();
             adapter.addItem("new:"+adapter.getItemCount(),random.nextInt(0==itemCount?1:itemCount));
@@ -66,16 +66,15 @@ public class DynamicAdapterActivity extends AppCompatActivity {
         findViewById(R.id.btn_add).setOnClickListener(v -> addView(random.nextInt(this.adapter.getItemCount())));
         findViewById(R.id.btn_remove).setOnClickListener(v -> {
             if (!addViews.isEmpty()) {
-                this.adapter.removeFullItem(addViews.pollFirst());
+                this.adapter.removeDynamicView(addViews.pollFirst());
             }
         });
     }
-
     private void addView(int position) {
         View view = getFullItemView();
         if (!addViews.contains(position)) {
             addViews.add(view);
-            adapter.addFullItem(view, position);
+            adapter.addDynamicView(view, position);
         }
     }
 
@@ -89,7 +88,7 @@ public class DynamicAdapterActivity extends AppCompatActivity {
         TextView headerView = (TextView) header;
         header.setBackgroundColor(color);
         headerView.setTextColor(darkColor);
-        headerView.setText("HeaderView:" + adapter.getFullItemCount());
+        headerView.setText("HeaderView:" + adapter.getDynamicItemCount());
         return headerView;
     }
 }

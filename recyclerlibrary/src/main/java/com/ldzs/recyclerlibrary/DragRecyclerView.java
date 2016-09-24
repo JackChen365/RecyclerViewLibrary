@@ -58,7 +58,7 @@ public class DragRecyclerView extends RecyclerView implements CallbackItemTouch 
     @Override
     public void setAdapter(Adapter adapter) {
         if (adapter instanceof BaseViewAdapter) {
-            super.setAdapter(this.adapter = new DragAdapter(getContext(), (BaseViewAdapter) adapter));
+            super.setAdapter(this.adapter = new DragAdapter((BaseViewAdapter) adapter));
             helperCallback.setAdapter(this.adapter);
             adapter.registerAdapterDataObserver(new DynamicAdapterDataObserve(this.adapter));
             new ItemTouchHelper(helperCallback).attachToRecyclerView(this);
@@ -117,7 +117,7 @@ public class DragRecyclerView extends RecyclerView implements CallbackItemTouch 
      */
     public void addDynamicView(@LayoutRes int layout, int position) {
         if (null != adapter) {
-            adapter.addFullItem(LayoutInflater.from(getContext()).inflate(layout, this, false), position);
+            adapter.addDynamicView(LayoutInflater.from(getContext()).inflate(layout, this, false), position);
         }
     }
 
@@ -128,7 +128,7 @@ public class DragRecyclerView extends RecyclerView implements CallbackItemTouch 
      */
     public void addDynamicView(View view, int position) {
         if (null != adapter) {
-            adapter.addFullItem(view, position);
+            adapter.addDynamicView(view, position);
         }
     }
 

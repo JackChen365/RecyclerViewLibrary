@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         auto:pv_divideVerticalPadding="@dimen/activity_margin"
-        auto:pv_listDivideHeight="0.8dp"
+        auto:pv_listDivideHeight="8dp"
         auto:pv_listDivide="@color/gray"
         auto:pull_headerStrategy="overlap"
         auto:pull_headerType="flip"

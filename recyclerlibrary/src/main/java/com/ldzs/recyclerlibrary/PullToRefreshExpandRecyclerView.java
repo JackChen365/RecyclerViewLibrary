@@ -14,7 +14,7 @@ import com.ldzs.recyclerlibrary.callback.OnExpandItemClickListener;
  * 可展开的RecyclerView对象
  */
 public class PullToRefreshExpandRecyclerView extends PullToRefreshRecyclerView {
-    private OnExpandItemClickListener mExpandItemClickListener;
+    private OnExpandItemClickListener expandItemClickListener;
     private ExpandAdapter expandAdapter;
 
     public PullToRefreshExpandRecyclerView(Context context) {
@@ -40,17 +40,25 @@ public class PullToRefreshExpandRecyclerView extends PullToRefreshRecyclerView {
             expandAdapter.setOnExpandItemClickListener(new OnExpandItemClickListener() {
                 @Override
                 public void onItemClick(View v, int groupPosition, int childPosition) {
-                    if (null != mExpandItemClickListener) {
-                        mExpandItemClickListener.onItemClick(v, groupPosition, childPosition);
+                    if (null != expandItemClickListener) {
+                        expandItemClickListener.onItemClick(v, groupPosition, childPosition);
                     }
                 }
             });
         }
     }
 
+    @Override
+    public void addHeaderView(View view) {
+        super.addHeaderView(view);
+        if(null!=expandAdapter){
+            expandAdapter.setHeaderViewCount(getHeaderViewCount());
+        }
+    }
+
 
     public void setOnExpandItemClickListener(OnExpandItemClickListener listener) {
-        this.mExpandItemClickListener = listener;
+        this.expandItemClickListener = listener;
     }
 
 }

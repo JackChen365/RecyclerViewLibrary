@@ -43,7 +43,7 @@ public class SelectAdapter extends RefreshAdapter {
      * @param mode
      */
     public void setSelectMode(int mode) {
-        int headersCount = getHeadersCount();
+        int headersCount = getHeaderViewCount();
         switch (this.mode) {
             case SINGLE_SELECT:
                 //清除单选择状态
@@ -71,7 +71,7 @@ public class SelectAdapter extends RefreshAdapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
-        int headersCount = getHeadersCount();
+        int headersCount = getHeaderViewCount();
         switch (mode) {
             case SINGLE_SELECT:
                 selectPosition(holder,position,selectPosition + headersCount == position);
@@ -100,7 +100,7 @@ public class SelectAdapter extends RefreshAdapter {
     @Override
     protected boolean onItemClick(View v, int position) {
         super.onItemClick(v, position);
-        int headersCount = getHeadersCount();
+        int headersCount = getHeaderViewCount();
         switch (mode) {
             case MULTI_SELECT:
                 selectPosition = start = end = -1;
