@@ -46,7 +46,7 @@ public class HeaderAdapterActivity extends AppCompatActivity {
         findViewById(R.id.btn_remove_header).setOnClickListener(v -> mRecyclerView.removeHeaderView(0));
         findViewById(R.id.btn_add_footer).setOnClickListener(v -> mRecyclerView.addFooterView(getFooterView()));
         findViewById(R.id.btn_remove_footer).setOnClickListener(v -> mRecyclerView.removeFooterView(0));
-        findViewById(R.id.btn_add_item).setOnClickListener(v -> adapter.addItems(Data.createItems(this, 2), 0));
+        findViewById(R.id.btn_add_item).setOnClickListener(v -> adapter.addItemsNotify(Data.createItems(this, 2), 0));
     }
 
     /**

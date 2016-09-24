@@ -57,11 +57,11 @@ public class DynamicAdapterActivity extends AppCompatActivity {
         Random random = new Random();
         //随机添加一批
         List<Integer> items=new ArrayList<>();
-//        for(int i=0,count=0;i<30;items.add(count+=1+random.nextInt(3)),i++);
-//        for(int i=0;i<items.size();addView(items.get(i)),i++);
+        for(int i=0,count=0;i<30;items.add(count+=1+random.nextInt(3)),i++);
+        for(int i=0;i<items.size();addView(items.get(i)),i++);
         findViewById(R.id.btn_item_add).setOnClickListener(v -> {
             int itemCount = adapter.getItemCount();
-            adapter.addItem("new:"+adapter.getItemCount(),random.nextInt(0==itemCount?1:itemCount));
+            adapter.addItemNotify("new:"+adapter.getItemCount(),random.nextInt(0==itemCount?1:itemCount));
         });
         findViewById(R.id.btn_item_remove).setOnClickListener(v -> {
             if(0!=this.adapter.getItemCount()){

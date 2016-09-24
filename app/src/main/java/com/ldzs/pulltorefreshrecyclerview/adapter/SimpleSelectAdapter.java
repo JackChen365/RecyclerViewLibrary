@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.ldzs.pulltorefreshrecyclerview.R;
 import com.ldzs.recyclerlibrary.adapter.BaseViewAdapter;
 import com.ldzs.recyclerlibrary.adapter.BaseViewHolder;
+import com.ldzs.recyclerlibrary.adapter.CacheViewHolder;
 import com.ldzs.recyclerlibrary.callback.Selectable;
 
 import java.util.Arrays;
@@ -20,7 +21,7 @@ import java.util.List;
  * @warning select adapter must be implement Selectable
  * @see com.ldzs.recyclerlibrary.callback.Selectable
  */
-public class SimpleSelectAdapter<E> extends BaseViewAdapter<BaseViewHolder, E> implements Selectable{
+public class SimpleSelectAdapter<E> extends BaseViewAdapter<E> implements Selectable{
     private int layout;
 
     public static SimpleSelectAdapter createFromResource(Context context, @ArrayRes int res) {
@@ -50,12 +51,12 @@ public class SimpleSelectAdapter<E> extends BaseViewAdapter<BaseViewHolder, E> i
     }
 
     @Override
-    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new BaseViewHolder(inflateView(parent, layout));
+    public CacheViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new CacheViewHolder(inflateView(parent, layout));
     }
 
     @Override
-    public void onBindViewHolder(BaseViewHolder holder, int position) {
+    public void onBindViewHolder(CacheViewHolder holder, int position) {
         TextView textView = (TextView) holder.itemView;
         E item = getItem(position);
         if (null != item) {

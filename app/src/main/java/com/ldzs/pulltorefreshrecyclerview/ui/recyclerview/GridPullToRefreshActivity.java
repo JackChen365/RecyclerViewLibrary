@@ -59,7 +59,7 @@ public class GridPullToRefreshActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 mRecyclerView.postDelayed(() -> {
-                    mAdapter.addItems(Data.createItems(this, 10), 0);
+                    mAdapter.addItemsNotify(Data.createItems(this, 10), 0);
                     mRecyclerView.onRefreshComplete();
                 }, 1000);
             }
@@ -69,7 +69,7 @@ public class GridPullToRefreshActivity extends AppCompatActivity {
             public void onRefresh() {
                 if (times < 2) {
                     mRecyclerView.postDelayed(() -> {
-                        mAdapter.addItems(Data.createItems(this, 10));
+                        mAdapter.addItemsNotify(Data.createItems(this, 10));
                         mRecyclerView.onRefreshFootComplete();
                     }, 1000);
                 } else {

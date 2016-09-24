@@ -20,9 +20,6 @@ import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
 import com.ldzs.recyclerlibrary.anim.SlideInLeftAnimator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cz.library.RefreshMode;
 
 /**
@@ -31,8 +28,8 @@ import cz.library.RefreshMode;
  */
 public class PullToRefreshActivity extends AppCompatActivity {
     private static final String TAG = "PullToRefreshActivity";
-    private PullToRefreshRecyclerView mRecyclerView;
-    private SimpleAdapter mAdapter;
+    private PullToRefreshRecyclerView recyclerView;
+    private SimpleAdapter adapter;
     private int times = 0;
 
     @Override
@@ -40,53 +37,53 @@ public class PullToRefreshActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_linear_recycler_view);
         setTitle(getIntent().getStringExtra("title"));
-        mRecyclerView = (PullToRefreshRecyclerView) this.findViewById(R.id.recycler_view);
-        mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
-        mRecyclerView.getItemAnimator().setAddDuration(300);
-        mRecyclerView.getItemAnimator().setRemoveDuration(300);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView = (PullToRefreshRecyclerView) this.findViewById(R.id.recycler_view);
+        recyclerView.setItemAnimator(new SlideInLeftAnimator());
+        recyclerView.getItemAnimator().setAddDuration(300);
+        recyclerView.getItemAnimator().setRemoveDuration(300);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mRecyclerView.setOnItemClickListener((v, position) -> Toast.makeText(getApplicationContext(), "Click:" + position, Toast.LENGTH_SHORT).show());
-        mRecyclerView.addHeaderView(getHeaderView());
-        mRecyclerView.addHeaderView(getHeaderView());
-        mRecyclerView.addHeaderView(getHeaderView());
+        recyclerView.setOnItemClickListener((v, position) -> Toast.makeText(getApplicationContext(), "Click:" + position, Toast.LENGTH_SHORT).show());
+        recyclerView.addHeaderView(getHeaderView());
+        recyclerView.addHeaderView(getHeaderView());
+        recyclerView.addHeaderView(getHeaderView());
 
-        mRecyclerView.addFooterView(getHeaderView());
-        mRecyclerView.addFooterView(getHeaderView());
-        mRecyclerView.addFooterView(getHeaderView());
+        recyclerView.addFooterView(getHeaderView());
+        recyclerView.addFooterView(getHeaderView());
+        recyclerView.addFooterView(getHeaderView());
 
 
         //下拉加载
-        mRecyclerView.setOnPullToRefreshListener(() -> {
+        recyclerView.setOnPullToRefreshListener(() -> {
             Log.e(TAG,"onHeaderRefresh!");
-            mRecyclerView.postDelayed(() -> {
-                mAdapter.addItems(Data.createItems(this, 2), 0);
-                mRecyclerView.onRefreshComplete();
+            recyclerView.postDelayed(() -> {
+                adapter.addItemsNotify(Data.createItems(this, 2), 0);
+                recyclerView.onRefreshComplete();
             }, 1000);
         });
         //上拉刷新
-        mRecyclerView.setOnPullFooterToRefreshListener(() -> {
+        recyclerView.setOnPullFooterToRefreshListener(() -> {
             Log.e(TAG,"onFooterRefresh!");
             if (times < 2) {
-                mRecyclerView.postDelayed(() -> {
-                    mAdapter.addItems(Data.createItems(this, 4));
-                    mRecyclerView.onRefreshFootComplete();
+                recyclerView.postDelayed(() -> {
+                    adapter.addItemsNotify(Data.createItems(this, 4));
+                    recyclerView.onRefreshFootComplete();
                 }, 1000);
             } else if (times < 4) {
-                mRecyclerView.postDelayed(() -> {
-                    mRecyclerView.setOnFootRetryListener(v -> {
-                        mAdapter.addItems(Data.createItems(this, 4));
-                        mRecyclerView.onRefreshFootComplete();
+                recyclerView.postDelayed(() -> {
+                    recyclerView.setOnFootRetryListener(v -> {
+                        adapter.addItemsNotify(Data.createItems(this, 4));
+                        recyclerView.onRefreshFootComplete();
                     });
                 }, 1000);
             } else {
-                mRecyclerView.postDelayed(() -> mRecyclerView.setFooterRefreshDone(), 1000);
+                recyclerView.postDelayed(() -> recyclerView.setFooterRefreshDone(), 1000);
             }
             times++;
         });
         //初始设置2个,考虑其不满一屏加载状态
-        mAdapter = new SimpleAdapter(this, Data.createItems(this, 2));
-        mRecyclerView.setAdapter(mAdapter);
+        adapter = new SimpleAdapter(this, Data.createItems(this, 2));
+        recyclerView.setAdapter(adapter);
 
         RadioGroup layout= (RadioGroup) findViewById(R.id.rg_refresh_mode);
         layout.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -94,16 +91,16 @@ public class PullToRefreshActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 switch (i){
                     case R.id.rb_refresh_both:
-                        mRecyclerView.setRefreshMode(RefreshMode.BOTH);
+                        recyclerView.setRefreshMode(RefreshMode.BOTH);
                         break;
                     case R.id.rb_refresh_start:
-                        mRecyclerView.setRefreshMode(RefreshMode.PULL_FROM_START);
+                        recyclerView.setRefreshMode(RefreshMode.PULL_FROM_START);
                         break;
                     case R.id.rb_refresh_end:
-                        mRecyclerView.setRefreshMode(RefreshMode.PULL_FROM_END);
+                        recyclerView.setRefreshMode(RefreshMode.PULL_FROM_END);
                         break;
                     case R.id.rb_refresh_none:
-                        mRecyclerView.setRefreshMode(RefreshMode.DISABLED);
+                        recyclerView.setRefreshMode(RefreshMode.DISABLED);
                         break;
                 }
             }
@@ -119,8 +116,8 @@ public class PullToRefreshActivity extends AppCompatActivity {
         TextView headerView = (TextView) header;
         headerView.setTextColor(textColor);
         header.setBackgroundColor(Color.BLUE);
-        headerView.setText("HeaderView:" + (mRecyclerView.getHeaderViewCount()+mRecyclerView.getFooterViewCount()));
-        headerView.setOnClickListener(v -> mRecyclerView.addHeaderView(getHeaderView()));
+        headerView.setText("HeaderView:" + (recyclerView.getHeaderViewCount()+ recyclerView.getFooterViewCount()));
+        headerView.setOnClickListener(v -> recyclerView.addHeaderView(getHeaderView()));
         return headerView;
     }
 
@@ -135,10 +132,10 @@ public class PullToRefreshActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            mRecyclerView.autoRefreshing(true);
+            recyclerView.autoRefreshing(true);
             return true;
         } else if (id == R.id.action_re_refresh) {
-            mRecyclerView.autoRefreshing(false);
+            recyclerView.autoRefreshing(false);
             return true;
         }
         return super.onOptionsItemSelected(item);

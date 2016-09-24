@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.ldzs.pulltorefreshrecyclerview.R;
 import com.ldzs.recyclerlibrary.adapter.BaseViewAdapter;
 import com.ldzs.recyclerlibrary.adapter.BaseViewHolder;
+import com.ldzs.recyclerlibrary.adapter.CacheViewHolder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 /**
  * Created by cz on 16/1/23.
  */
-public class SimpleAdapter<E> extends BaseViewAdapter<BaseViewHolder, E> {
+public class SimpleAdapter<E> extends BaseViewAdapter<E> {
     private int layout;
 
     public static SimpleAdapter createFromResource(Context context, @ArrayRes int res) {
@@ -43,12 +44,12 @@ public class SimpleAdapter<E> extends BaseViewAdapter<BaseViewHolder, E> {
 
 
     @Override
-    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new BaseViewHolder(inflateView(parent, layout));
+    public CacheViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new CacheViewHolder(inflateView(parent, layout));
     }
 
     @Override
-    public void onBindViewHolder(BaseViewHolder holder, int position) {
+    public void onBindViewHolder(CacheViewHolder holder, int position) {
         TextView textView = (TextView) holder.itemView;
         E item = getItem(position);
         if (null != item) {

@@ -11,18 +11,13 @@ import com.ldzs.recyclerlibrary.adapter.BaseViewHolder;
 import com.ldzs.recyclerlibrary.adapter.expand.ExpandAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by cz on 16/1/22.
  */
 public class FriendAdapter extends ExpandAdapter<String, String> {
-    private static final String TAG = "FriendAdapter";
-
-    public FriendAdapter(Context context, ArrayList<Entry<String, ArrayList<String>>> items) {
-        super(context, items);
-    }
-
-    public FriendAdapter(Context context, ArrayList<Entry<String, ArrayList<String>>> items, boolean expand) {
+    public FriendAdapter(Context context, List<Entry<String, List<String>>> items, boolean expand) {
         super(context, items, expand);
     }
 

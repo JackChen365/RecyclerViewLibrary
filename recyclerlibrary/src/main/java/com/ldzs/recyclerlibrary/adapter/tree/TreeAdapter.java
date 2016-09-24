@@ -187,7 +187,7 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
         return nodeItems;
     }
 
-    private ArrayList<E> getItems(ArrayList<TreeNode<E>> nodes) {
+    private ArrayList<E> getItems(List<TreeNode<E>> nodes) {
         ArrayList<E> items = new ArrayList<>();
         int size = nodes.size();
         for (int i = 0; i < size; i++) {

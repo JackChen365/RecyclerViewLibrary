@@ -14,6 +14,7 @@ import com.ldzs.recyclerlibrary.adapter.expand.ExpandAdapter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -61,13 +62,13 @@ public class Data {
         return items;
     }
 
-    public static ArrayList<ExpandAdapter.Entry<String, ArrayList<String>>> createExpandItems(Object object, int count) {
+    public static List<ExpandAdapter.Entry<String, List<String>>> createExpandItems(Object object, int count) {
         return createExpandItems(object, count, 10);
     }
 
-    public static ArrayList<ExpandAdapter.Entry<String, ArrayList<String>>> createExpandItems(Object object, int count, int childCount) {
+    public static List<ExpandAdapter.Entry<String, List<String>>> createExpandItems(Object object, int count, int childCount) {
         String tag = object.toString();
-        ArrayList<ExpandAdapter.Entry<String, ArrayList<String>>> items = new ArrayList<>();
+        List<ExpandAdapter.Entry<String,List<String>>> items = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             ArrayList<String> childItems = new ArrayList<>();
             for (int k = 0; k < childCount; k++) {

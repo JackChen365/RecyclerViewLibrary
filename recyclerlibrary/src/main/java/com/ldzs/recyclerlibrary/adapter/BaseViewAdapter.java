@@ -13,10 +13,9 @@ import java.util.List;
 
 /**
  * An abstract adapter which can be extended for RecyclerView
+ * create by cz on 2016/9/24
  */
-public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends RecyclerView.Adapter<H> {
-
-    private static final String TAG = "BaseViewAdapter";
+public abstract class BaseViewAdapter<E> extends RecyclerView.Adapter<CacheViewHolder> {
     protected final ArrayList<E> items;
     protected final LayoutInflater inflater;
 
@@ -40,29 +39,50 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
     }
 
     @Override
-    public abstract H onCreateViewHolder(ViewGroup parent, int viewType);
-
-    @Override
-    public abstract void onBindViewHolder(H holder, int position);
+    public abstract void onBindViewHolder(CacheViewHolder holder, int position);
 
     @Override
     public int getItemCount() {
         return items.size();
     }
 
+
+    public void removeItems(List<E> list) {
+        if(null!=list){
+            this.items.removeAll(list);
+        }
+    }
+
+    public void removeItemsNotify(List<E> list) {
+        if(null!=list){
+            this.items.removeAll(list);
+            notifyDataSetChanged();
+        }
+    }
+
     /**
-     * Clear the list of the mAdapter
-     *
-     * @param list
+     * 移除所有条目
      */
-    public void clear(List<?> list) {
-        int size = list.size();
-        list.clear();
-        notifyItemRangeRemoved(0, size);
+    public void clear() {
+        this.items.clear();
+    }
+
+    /**
+     * 移除所有条目
+     */
+    public void clearNotify() {
+        this.items.clear();
+        notifyItemRangeRemoved(0, getItemsCount());
     }
 
 
     public void addItem(E e, int index) {
+        if (null != e) {
+            this.items.add(index, e);
+        }
+    }
+
+    public void addItemNotify(E e, int index) {
         if (null != e) {
             this.items.add(index, e);
             notifyItemInserted(index);
@@ -81,7 +101,13 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
         return -1!=indexOfItem(e);
     }
 
-    public void set(int index, E e) {
+    public void setItem(int index, E e) {
+        if (index < getItemCount()) {
+            items.set(index, e);
+        }
+    }
+
+    public void setItemNotify(int index, E e) {
         if (index < getItemCount()) {
             items.set(index, e);
             notifyItemChanged(index);
@@ -91,6 +117,12 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
     public void addItem(E e) {
         if (null != e) {
             this.items.add(e);
+        }
+    }
+
+    public void addItemNotify(E e) {
+        if (null != e) {
+            this.items.add(e);
             int insertPosition = getItemCount() - 1;
             notifyItemInserted(insertPosition);
         }
@@ -98,13 +130,25 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
 
     public void addItems(List<E> items, int index) {
         if (null != items && !items.isEmpty()) {
+            this.items.addAll(index, items);
+        }
+    }
+
+    public void addItems(List<E> items) {
+        if (null != items && !items.isEmpty()) {
+            this.items.addAll(items);
+        }
+    }
+
+    public void addItemsNotify(List<E> items, int index) {
+        if (null != items && !items.isEmpty()) {
             int size = items.size();
             this.items.addAll(index, items);
             notifyItemRangeInserted(index, size);
         }
     }
 
-    public void addItems(List<E> items) {
+    public void addItemsNotify(List<E> items) {
         if (null != items && !items.isEmpty()) {
             int size = items.size();
             int itemCount = getItemCount();
@@ -113,12 +157,7 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
         }
     }
 
-    public void remove(int index) {
-        if(!items.isEmpty()&&index<items.size()){
-            items.remove(index);
-            notifyItemRemoved(index);
-        }
-    }
+
 
     public void remove(int start,int count){
         int index=0;
@@ -143,6 +182,19 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
         }
     }
 
+    public void remove(int index) {
+        if(!items.isEmpty()&&index<items.size()){
+            items.remove(index);
+        }
+    }
+
+    public void removeNotify(int index) {
+        if(!items.isEmpty()&&index<items.size()){
+            items.remove(index);
+            notifyItemRemoved(index);
+        }
+    }
+
 
     /**
      * 更新条目
@@ -154,12 +206,28 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
             int index = items.indexOf(e);
             if (-1 != index) {
                 items.set(index, e);
+            }
+        }
+    }
+
+    public void updateItemNotify(E e) {
+        if (null != e) {
+            int index = items.indexOf(e);
+            if (-1 != index) {
+                items.set(index, e);
                 notifyItemChanged(index);
             }
         }
     }
 
-    public void swapItems(final ArrayList<E> items) {
+    public void swapItems(final List<E> items) {
+        if (null != items && !items.isEmpty()) {
+            this.items.clear();
+            this.items.addAll(items);
+        }
+    }
+
+    public void swapItemsNotify(final List<E> items) {
         if (null != items && !items.isEmpty()) {
             this.items.clear();
             this.items.addAll(items);
@@ -172,7 +240,7 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
      *
      * @return
      */
-    public ArrayList<E> getItems() {
+    public List<E> getItems() {
         return items;
     }
 
@@ -197,20 +265,18 @@ public abstract class BaseViewAdapter<H extends BaseViewHolder, E> extends Recyc
     }
 
     /**
-     * 互换元素,互通知刷新
+     * 互换元素
      */
     public void swap(int oldPosition, int newPosition) {
+        swapItem(oldPosition, newPosition);
+    }
+
+    public void swapNotify(int oldPosition, int newPosition){
         swapItem(oldPosition, newPosition);
         notifyItemMoved(oldPosition, newPosition);
     }
 
-    /**
-     * 移除所有条目
-     */
-    public void clear() {
-        this.items.clear();
-        notifyItemRangeRemoved(0, getItemsCount());
-    }
+
 
     public boolean isEmpty() {
         return 0 == getItemsCount();

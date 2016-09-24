@@ -12,6 +12,8 @@
         android:layout_height="match_parent"
         auto:pull_headerType="flip"
         auto:pull_refreshMode="refresh_none"
+        auto:pv_listDivide="@color/divide"
+        auto:pv_listDivideHeight="0.8dp"
         />
 
 </RelativeLayout>
