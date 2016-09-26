@@ -197,7 +197,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
 
     @Override
     public void removeHeaderView(int index){
-        checkIndexInBounds(index,getHeaderViewCount());
+        checkIndexInBounds(index, getHeaderViewCount());
         adapter.removeHeaderView(index);
         itemDecoration.setHeaderCount(getHeaderViewCount());
     }
@@ -224,10 +224,11 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
 
     @Override
     public void removeFooterView(int index)  {
-        checkIndexInBounds(index,getFooterViewCount());
+        checkIndexInBounds(index, getFooterViewCount());
         adapter.removeFooterView(index);
         itemDecoration.setFooterCount(getFooterViewCount());
     }
+
 
     public void addDynamicView(View view,int position){
         if(null!=view){
@@ -239,6 +240,10 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
         if(null!=view){
             adapter.removeDynamicView(view);
         }
+    }
+
+    public void itemRangeGlobalRemoved(int positionStart,int itemCount){
+        adapter.itemRangeGlobalRemoved(positionStart,itemCount);
     }
 
     @Override
