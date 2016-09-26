@@ -10,7 +10,6 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.ldzs.recyclerlibrary.adapter.SelectAdapter;
@@ -228,6 +227,18 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
         checkIndexInBounds(index,getFooterViewCount());
         adapter.removeFooterView(index);
         itemDecoration.setFooterCount(getFooterViewCount());
+    }
+
+    public void addDynamicView(View view,int position){
+        if(null!=view){
+            adapter.addDynamicView(view,position);
+        }
+    }
+
+    public void removeDynamicView(View view){
+        if(null!=view){
+            adapter.removeDynamicView(view);
+        }
     }
 
     @Override
