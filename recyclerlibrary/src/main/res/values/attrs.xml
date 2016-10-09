@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="RefreshStyle" format="reference"/>
-    <attr name="refresh_footerHeight" format="dimension"/>
-    <attr name="refresh_clickTextHint" format="reference"/>
-    <attr name="refresh_textSize" format="dimension"/>
-    <attr name="refresh_textColor" format="color"/>
-    <attr name="refresh_errorHint" format="reference"/>
-    <attr name="refresh_retryItemSelector" format="reference"/>
-    <attr name="pull_to_refresh_retry" format="reference"/>
-
 
     <declare-styleable name="PullToRefreshRecyclerView">
         <attr name="pv_listDivide" format="reference" />
@@ -23,6 +14,14 @@
         </attr>
         <attr name="pv_choiceBackground" format="reference" />
     </declare-styleable>
+
+    <attr name="refresh_footerHeight" format="dimension"/>
+    <attr name="refresh_clickTextHint" format="string"/>
+    <attr name="refresh_textSize" format="dimension"/>
+    <attr name="refresh_textColor" format="color"/>
+    <attr name="refresh_errorHint" format="reference"/>
+    <attr name="refresh_retryItemSelector" format="reference"/>
+    <attr name="refresh_retry" format="string"/>
 
 
 

@@ -4,19 +4,17 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
-import com.ldzs.recyclerlibrary.R;
-
 /**
  * Created by Administrator on 2016/8/20.
  */
 public class FrameFooterView extends RelativeLayout {
 
     public FrameFooterView(Context context) {
-        this(context,null, R.attr.RefreshStyle);
+        this(context,null, 0);
     }
 
     public FrameFooterView(Context context, AttributeSet attrs) {
-        this(context, attrs,R.attr.RefreshStyle);
+        this(context, attrs,0);
     }
 
     public FrameFooterView(Context context, AttributeSet attrs, int defStyleAttr) {
