@@ -12,4 +12,6 @@
     <string name="check_net_info">检测网络信息后点击重试</string>
     <string name="re_try">重试</string>
     <string name="load_complete">加载完毕</string>
+    <string name="click_load_more">点击加载更多</string>
+    <string name="load_error">加载异常</string>
 </resources>

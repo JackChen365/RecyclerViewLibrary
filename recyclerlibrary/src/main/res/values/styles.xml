@@ -1,0 +1,17 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" >
+        <!-- Customize your theme here. -->
+        <item name="android:listDivider">@color/divide</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="refresh_footerHeight">40dp</item>
+        <item name="refresh_clickTextHint">@string/click_load_more</item>
+        <item name="refresh_textSize">14sp</item>
+        <item name="refresh_textColor">@color/blue</item>
+        <item name="refresh_errorHint">@string/load_error</item>
+        <item name="refresh_retryItemSelector" >@drawable/btn_retry_selector</item>
+        <item name="refresh_retry" >@string/re_try</item>
+    </style>
+
+</resources>

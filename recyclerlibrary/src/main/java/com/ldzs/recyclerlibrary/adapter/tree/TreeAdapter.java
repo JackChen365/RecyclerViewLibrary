@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.ldzs.recyclerlibrary.adapter.BaseViewHolder;
 import com.ldzs.recyclerlibrary.adapter.CacheViewHolder;
 import com.ldzs.recyclerlibrary.callback.OnNodeItemClickListener;
 
@@ -73,7 +72,7 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<CacheViewHolde
      * @param node
      * @param position
      */
-    public abstract void onBindViewHolder(final BaseViewHolder holder, TreeNode<E> node, E e, int viewType, int position);
+    public abstract void onBindViewHolder(final CacheViewHolder holder, TreeNode<E> node, E e, int viewType, int position);
 
     @Override
     public void onBindViewHolder(final CacheViewHolder holder, int position) {
@@ -119,7 +118,7 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<CacheViewHolde
      * @param holder
      * @param expand
      */
-    protected void onNodeExpand(TreeNode<E> node, BaseViewHolder holder, boolean expand) {
+    protected void onNodeExpand(TreeNode<E> node, CacheViewHolder holder, boolean expand) {
     }
 
     /**

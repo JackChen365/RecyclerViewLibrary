@@ -12,5 +12,7 @@
     <string name="check_net_info">Please Check Network</string>
     <string name="re_try">try</string>
     <string name="load_complete">LoadComplete</string>
+    <string name="click_load_more">Click load more</string>
+    <string name="load_error">Load error</string>
 
 </resources>
