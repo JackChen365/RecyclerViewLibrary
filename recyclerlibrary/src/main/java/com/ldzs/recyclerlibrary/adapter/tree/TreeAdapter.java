@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ldzs.recyclerlibrary.adapter.BaseViewHolder;
+import com.ldzs.recyclerlibrary.adapter.CacheViewHolder;
 import com.ldzs.recyclerlibrary.callback.OnNodeItemClickListener;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.List;
  * Created by cz on 16/1/23.
  * 一个RecyclerView的树形管理Adapter对象
  */
-public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder> {
+public abstract class TreeAdapter<E> extends RecyclerView.Adapter<CacheViewHolder> {
     private static final String TAG = "TreeAdapter";
     protected final ArrayList<TreeNode<E>> nodeItems;//树的列表展示节点
     protected final ArrayList<E> items;
@@ -75,7 +76,7 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<BaseViewHolder
     public abstract void onBindViewHolder(final BaseViewHolder holder, TreeNode<E> node, E e, int viewType, int position);
 
     @Override
-    public void onBindViewHolder(final BaseViewHolder holder, int position) {
+    public void onBindViewHolder(final CacheViewHolder holder, int position) {
         TreeNode<E> node = getNode(position);
         onBindViewHolder(holder, node, node.e, getItemViewType(position), position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {

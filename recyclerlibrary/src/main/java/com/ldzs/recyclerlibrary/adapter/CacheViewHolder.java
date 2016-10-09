@@ -23,6 +23,7 @@ public class CacheViewHolder extends BaseViewHolder {
     private void cacheView(View itemView) {
         if(itemView instanceof ViewGroup){
             ViewGroup layout = (ViewGroup) itemView;
+            this.cacheViews.append(layout.getId(),layout);
             for(int i=0;i<layout.getChildCount();i++){
                 View childView = layout.getChildAt(i);
                 if(childView instanceof ViewGroup){
