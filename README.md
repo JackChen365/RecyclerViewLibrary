@@ -69,8 +69,6 @@ dependencies {
 ###2016/10/10
 * 增加了部分listfood自定义属性.因为是布局,所以在自己的样式里.必须加入,不清楚好是不好...如果不看,引入项目,使用会报错,感觉好像不太好.
 ```xml
-<item name="android:listDivider">@color/divide</item>
-        <item name="android:windowBackground">@color/white</item>
         <item name="refresh_footerHeight">40dp</item>
         <item name="refresh_clickTextHint">@string/click_load_more</item>
         <item name="refresh_textSize">14sp</item>
