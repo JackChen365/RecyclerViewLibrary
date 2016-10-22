@@ -66,4 +66,15 @@ dependencies {
 * 重构了部分代码.以适应开发.将另一个新写的PullToRefreLayout引入作为下拉刷新使用,独立了下拉刷新组件,上拉加载,通过单独的Adapter支持.
 * 将包装的Adapter层级更为DynamicAdapter->RefreshAdapter->SelectAdapter,DynamicAdapter为Adapter支持动态插入任一布局功能(此功能极其强大.谁用谁知道哈),RefreshAdapter为Aadpter增加,底部刷新,以及其他布局支持.SelectAdapter则为布局增加了条目选择功能.每种布局又可以单独作为装饰器对象.直接使用.当然更推荐直接采用PullToRefreshRecyclerView
 
+###2016/10/10
+* 增加了部分listfood自定义属性.因为是布局,所以在自己的样式里.必须加入,不清楚好是不好...如果不看,引入项目,使用会报错,感觉好像不太好.
+```xml
+        <item name="refresh_footerHeight">40dp</item>
+        <item name="refresh_clickTextHint">@string/click_load_more</item>
+        <item name="refresh_textSize">14sp</item>
+        <item name="refresh_textColor">@color/blue</item>
+        <item name="refresh_errorHint">@string/load_error</item>
+        <item name="refresh_retryItemSelector" >@drawable/btn_retry_selector</item>
+        <item name="refresh_retry" >@string/re_try</item>
+```
 #### 参考:RecyclerView-Animator实现动画.非常感谢.
