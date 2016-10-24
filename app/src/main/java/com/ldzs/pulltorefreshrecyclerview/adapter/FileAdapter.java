@@ -4,11 +4,9 @@ import android.content.Context;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.ldzs.pulltorefreshrecyclerview.R;
-import com.ldzs.recyclerlibrary.adapter.BaseViewHolder;
+import com.ldzs.recyclerlibrary.adapter.CacheViewHolder;
 import com.ldzs.recyclerlibrary.adapter.tree.TreeAdapter;
 
 import java.io.File;
@@ -27,29 +25,26 @@ public class FileAdapter extends TreeAdapter<File> {
     }
 
     @Override
-    public void onBindViewHolder(BaseViewHolder holder, TreeNode<File> node, File file, int viewType, int position) {
+    public void onBindViewHolder(CacheViewHolder holder, TreeNode<File> node, File file, int viewType, int position) {
         View itemView = holder.itemView;
         itemView.setPadding(PADDING * node.level, itemView.getPaddingTop(), itemView.getPaddingRight(), itemView.getPaddingBottom());
         switch (viewType) {
             case FILE_ITEM:
-                FileHolder fileHolder = (FileHolder) holder;
-                fileHolder.simpleNameView.setText(getSimpleName(file.getName()));
-                fileHolder.nameView.setText(file.getName());
+                holder.textView(R.id.tv_simple_name).setText(getSimpleName(file.getName()));
+                holder.textView(R.id.tv_name).setText(file.getName());
                 break;
             case FOLDER_ITEM:
-                FolderHolder folderHolder = (FolderHolder) holder;
-                folderHolder.simpleNameView.setText(getSimpleName(file.getName()));
-                folderHolder.folderView.setText(file.getName()+"("+node.child.size()+")");
-                folderHolder.dragFlag.setSelected(node.expand);
+                holder.textView(R.id.tv_simple_name).setText(getSimpleName(file.getName()));
+                holder.textView(R.id.tv_name).setText(file.getName() + "(" + node.child.size() + ")");
+                holder.view(R.id.iv_flag).setSelected(node.expand);
                 break;
         }
     }
 
     @Override
-    protected void onNodeExpand(TreeNode<File> node, BaseViewHolder holder, boolean expand) {
+    protected void onNodeExpand(TreeNode<File> node, CacheViewHolder holder, boolean expand) {
         super.onNodeExpand(node, holder, expand);
-        FolderHolder folderHolder = (FolderHolder) holder;
-        folderHolder.dragFlag.setSelected(expand);
+        holder.view(R.id.iv_flag).setSelected(expand);
     }
 
     private String getSimpleName(String name) {
@@ -58,14 +53,14 @@ public class FileAdapter extends TreeAdapter<File> {
 
 
     @Override
-    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        BaseViewHolder holder = null;
+    public CacheViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        CacheViewHolder holder = null;
         switch (viewType) {
             case FILE_ITEM:
-                holder = new FileHolder(createView(parent, R.layout.file_item));
+                holder = new CacheViewHolder(createView(parent, R.layout.file_item));
                 break;
             case FOLDER_ITEM:
-                holder = new FolderHolder(createView(parent, R.layout.folder_item));
+                holder = new CacheViewHolder(createView(parent, R.layout.folder_item));
                 break;
         }
         return holder;
@@ -81,27 +76,4 @@ public class FileAdapter extends TreeAdapter<File> {
         return viewType;
     }
 
-    public static class FolderHolder extends BaseViewHolder {
-        private TextView simpleNameView;
-        private TextView folderView;
-        private ImageView dragFlag;
-
-        public FolderHolder(View itemView) {
-            super(itemView);
-            simpleNameView = (TextView) itemView.findViewById(R.id.tv_simple_name);
-            folderView = (TextView) itemView.findViewById(R.id.tv_folder_name);
-            dragFlag = (ImageView) itemView.findViewById(R.id.iv_flag);
-        }
-    }
-
-    public static class FileHolder extends BaseViewHolder {
-        private TextView simpleNameView;
-        private TextView nameView;
-
-        public FileHolder(View itemView) {
-            super(itemView);
-            simpleNameView = (TextView) itemView.findViewById(R.id.tv_simple_name);
-            nameView = (TextView) itemView.findViewById(R.id.tv_name);
-        }
-    }
 }

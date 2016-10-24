@@ -2,7 +2,6 @@ package com.ldzs.recyclerlibrary.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
 import com.ldzs.recyclerlibrary.callback.Selectable;
@@ -36,7 +35,6 @@ public class SelectAdapter extends RefreshAdapter {
         realMultiSelectItems = new ArrayList<>();
     }
 
-
     /*
      * 设置选择模式
      *
@@ -66,6 +64,23 @@ public class SelectAdapter extends RefreshAdapter {
                 break;
         }
         this.mode = mode;
+    }
+
+    public void setSingleSelectPosition(int position){
+        notifyItemChanged(this.selectPosition=position);
+    }
+
+
+    public void setMultiSelectItems(List<Integer> items){
+        realMultiSelectItems.clear();
+        realMultiSelectItems.addAll(items);
+        notifyDataSetChanged();
+    }
+
+    public void setRectangleSelectPosition(int start,int end){
+        this.start=start;
+        this.end=end;
+        notifyItemRangeChanged(start,end-start);
     }
 
     @Override

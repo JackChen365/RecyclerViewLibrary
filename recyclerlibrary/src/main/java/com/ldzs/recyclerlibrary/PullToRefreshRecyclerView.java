@@ -19,6 +19,7 @@ import com.ldzs.recyclerlibrary.footer.RefreshFrameFooter;
 import com.ldzs.recyclerlibrary.observe.DynamicAdapterDataObserve;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cz.library.PullToRefreshLayout;
 import cz.library.RefreshMode;
@@ -243,7 +244,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
     }
 
     public void itemRangeGlobalRemoved(int positionStart,int itemCount){
-        adapter.itemRangeGlobalRemoved(positionStart,itemCount);
+        adapter.itemRangeGlobalRemoved(positionStart, itemCount);
     }
 
     @Override
@@ -432,6 +433,19 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
 
     public void setOnPullFooterToRefreshListener(OnPullFooterToRefreshListener listener){
         this.listener=listener;
+    }
+
+    public void setSingleSelectPosition(int position){
+        this.adapter.setSingleSelectPosition(position);
+    }
+
+
+    public void setMultiSelectItems(List<Integer> items){
+        this.adapter.setMultiSelectItems(items);
+    }
+
+    public void setRectangleSelectPosition(int start,int end){
+        this.adapter.setRectangleSelectPosition(start,end);
     }
 
     /*
