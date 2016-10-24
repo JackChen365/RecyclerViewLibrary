@@ -21,7 +21,6 @@ public class SelectAdapter extends RefreshAdapter {
     public static final int MULTI_SELECT = PullToRefreshRecyclerView.MULTI_SELECT;//多选
     public static final int RECTANGLE_SELECT = PullToRefreshRecyclerView.RECTANGLE_SELECT;//块选择
     private final ArrayList<Integer> multiSelectItems;//选中集
-    private final ArrayList<Integer> realMultiSelectItems;//真实的选中位置
     private PullToRefreshRecyclerView.OnSingleSelectListener singleSelectListener;
     private PullToRefreshRecyclerView.OnMultiSelectListener multiSelectListener;
     private PullToRefreshRecyclerView.OnRectangleSelectListener rectangleSelectListener;
@@ -32,7 +31,6 @@ public class SelectAdapter extends RefreshAdapter {
     public SelectAdapter(RecyclerView.Adapter adapter) {
         super(adapter);
         multiSelectItems = new ArrayList<>();
-        realMultiSelectItems = new ArrayList<>();
     }
 
     /*
@@ -52,7 +50,6 @@ public class SelectAdapter extends RefreshAdapter {
             case MULTI_SELECT:
                 List<Integer> lastItems=new ArrayList<>(multiSelectItems);
                 multiSelectItems.clear();
-                realMultiSelectItems.clear();
                 for (Integer position : lastItems) {
                     notifyItemChanged(position+headersCount);
                 }
@@ -72,8 +69,8 @@ public class SelectAdapter extends RefreshAdapter {
 
 
     public void setMultiSelectItems(List<Integer> items){
-        realMultiSelectItems.clear();
-        realMultiSelectItems.addAll(items);
+        multiSelectItems.clear();
+        multiSelectItems.addAll(items);
         notifyDataSetChanged();
     }
 
@@ -92,7 +89,7 @@ public class SelectAdapter extends RefreshAdapter {
                 selectPosition(holder,position,selectPosition + headersCount == position);
                 break;
             case MULTI_SELECT:
-                selectPosition(holder,position,realMultiSelectItems.contains(position));
+                selectPosition(holder,position,multiSelectItems.contains(position-headersCount));
                 break;
             case RECTANGLE_SELECT:
                 int s = Math.min(start + headersCount, end + headersCount);
@@ -121,10 +118,8 @@ public class SelectAdapter extends RefreshAdapter {
                 selectPosition = start = end = -1;
                 if (multiSelectItems.contains(position)) {
                     multiSelectItems.remove(Integer.valueOf(position));
-                    realMultiSelectItems.remove(Integer.valueOf(position + headersCount));
                 } else {
                     multiSelectItems.add(Integer.valueOf(position));
-                    realMultiSelectItems.add(Integer.valueOf(position + headersCount));
                 }
                 if (null != multiSelectListener) {
                     multiSelectListener.onMultiSelect(v, multiSelectItems);
@@ -150,7 +145,6 @@ public class SelectAdapter extends RefreshAdapter {
             case SINGLE_SELECT:
                 start = end = -1;
                 multiSelectItems.clear();
-                realMultiSelectItems.clear();
                 if (null != singleSelectListener) {
                     singleSelectListener.onSingleSelect(v, position, selectPosition);
                 }
