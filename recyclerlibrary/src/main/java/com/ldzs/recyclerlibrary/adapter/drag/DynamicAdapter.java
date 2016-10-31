@@ -280,7 +280,20 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         fullItemTypes.put(position, viewType);
         fullViews.put(viewType, view);
 
-        //update header view count;
+        updateHeaderViewCount();
+
+
+        //当只有一个时,通知插入,这里有一个问题,暂时未找到原因:如果谁清楚,请帮助解决一下,所以不用notifyItemInserted改用notifyDataSetChanged,性能差一点,但不会报错.
+        // java.lang.IllegalArgumentException: Called removeDetachedView with a view which is not flagged as tmp detached.ViewHolder{3c6be8ee position=17 id=-1, oldPos=-1, pLpos:-1}
+//        notifyItemInserted(position);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * update header view count
+     */
+    private void updateHeaderViewCount() {
+        int length;
         headerViewCount=0;
         length=itemPositions.length;
         int index=0;
@@ -288,11 +301,6 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             index++;
             headerViewCount++;
         }
-
-        //当只有一个时,通知插入,这里有一个问题,暂时未找到原因:如果谁清楚,请帮助解决一下,所以不用notifyItemInserted改用notifyDataSetChanged,性能差一点,但不会报错.
-        // java.lang.IllegalArgumentException: Called removeDetachedView with a view which is not flagged as tmp detached.ViewHolder{3c6be8ee position=17 id=-1, oldPos=-1, pLpos:-1}
-//        notifyItemInserted(position);
-        notifyDataSetChanged();
     }
 
     /**
@@ -352,8 +360,8 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             for(int i=0;i<newFullItems.size();i++){
                 fullItemTypes.append(newFullItems.keyAt(i),newFullItems.valueAt(i));
             }
-            Log.e(TAG,"position:"+removePosition+" array:"+Arrays.toString(newPositions)+" old:"+Arrays.toString(itemPositions));
             itemPositions = newPositions;
+            updateHeaderViewCount();
             notifyItemRemoved(removePosition);
         }
     }
