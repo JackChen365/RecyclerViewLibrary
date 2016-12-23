@@ -12,6 +12,7 @@ import com.ldzs.recyclerlibrary.callback.OnExpandItemClickListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,11 +31,11 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
     private OnExpandItemClickListener listener;
     private int headerCount;//顶部view总数
 
-    public ExpandAdapter(Context context, HashMap<K, List<E>> items) {
+    public ExpandAdapter(Context context, LinkedHashMap<K, List<E>> items) {
         this(context, items, false);
     }
 
-    public ExpandAdapter(Context context, HashMap<K, List<E>> items, boolean expand) {
+    public ExpandAdapter(Context context, LinkedHashMap<K, List<E>> items, boolean expand) {
         this(context, getNewItems(items), expand);
     }
 
@@ -68,7 +69,7 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
      * @param <E>
      * @return
      */
-    private static <K, E> List<ExpandAdapter.Entry<K, List<E>>> getNewItems(HashMap<K, List<E>> items) {
+    private static <K, E> List<ExpandAdapter.Entry<K, List<E>>> getNewItems(LinkedHashMap<K, List<E>> items) {
         ArrayList<ExpandAdapter.Entry<K, List<E>>> newItems = new ArrayList<>();
         if (!items.isEmpty()) {
             for (Map.Entry<K, List<E>> entry : items.entrySet()) {
@@ -401,7 +402,7 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
         }
     }
 
-    public void swapItems(HashMap<K, List<E>> items) {
+    public void swapItems(LinkedHashMap<K, List<E>> items) {
         swapItems(getNewItems(items));
     }
 
