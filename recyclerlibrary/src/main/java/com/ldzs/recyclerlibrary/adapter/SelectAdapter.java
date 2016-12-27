@@ -30,6 +30,7 @@ public class SelectAdapter extends RefreshAdapter {
 
     public SelectAdapter(RecyclerView.Adapter adapter) {
         super(adapter);
+        selectPosition=-1;
         multiSelectItems = new ArrayList<>();
     }
 
@@ -84,27 +85,29 @@ public class SelectAdapter extends RefreshAdapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         int headersCount = getHeaderViewCount();
+        int footerViewCount = getFooterViewCount();
         switch (mode) {
             case SINGLE_SELECT:
-                selectPosition(holder,position,selectPosition + headersCount == position);
+                selectPosition(holder,position,headersCount,footerViewCount,selectPosition + headersCount == position);
                 break;
             case MULTI_SELECT:
-                selectPosition(holder,position,multiSelectItems.contains(position-headersCount));
+                selectPosition(holder,position,headersCount,footerViewCount,multiSelectItems.contains(position-headersCount));
                 break;
             case RECTANGLE_SELECT:
                 int s = Math.min(start + headersCount, end + headersCount);
                 int e = Math.max(start + headersCount, end + headersCount);
-                selectPosition(holder,position,s <= position && e >= position);
+                selectPosition(holder,position,headersCount,footerViewCount,s <= position && e >= position);
                 break;
             default:
-                selectPosition(holder,position,false);
+                selectPosition(holder,position,headersCount,footerViewCount,false);
         }
     }
 
-    private void selectPosition(RecyclerView.ViewHolder holder,int position,boolean select){
-        if(null!=adapter&&adapter instanceof Selectable){
+    private void selectPosition(RecyclerView.ViewHolder holder,int position,int headerCount,int footerCount,boolean select){
+        int itemCount = getItemCount();
+        if(null!=adapter&&adapter instanceof Selectable&&position>=headerCount&&position<itemCount-footerCount){
             Selectable selectable=(Selectable)adapter;
-            selectable.onSelectItem(holder,position,select);
+            selectable.onSelectItem(holder,position-headerCount,select);
         }
     }
 

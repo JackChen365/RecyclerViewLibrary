@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
-version = "1.4.3"
+version = "1.4.4"
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.1"
@@ -94,6 +94,6 @@ bintray {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.cz.refreshlayout:library:1.1.0'
+    compile 'com.cz.refreshlayout:library:1.1.1'
     compile 'com.android.support:recyclerview-v7:24.2.1'
 }
