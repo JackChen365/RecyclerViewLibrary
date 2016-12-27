@@ -151,7 +151,9 @@ public class SelectAdapter extends RefreshAdapter {
                 if (null != singleSelectListener) {
                     singleSelectListener.onSingleSelect(v, position, selectPosition);
                 }
-                notifyItemChanged(selectPosition + headersCount);//通知上一个取消
+                if(0<=selectPosition){
+                    notifyItemChanged(selectPosition + headersCount);//通知上一个取消
+                }
                 selectPosition = position;
                 notifyItemChanged(position + headersCount);//本次选中
                 break;
