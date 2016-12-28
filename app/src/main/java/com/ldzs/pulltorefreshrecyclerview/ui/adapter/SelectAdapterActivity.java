@@ -65,8 +65,12 @@ public class SelectAdapterActivity extends AppCompatActivity {
         });
         mRecyclerView.setOnMultiSelectListener(new PullToRefreshRecyclerView.OnMultiSelectListener() {
             @Override
-            public void onMultiSelect(View v, ArrayList<Integer> selectPositions) {
-                Toast.makeText(getApplicationContext(), "MultiSelect:" + selectPositions, Toast.LENGTH_SHORT).show();
+            public void onMultiSelect(View v, ArrayList<Integer> selectPositions,int lastSelectCount,int maxCount) {
+                if(lastSelectCount<maxCount){
+                    Toast.makeText(getApplicationContext(), "MultiSelect:" + selectPositions, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "MultiSelect no thing", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         mRecyclerView.setOnRectangleSelectListener(new PullToRefreshRecyclerView.OnRectangleSelectListener() {

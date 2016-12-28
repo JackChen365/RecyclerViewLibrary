@@ -15,6 +15,7 @@ import java.util.List;
  * 一个可设置选择模式的数据乱配器
  */
 public class SelectAdapter extends RefreshAdapter {
+    public static final int MAX_COUNT=Integer.MAX_VALUE;
     // 三种选择状态
     private static final String TAG = "SelectAdapter";
     public static final int CLICK = PullToRefreshRecyclerView.CLICK;//单击
@@ -26,6 +27,7 @@ public class SelectAdapter extends RefreshAdapter {
     private PullToRefreshRecyclerView.OnMultiSelectListener multiSelectListener;
     private PullToRefreshRecyclerView.OnRectangleSelectListener rectangleSelectListener;
     private int selectPosition;// 选中位置
+    private int selectMaxCount;
     private int start, end;//截选范围
     private int mode;//选择模式
 
@@ -63,6 +65,10 @@ public class SelectAdapter extends RefreshAdapter {
                 break;
         }
         this.mode = mode;
+    }
+
+    public void setSelectMaxCount(int count) {
+        this.selectMaxCount=count;
     }
 
     public void setSingleSelectPosition(int position){
@@ -133,16 +139,19 @@ public class SelectAdapter extends RefreshAdapter {
         int headersCount = getHeaderViewCount();
         switch (mode) {
             case MULTI_SELECT:
+                int lastSize=multiSelectItems.size();
                 selectPosition = start = end = -1;
                 if (multiSelectItems.contains(position)) {
+                    lastSize--;
                     multiSelectItems.remove(Integer.valueOf(position));
-                } else {
+                    notifyItemChanged(position + headersCount);
+                } else if(multiSelectItems.size()<selectMaxCount){
                     multiSelectItems.add(Integer.valueOf(position));
+                    notifyItemChanged(position + headersCount);
                 }
                 if (null != multiSelectListener) {
-                    multiSelectListener.onMultiSelect(v, multiSelectItems);
+                    multiSelectListener.onMultiSelect(v, multiSelectItems,lastSize,selectMaxCount);
                 }
-                notifyItemChanged(position + headersCount);
                 break;
             case RECTANGLE_SELECT:
                 if (-1 != start && -1 != end) {

@@ -8,7 +8,8 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        auto:pull_refreshMode="refresh_none">
+        auto:pull_refreshMode="refresh_none"
+        auto:pv_choiceMaxCount="5">
 
     <TextView
         android:layout_width="match_parent"

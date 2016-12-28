@@ -99,10 +99,9 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
         setDivideHorizontalPadding(a.getDimension(R.styleable.PullToRefreshRecyclerView_pv_divideHorizontalPadding, 0));
         setDivideVerticalPadding(a.getDimension(R.styleable.PullToRefreshRecyclerView_pv_divideVerticalPadding, 0));
         setSelectModeInner(a.getInt(R.styleable.PullToRefreshRecyclerView_pv_choiceMode, CLICK));
+        setSelectMaxCount(a.getInteger(R.styleable.PullToRefreshRecyclerView_pv_choiceMaxCount,SelectAdapter.MAX_COUNT));
         a.recycle();
     }
-
-
 
     @Override
     protected void onFinishInflate() {
@@ -152,9 +151,18 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
     public void setSelectMode(@SelectMode int mode){
         setSelectModeInner(mode);
     }
+
     private void setSelectModeInner(int mode) {
         adapter.setSelectMode(mode);
         invalidate();
+    }
+
+    /**
+     * 设置可选择条目最大数,仅针对MULTI_SELECT 有效
+     * @param count
+     */
+    public void setSelectMaxCount(int count) {
+        this.adapter.setSelectMaxCount(count);
     }
 
     @Override
@@ -538,7 +546,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
     }
 
     public interface OnMultiSelectListener{
-        void onMultiSelect(View v, ArrayList<Integer> selectPositions);
+        void onMultiSelect(View v, ArrayList<Integer> selectPositions,int lastSelectCount,int maxCount);
     }
 
     public interface OnRectangleSelectListener{
