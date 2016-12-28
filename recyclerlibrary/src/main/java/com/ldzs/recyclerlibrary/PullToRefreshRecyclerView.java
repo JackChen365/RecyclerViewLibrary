@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.ldzs.recyclerlibrary.adapter.SelectAdapter;
 import com.ldzs.recyclerlibrary.callback.OnItemClickListener;
@@ -104,7 +105,22 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
 
     @Override
     protected void onFinishInflate() {
-        super.onFinishInflate();
+        if(0<getChildCount()){
+            for(int i=0;i<getChildCount();){
+                View childView = getChildAt(i);
+                removeViewAt(0);
+                PullToRefreshRecyclerView.LayoutParams layoutParams= (LayoutParams) childView.getLayoutParams();
+                if(LayoutParams.ITEM_HEADER==layoutParams.itemType){
+                    adapter.addHeaderView(childView);
+                } else if(LayoutParams.ITEM_FOOTER==layoutParams.itemType){
+                    adapter.addFooterView(childView);
+                }
+            }
+            addTargetView();
+            setRefreshHeader(refreshHeader);
+        } else {
+            super.onFinishInflate();
+        }
         this.targetView.addItemDecoration(itemDecoration);
     }
 
@@ -457,6 +473,20 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
         adapter.setOnSingleSelectListener(singleSelectListener);
     }
 
+    public int getSingleSelectPosition(){
+        return this.adapter.getSingleSelectPosition();
+    }
+
+
+    public List<Integer> getMultiSelectItems(){
+        return this.adapter.getMultiSelectItems();
+    }
+
+
+    public Range<Integer> getRectangleSelectPosition(){
+        return this.adapter.getRectangleSelectPosition();
+    }
+
     /*
     * 设置多选选择监听
     *
@@ -495,6 +525,36 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
 
     public interface OnRectangleSelectListener{
         void onRectangleSelect(int startPosition, int endPosition);
+    }
+
+    @Override
+    protected ViewGroup.LayoutParams generateDefaultLayoutParams() {
+        return new PullToRefreshRecyclerView.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
+    }
+
+    @Override
+    public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new PullToRefreshRecyclerView.LayoutParams(getContext(),attrs);
+    }
+
+    public static class LayoutParams extends ViewGroup.LayoutParams{
+        public static final int ITEM_HEADER=0x00;
+        public static final int ITEM_FOOTER=0x01;
+        public int itemType;
+        public LayoutParams(Context c, AttributeSet attrs) {
+            super(c, attrs);
+            TypedArray a = c.obtainStyledAttributes(attrs, R.styleable.PullToRefreshRecyclerView);
+            itemType = a.getInt(R.styleable.PullToRefreshRecyclerView_pv_adapterView, ITEM_HEADER);
+            a.recycle();
+        }
+
+        public LayoutParams(int width, int height) {
+            super(width, height);
+        }
+
+        public LayoutParams(ViewGroup.LayoutParams source) {
+            super(source);
+        }
     }
 
 

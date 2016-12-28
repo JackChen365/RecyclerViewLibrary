@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
+import com.ldzs.recyclerlibrary.Range;
 import com.ldzs.recyclerlibrary.callback.Selectable;
 
 import java.util.ArrayList;
@@ -65,7 +66,13 @@ public class SelectAdapter extends RefreshAdapter {
     }
 
     public void setSingleSelectPosition(int position){
-        notifyItemChanged(this.selectPosition=position);
+        if(0<=position){
+            notifyItemChanged(this.selectPosition=position);
+        }
+    }
+
+    public int getSingleSelectPosition(){
+        return this.selectPosition;
     }
 
 
@@ -75,10 +82,18 @@ public class SelectAdapter extends RefreshAdapter {
         notifyDataSetChanged();
     }
 
+    public List<Integer> getMultiSelectItems(){
+        return multiSelectItems;
+    }
+
     public void setRectangleSelectPosition(int start,int end){
         this.start=start;
         this.end=end;
         notifyItemRangeChanged(start,end-start);
+    }
+
+    public Range<Integer> getRectangleSelectPosition(){
+        return new Range<>(start,end);
     }
 
     @Override

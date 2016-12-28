@@ -13,6 +13,10 @@
             <enum name="rectangle_choice" value="0x03" />
         </attr>
         <attr name="pv_choiceBackground" format="reference" />
+        <attr name="pv_adapterView" format="enum">
+            <enum name="header" value="0x00"/>
+            <enum name="footer" value="0x01"/>
+        </attr>
     </declare-styleable>
 
     <attr name="refresh_footerHeight" format="dimension"/>

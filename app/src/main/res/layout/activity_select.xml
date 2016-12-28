@@ -8,7 +8,70 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        auto:pull_refreshMode="refresh_none"/>
+        auto:pull_refreshMode="refresh_none">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/blue"
+        android:textSize="20sp"
+        android:padding="12dp"
+        android:gravity="center"
+        android:text="I am from Xml1!"
+        auto:pv_adapterView="header"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/blue"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="I am from Xml2!"
+        auto:pv_adapterView="header"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/blue"
+        android:textSize="20sp"
+        android:padding="12dp"
+        android:gravity="center"
+        android:text="I am from Xml3!"
+        auto:pv_adapterView="header"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/blue"
+        android:textSize="20sp"
+        android:padding="12dp"
+        android:gravity="center"
+        android:text="I am from Xml1!"
+        auto:pv_adapterView="footer"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/blue"
+        android:textSize="20sp"
+        android:padding="12dp"
+        android:gravity="center"
+        android:text="I am from Xml2!"
+        auto:pv_adapterView="footer"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/blue"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="I am from Xml3!"
+        auto:pv_adapterView="footer"/>
+
+
+    </com.ldzs.recyclerlibrary.PullToRefreshRecyclerView>
 
     <com.ldzs.pulltorefreshrecyclerview.widget.RadioLayout
         android:id="@+id/rl_choice"
