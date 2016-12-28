@@ -1,6 +1,7 @@
 package com.ldzs.recyclerlibrary.adapter.drag;
 
 import android.content.Context;
+import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -426,7 +427,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        if (!isDynamicItem(position)&&null != adapter) {
+        if (!isDynamicItem(position) && null != adapter) {
             int startIndex = getStartIndex(position);
             adapter.onBindViewHolder(holder, position - startIndex);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -434,8 +435,8 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 public void onClick(View v) {
                     //这里看起来很矛盾,其实是必然的设计,因为position可以往下减为真实的子Adapter的位置,但是往上,无法逆反,为实现drag条目转换功能,所以只能传递真实位置回具体条目
                     int itemPosition = holder.getAdapterPosition();
-                    int realPosition=itemPosition-getStartIndex(itemPosition);
-                    if (onItemClick(v, realPosition)&&null!=itemClickListener) {
+                    int realPosition = itemPosition - getStartIndex(itemPosition);
+                    if (onItemClick(v, realPosition) && null != itemClickListener) {
                         itemClickListener.onItemClick(v, itemPosition);
                     }
                 }
@@ -454,6 +455,17 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             viewType = adapter.getItemViewType(position - startIndex);
         }
         return viewType;
+    }
+
+    public View findDynamicView(@IdRes int id){
+        View findView=null;
+        for(int i=0;i<fullViews.size();i++){
+            View view = fullViews.valueAt(i);
+            if(null!=(findView=view.findViewById(id))){
+                break;
+            }
+        }
+        return findView;
     }
 
     private int getRealItemCount(){

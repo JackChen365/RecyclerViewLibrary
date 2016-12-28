@@ -75,6 +75,12 @@ public class SelectAdapterActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Start:" + startPosition + " End:" + endPosition, Toast.LENGTH_SHORT).show();
             }
         });
+        mRecyclerView.findAdapterView(R.id.tv_last).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(SelectAdapterActivity.this, "List Item", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**

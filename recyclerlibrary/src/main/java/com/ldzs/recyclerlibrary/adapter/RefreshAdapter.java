@@ -1,5 +1,6 @@
 package com.ldzs.recyclerlibrary.adapter;
 
+import android.support.annotation.IdRes;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -19,7 +20,7 @@ import java.util.List;
 public class RefreshAdapter extends DynamicAdapter {
     private static final String TAG = "RefreshAdapter";
     private final int TYPE_FOOTER = -1;
-    private final List<FooterViewItem> footerViews;
+    protected final List<FooterViewItem> footerViews;
     private View refreshFooterView;
     private int footerViewTotal;//尾的添加总个数
 
@@ -173,6 +174,16 @@ public class RefreshAdapter extends DynamicAdapter {
             itemCount+=footerViews.size();
         }
         return itemCount;
+    }
+
+    public View findRefreshView(@IdRes int id){
+        View findView=null;
+        for(FooterViewItem item:footerViews){
+            if(null!=(findView=item.view.findViewById(id))){
+                break;
+            }
+        }
+        return findView;
     }
 
     @Override

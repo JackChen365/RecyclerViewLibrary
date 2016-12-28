@@ -3,6 +3,7 @@ package com.ldzs.recyclerlibrary;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.IdRes;
 import android.support.annotation.IntDef;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -193,6 +194,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
         }
     }
 
+
     @Override
     public int getHeaderViewCount() {
         return this.adapter.getHeaderViewCount();
@@ -329,6 +331,22 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
             refreshState = END_NONE;
             adapter.removeRefreshFooterView(footerView);
         }
+    }
+
+    /**
+     * 查找 header/footer view
+     * @param id
+     * @return
+     */
+    public View findAdapterView(@IdRes int id){
+        View findView = findViewById(id);
+        if(null==findView){
+            findView=adapter.findRefreshView(id);
+        }
+        if(null==findView){
+            findView=adapter.findDynamicView(id);
+        }
+        return findView;
     }
 
     /**
