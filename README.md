@@ -4,7 +4,7 @@ A RecyclerView libirary ,has some support, like headerAdapter/TreeAdapter,and Pu
 #### gradle compile
 ```
 dependencies {
-    compile 'com.ldzs.recyclerlibrary:recyclerlibrary:1.4.3'
+    compile 'com.ldzs.recyclerlibrary:recyclerlibrary:1.4.9'
 }
 ```
 
@@ -77,4 +77,6 @@ dependencies {
         <item name="refresh_retryItemSelector" >@drawable/btn_retry_selector</item>
         <item name="refresh_retry" >@string/re_try</item>
 ```
+###2016/12/28
+* 增加了pv_adapterView引用,此引用功能为PullToRefreshRecyclerView xml布局内增加的控件,标记为header/footer,则直接添加到adapter的header/footer内,减少代码添加header/footer做法.但因recyclerView的延持加载机制,导致findViewById找不到控件的方式,特别提供了findAdapterView方法.
 #### 参考:RecyclerView-Animator实现动画.非常感谢.
