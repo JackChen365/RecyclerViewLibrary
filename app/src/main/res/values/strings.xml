@@ -36,4 +36,6 @@
     <string name="load_error">加载失败,请检测网络</string>
     <string name="re_try">重新加载</string>
     <string name="item_global_remove">条目全局移除</string>
+    <string name="click_position">点击:%1$d</string>
+    <string name="click_group_position">点击:%1$d 组%2$d</string>
 </resources>

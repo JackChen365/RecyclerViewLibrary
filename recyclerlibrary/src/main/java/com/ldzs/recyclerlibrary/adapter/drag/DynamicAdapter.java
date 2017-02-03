@@ -428,8 +428,6 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (!isDynamicItem(position) && null != adapter) {
-            int startIndex = getStartIndex(position);
-            adapter.onBindViewHolder(holder, position - startIndex);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -441,6 +439,8 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     }
                 }
             });
+            int startIndex = getStartIndex(position);
+            adapter.onBindViewHolder(holder, position - startIndex);
         }
     }
 

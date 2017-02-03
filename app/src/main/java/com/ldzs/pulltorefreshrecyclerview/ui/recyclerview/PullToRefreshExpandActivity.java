@@ -2,6 +2,7 @@ package com.ldzs.pulltorefreshrecyclerview.ui.recyclerview;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -46,7 +47,7 @@ public class PullToRefreshExpandActivity extends AppCompatActivity {
         mRecyclerView.setOnExpandItemClickListener(new OnExpandItemClickListener() {
             @Override
             public void onItemClick(View v, int groupPosition, int childPosition) {
-                Toast.makeText(getApplicationContext(), "Click:" + groupPosition+" childPosition:"+childPosition, Toast.LENGTH_SHORT).show();
+                Snackbar.make(v,getString(R.string.click_group_position,groupPosition,childPosition),Snackbar.LENGTH_LONG).show();
             }
         });
 

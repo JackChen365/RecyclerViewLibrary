@@ -2,6 +2,7 @@ package com.ldzs.pulltorefreshrecyclerview.ui.recyclerview;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
@@ -11,11 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ldzs.pulltorefreshrecyclerview.R;
 import com.ldzs.pulltorefreshrecyclerview.adapter.SimpleAdapter;
 import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
+import com.ldzs.recyclerlibrary.callback.OnItemClickListener;
 
 import cz.library.PullToRefreshLayout;
 import cz.library.RefreshMode;
@@ -80,6 +83,12 @@ public class GridPullToRefreshActivity extends AppCompatActivity {
         });
 
         mRecyclerView.setAdapter(mAdapter = new SimpleAdapter(this, R.layout.grid_text_item, Data.createItems(this, 10)));
+        mRecyclerView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                Snackbar.make(v,getString(R.string.click_position,position),Snackbar.LENGTH_LONG).show();
+            }
+        });
 
         View headerView = getHeaderView();
         headerView.setBackgroundColor(Color.BLUE);

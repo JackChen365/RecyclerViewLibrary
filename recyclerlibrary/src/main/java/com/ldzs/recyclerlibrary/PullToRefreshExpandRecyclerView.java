@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.ldzs.recyclerlibrary.adapter.expand.ExpandAdapter;
 import com.ldzs.recyclerlibrary.callback.OnExpandItemClickListener;
+import com.ldzs.recyclerlibrary.callback.OnItemClickListener;
 
 
 /**

@@ -2,6 +2,7 @@ package com.ldzs.pulltorefreshrecyclerview.ui.recyclerview;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -19,6 +20,8 @@ import com.ldzs.pulltorefreshrecyclerview.adapter.SimpleAdapter;
 import com.ldzs.pulltorefreshrecyclerview.data.Data;
 import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
 import com.ldzs.recyclerlibrary.anim.SlideInLeftAnimator;
+import com.ldzs.recyclerlibrary.callback.OnExpandItemClickListener;
+import com.ldzs.recyclerlibrary.callback.OnItemClickListener;
 
 import cz.library.RefreshMode;
 
@@ -84,6 +87,12 @@ public class PullToRefreshActivity extends AppCompatActivity {
         //初始设置2个,考虑其不满一屏加载状态
         adapter = new SimpleAdapter(this, Data.createItems(this, 2));
         recyclerView.setAdapter(adapter);
+        recyclerView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                Snackbar.make(v,getString(R.string.click_position,position),Snackbar.LENGTH_LONG).show();
+            }
+        });
 
         RadioGroup layout= (RadioGroup) findViewById(R.id.rg_refresh_mode);
         layout.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
