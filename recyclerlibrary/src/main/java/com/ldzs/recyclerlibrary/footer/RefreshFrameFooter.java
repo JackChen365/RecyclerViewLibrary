@@ -2,10 +2,8 @@ package com.ldzs.recyclerlibrary.footer;
 
 import android.content.Context;
 import android.support.annotation.IntDef;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.ldzs.recyclerlibrary.PullToRefreshRecyclerView;
 import com.ldzs.recyclerlibrary.R;
@@ -24,7 +22,6 @@ public class RefreshFrameFooter {
     @IntDef(value={FRAME_CLICK, FRAME_LOAD,FRAME_ERROR,FRAME_DONE})
     public @interface RefreshState {
     }
-    private PullToRefreshRecyclerView parent;
     private View[] frameGroup;
     private int refreshState = FRAME_CLICK;
     private View.OnClickListener mListener;
@@ -36,7 +33,6 @@ public class RefreshFrameFooter {
      * @param parent
      */
     public RefreshFrameFooter(Context context, PullToRefreshRecyclerView parent) {
-        this.parent=parent;
         this.container = LayoutInflater.from(context).inflate(R.layout.list_footer, parent, false);
         frameGroup = new View[4];
         frameGroup[FRAME_CLICK] = this.container.findViewById(R.id.refresh_click_view);
