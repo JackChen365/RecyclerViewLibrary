@@ -16,6 +16,11 @@ import java.util.List;
 /**
  * Created by cz on 16/1/23.
  * 一个RecyclerView的树形管理Adapter对象
+ * 2级  父级,子级
+ * 多级  父级,根->
+ *
+ * root
+ *
  */
 public abstract class TreeAdapter<E> extends RecyclerView.Adapter<CacheViewHolder> {
     private static final String TAG = "TreeAdapter";
@@ -319,7 +324,7 @@ public abstract class TreeAdapter<E> extends RecyclerView.Adapter<CacheViewHolde
      */
     public static class TreeNode<E> {
         public boolean expand;//是否展开
-        public int level;//当前节点级
+        public int level;//当前节点级 0 1 2
         public E e;//节点
         public TreeNode<E> parent;//父节点
         public ArrayList<TreeNode<E>> child;//子节点

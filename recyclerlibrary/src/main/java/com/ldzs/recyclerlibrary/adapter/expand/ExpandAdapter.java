@@ -11,7 +11,6 @@ import com.ldzs.recyclerlibrary.adapter.BaseViewHolder;
 import com.ldzs.recyclerlibrary.callback.OnExpandItemClickListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +43,21 @@ public abstract class ExpandAdapter<K, E> extends RecyclerView.Adapter<BaseViewH
         this(context, items, false);
     }
 
+    /**
+     * ----
+     * ----
+     * ----
+     * ----
+     *
+     * ---- 0
+     *  ----
+     *  ----
+     * ----
+     *  ----
+     * @param context
+     * @param items
+     * @param expand
+     */
     public ExpandAdapter(Context context, List<Entry<K, List<E>>> items, boolean expand) {
         layoutInflater = LayoutInflater.from(context);
         this.items = new ArrayList<>();

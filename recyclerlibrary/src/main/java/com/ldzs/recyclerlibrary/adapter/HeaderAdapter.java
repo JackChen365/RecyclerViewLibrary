@@ -3,7 +3,6 @@ package com.ldzs.recyclerlibrary.adapter;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -253,6 +252,16 @@ public class HeaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return view;
     }
 
+    /**
+     * ----- 1
+     * ----- 2
+       item1
+        item2
+       ----- footer1
+      ----- footer2
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         if (!isHeader(position)) {

@@ -72,8 +72,14 @@ public class SelectAdapter extends RefreshAdapter {
     }
 
     public void setSingleSelectPosition(int position){
-        if(0<=position){
-            notifyItemChanged(this.selectPosition=position);
+        this.selectPosition=position;
+        int lastPosition=selectPosition;
+        if(0<=position&&position<getItemCount()){
+            //如果在正常范围内
+            notifyItemChanged(position);
+        } else {
+            //删掉上一个选择的条目
+            notifyItemChanged(lastPosition);
         }
     }
 
@@ -172,13 +178,14 @@ public class SelectAdapter extends RefreshAdapter {
             case SINGLE_SELECT:
                 start = end = -1;
                 multiSelectItems.clear();
+                int last=selectPosition;
+                selectPosition = position;
                 if (null != singleSelectListener) {
-                    singleSelectListener.onSingleSelect(v, position, selectPosition);
+                    singleSelectListener.onSingleSelect(v, position, last);
                 }
                 if(0<=selectPosition){
-                    notifyItemChanged(selectPosition + headersCount);//通知上一个取消
+                    notifyItemChanged(last + headersCount);//通知上一个取消
                 }
-                selectPosition = position;
                 notifyItemChanged(position + headersCount);//本次选中
                 break;
         }
