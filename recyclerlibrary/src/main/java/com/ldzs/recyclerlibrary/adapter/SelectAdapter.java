@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class SelectAdapter extends RefreshAdapter {
     public static final int MAX_COUNT=Integer.MAX_VALUE;
+    public static final int INVALID_POSITION=-1;
     // 三种选择状态
     private static final String TAG = "SelectAdapter";
     public static final int CLICK = PullToRefreshRecyclerView.CLICK;//单击
@@ -49,7 +50,9 @@ public class SelectAdapter extends RefreshAdapter {
                 //清除单选择状态
                 int lastSelectPosition=selectPosition;
                 selectPosition = -1;
-                notifyItemChanged(lastSelectPosition + headersCount);
+                if(INVALID_POSITION!=lastSelectPosition){
+                    notifyItemChanged(lastSelectPosition + headersCount);
+                }
                 break;
             case MULTI_SELECT:
                 List<Integer> lastItems=new ArrayList<>(multiSelectItems);
@@ -183,7 +186,7 @@ public class SelectAdapter extends RefreshAdapter {
                 if (null != singleSelectListener) {
                     singleSelectListener.onSingleSelect(v, position, last);
                 }
-                if(0<=selectPosition){
+                if(0<=selectPosition&&INVALID_POSITION!=last){
                     notifyItemChanged(last + headersCount);//通知上一个取消
                 }
                 notifyItemChanged(position + headersCount);//本次选中
