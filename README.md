@@ -4,7 +4,7 @@ A RecyclerView libirary ,has some support, like headerAdapter/TreeAdapter,and Pu
 #### gradle compile
 ```
 dependencies {
-    compile 'com.ldzs.recyclerlibrary:recyclerlibrary:1.4.9'
+    compile 'com.ldzs.recyclerlibrary:recyclerlibrary:1.5.4'
 }
 ```
 
