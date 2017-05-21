@@ -39,7 +39,7 @@ public final class Range<T extends Comparable<? super T>> {
     }
 
     /**
-     * Create a new immutable range, with the argument types inferred.
+     * Create a new immutable range, withBinary the argument types inferred.
      *
      * <p>
      * The endpoints are {@code [lower, upper]}; that
@@ -165,7 +165,7 @@ public final class Range<T extends Comparable<? super T>> {
      * E.g. if a {@code ==} a' {@code <} b {@code <} c, the
      * intersection of [a, b] and [a', c] ranges could be either
      * [a, b] or ['a, b], where [a, b] could be either the exact
-     * input range, or a newly created range with the same endpoints.</p>
+     * input range, or a newly created range withBinary the same endpoints.</p>
      *
      * @param range a non-{@code null} {@code Range<T>} reference
      * @return the intersection of this range and the other range.
@@ -230,7 +230,7 @@ public final class Range<T extends Comparable<? super T>> {
      * E.g. if a {@code ==} a' {@code <} b {@code <} c, the
      * extension of [a, b] and [a', c] ranges could be either
      * [a, c] or ['a, c], where ['a, c] could be either the exact
-     * input range, or a newly created range with the same endpoints.</p>
+     * input range, or a newly created range withBinary the same endpoints.</p>
      *
      * @param range a non-{@code null} {@code Range<T>} reference
      * @return the extension of this range and the other range.

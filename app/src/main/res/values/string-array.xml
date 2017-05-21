@@ -4,24 +4,8 @@
         <item>RecyclerView</item>
         <item>DragRecyclerView</item>
         <item>Adapter</item>
+        <item>Sticky</item>
     </string-array>
-    <string-array name="RecyclerView_List">
-        <item>PullToRefreshRecyclerView</item>
-        <item>ExpandRecyclerView</item>
-    </string-array>
-    <string-array name="DragRecyclerView_List">
-        <item>LinearDragRecyclerView</item>
-        <item>GridDragRecyclerView</item>
-        <item>DynamicDragRecyclerView</item>
-        <item>CustomDragSample</item>
-    </string-array>
-    <string-array name="Adapter_List">
-        <item>HeaderAdapter</item>
-        <item>ExpandAdapter</item>
-        <item>TreeAdapter</item>
-        <item>DynamicAdapter</item>
-    </string-array>
-
     <string-array name="choice">
         <item>CLICK</item>
         <item>SINGLE_CHOICE</item>

@@ -49,7 +49,7 @@ import cz.library.RefreshMode;
  *  故此.只传回子类,也使用原始Position,使用时,调用DragRecyclerView的getItemPosition方法获取具体子条目位置
  *
  *  2:addDynamicView此方法,有一个问题,暂时未找到原因:如果谁清楚,请帮助解决一下,所以不用notifyItemInserted改用notifyDataSetChanged,性能差一点,但不会报错.
- // java.lang.IllegalArgumentException: Called removeDetachedView with a view which is not flagged as tmp detached.ViewHolder{3c6be8ee position=17 id=-1, oldPos=-1, pLpos:-1}
+ // java.lang.IllegalArgumentException: Called removeDetachedView withBinary a view which is not flagged as tmp detached.ViewHolder{3c6be8ee position=17 id=-1, oldPos=-1, pLpos:-1}
  *
  *
  * 以上.2016/9/24
@@ -105,7 +105,9 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
 
     @Override
     protected void onFinishInflate() {
-        if(0<getChildCount()){
+        if(0==getChildCount()){
+            super.onFinishInflate();
+        } else {
             for(int i=0;i<getChildCount();){
                 View childView = getChildAt(i);
                 removeViewAt(0);
@@ -118,8 +120,6 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
             }
             addTargetView();
             setRefreshHeader(refreshHeader);
-        } else {
-            super.onFinishInflate();
         }
         this.targetView.addItemDecoration(itemDecoration);
     }
@@ -200,6 +200,11 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
             int orientation = linearLayoutManager.getOrientation();
             itemDecoration.setDivideMode(OrientationHelper.HORIZONTAL == orientation ? SimpleItemDecoration.HORIZONTAL : SimpleItemDecoration.VERTICAL);
         }
+    }
+
+    @Override
+    public RecyclerView.LayoutManager getLayoutManager() {
+        return this.targetView.getLayoutManager();
     }
 
 
@@ -566,6 +571,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
     public static class LayoutParams extends ViewGroup.LayoutParams{
         public static final int ITEM_HEADER=0x00;
         public static final int ITEM_FOOTER=0x01;
+        public static final int ITEM_NONE=0x02;
         public int itemType;
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);

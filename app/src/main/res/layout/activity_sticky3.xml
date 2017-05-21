@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:auto="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.ldzs.recyclerlibrary.PullToRefreshStickyRecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        auto:pull_refreshMode="refresh_none"
+        auto:pv_listDivide="@color/divide"
+        auto:pv_listDivideHeight="1dp"
+        auto:pv_stickyView="@layout/sticky_top_item"
+        auto:pv_divideVerticalPadding="12dp">
+
+        <!--将top层直接写在布局内,需要配置auto:pv_layoutStickyView="true" 因为父类PullToRefreshRecyclerView,可以直接将header/footer写到布局内,会引起冲突-->
+        <!--<TextView
+            android:id="@+id/tv_sticky_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textColor="@color/dark_red"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            auto:pv_layoutStickyView="true"
+            android:background="@color/white"
+            />-->
+
+        <!--headerView-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Header Item1"
+            android:gravity="center"
+            android:textSize="36sp"
+            android:paddingTop="24dp"
+            android:paddingBottom="24dp"
+            android:background="@color/dark_red"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Header Item2"
+            android:gravity="center"
+            android:textSize="36sp"
+            android:paddingTop="24dp"
+            android:paddingBottom="24dp"
+            android:background="@color/blue"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Header Item3"
+            android:gravity="center"
+            android:textSize="36sp"
+            android:paddingTop="24dp"
+            android:paddingBottom="24dp"
+            android:background="@color/yellow"/>
+
+
+    </com.ldzs.recyclerlibrary.PullToRefreshStickyRecyclerView>
+
+    <Button
+        android:id="@+id/btn_remove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"
+        android:text="Remove"/>
+</FrameLayout>

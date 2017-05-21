@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:auto="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.ldzs.recyclerlibrary.PullToRefreshStickyRecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        auto:pull_refreshMode="refresh_none"
+        auto:pv_listDivide="@color/divide"
+        auto:pv_listDivideHeight="1dp"
+        auto:pv_divideVerticalPadding="12dp">
+
+        <!--将top层直接写在布局内,需要配置auto:pv_layoutStickyView="true" 因为父类PullToRefreshRecyclerView,可以直接将header/footer写到布局内,会引起冲突-->
+        <com.cz.library.widget.FlowLayout
+            android:id="@+id/fl_sticky_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            auto:pv_layoutStickyView="true"
+            auto:sl_state="state1"
+            android:padding="8dp"
+            auto:fl_horizontalPadding="12dp"
+            auto:fl_verticalPadding="8dp"
+            android:background="@color/green"
+            auto:sl_buttonItemSelector="@drawable/product_type_stroke_round_select_selector"/>
+
+        <!--一个headerView-->
+         <TextView
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:text="Header Item"
+             android:gravity="center"
+             android:textSize="36sp"
+             android:paddingTop="24dp"
+             android:paddingBottom="24dp"
+             android:background="@color/dark_red"/>
+
+    </com.ldzs.recyclerlibrary.PullToRefreshStickyRecyclerView>
+</LinearLayout>

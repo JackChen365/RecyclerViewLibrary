@@ -16,11 +16,11 @@ import java.util.List;
  * An abstract adapter which can be extended for RecyclerView
  * create by cz on 2016/9/24
  */
-public abstract class BaseViewAdapter<E> extends RecyclerView.Adapter<CacheViewHolder> implements IRecyclerAdapter<E> {
+public abstract class BaseViewAdapter2<E,VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> implements IRecyclerAdapter<E> {
     protected final ArrayList<E> items;
     protected final LayoutInflater inflater;
 
-    public BaseViewAdapter(Context context, List<E> items) {
+    public BaseViewAdapter2(Context context, List<E> items) {
         this.inflater = LayoutInflater.from(context);
         this.items = new ArrayList<>();
         if (null != items && !items.isEmpty()) {
@@ -40,7 +40,7 @@ public abstract class BaseViewAdapter<E> extends RecyclerView.Adapter<CacheViewH
     }
 
     @Override
-    public abstract void onBindViewHolder(CacheViewHolder holder, int position);
+    public abstract void onBindViewHolder(VH holder, int position);
 
     @Override
     public int getItemCount() {

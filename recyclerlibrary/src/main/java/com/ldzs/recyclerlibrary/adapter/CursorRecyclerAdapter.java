@@ -81,7 +81,7 @@ public abstract class CursorRecyclerAdapter<H extends RecyclerView.ViewHolder> e
      * @deprecated This option is discouraged, as it results in Cursor queries
      * being performed on the application's UI thread and thus can cause poor
      * responsiveness or even Application Not Responding errors.  As an alternative,
-     * use {@link android.app.LoaderManager} with a {@link android.content.CursorLoader}.
+     * use {@link android.app.LoaderManager} withBinary a {@link android.content.CursorLoader}.
      */
     @Deprecated
     public static final int FLAG_AUTO_REQUERY = 0x01;
@@ -91,7 +91,7 @@ public abstract class CursorRecyclerAdapter<H extends RecyclerView.ViewHolder> e
      * {@link #onContentChanged()} when a notification comes in.  Be careful when
      * using this flag: you will need to unset the current Cursor from the adapter
      * to avoid leaks due to its registered observers.  This flag is not needed
-     * when using a CursorRecyclerAdapter with a
+     * when using a CursorRecyclerAdapter withBinary a
      * {@link android.content.CursorLoader}.
      */
     public static final int FLAG_REGISTER_CONTENT_OBSERVER = 0x02;
@@ -103,7 +103,7 @@ public abstract class CursorRecyclerAdapter<H extends RecyclerView.ViewHolder> e
      * @param context The context
      *                being performed on the application's UI thread and thus can cause poor
      *                responsiveness or even Application Not Responding errors.  As an alternative,
-     *                use {@link android.app.LoaderManager} with a {@link android.content.CursorLoader}.
+     *                use {@link android.app.LoaderManager} withBinary a {@link android.content.CursorLoader}.
      */
     public CursorRecyclerAdapter(Context context, Cursor c) {
         this(context, c, FLAG_REGISTER_CONTENT_OBSERVER);
@@ -291,7 +291,7 @@ public abstract class CursorRecyclerAdapter<H extends RecyclerView.ViewHolder> e
     }
 
     /**
-     * Runs a query with the specified constraint. This query is requested
+     * Runs a query withBinary the specified constraint. This query is requested
      * by the filter attached to this adapter.
      * <p>
      * The query is provided by a
@@ -307,7 +307,7 @@ public abstract class CursorRecyclerAdapter<H extends RecyclerView.ViewHolder> e
      * Contract: when constraint is null or empty, the original results,
      * prior to any filtering, must be returned.
      *
-     * @param constraint the constraint with which the query must be filtered
+     * @param constraint the constraint withBinary which the query must be filtered
      * @return a Cursor representing the results of the new query
      * @see #getFilter()
      * @see #getFilterQueryProvider()

@@ -12,7 +12,10 @@ import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ldzs.recyclerlibrary.adapter.BaseViewAdapter;
+import com.ldzs.recyclerlibrary.adapter.BaseViewAdapter2;
 import com.ldzs.recyclerlibrary.adapter.BaseViewHolder;
+import com.ldzs.recyclerlibrary.callback.GridSpanCallback;
 import com.ldzs.recyclerlibrary.callback.OnItemClickListener;
 import com.ldzs.recyclerlibrary.callback.OnItemLongClickListener;
 
@@ -293,7 +296,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
         //当只有一个时,通知插入,这里有一个问题,暂时未找到原因:如果谁清楚,请帮助解决一下,所以不用notifyItemInserted改用notifyDataSetChanged,性能差一点,但不会报错.
-        // java.lang.IllegalArgumentException: Called removeDetachedView with a view which is not flagged as tmp detached.ViewHolder{3c6be8ee position=17 id=-1, oldPos=-1, pLpos:-1}
+        // java.lang.IllegalArgumentException: Called removeDetachedView withBinary a view which is not flagged as tmp detached.ViewHolder{3c6be8ee position=17 id=-1, oldPos=-1, pLpos:-1}
 //        notifyItemInserted(position);
         notifyDataSetChanged();
     }
@@ -384,7 +387,11 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
-                    return isDynamicItem(position)||isFullItem(position) ? gridLayoutManager.getSpanCount() : 1;
+                    int spanCount=1;
+                    if(null!=adapter&&adapter instanceof GridSpanCallback){
+                        spanCount=((GridSpanCallback)adapter).getSpanSize(gridLayoutManager,position-getHeaderViewCount());
+                    }
+                    return isDynamicItem(position)||isFullItem(position) ? gridLayoutManager.getSpanCount() : spanCount;
                 }
             });
         }

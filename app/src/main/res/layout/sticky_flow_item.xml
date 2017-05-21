@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:auto="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.cz.library.widget.FlowLayout
+        android:id="@+id/fl_sticky_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        auto:sl_state="state1"
+        auto:fl_horizontalPadding="12dp"
+        auto:fl_verticalPadding="8dp"
+        android:padding="8dp"
+        android:background="@color/green"
+        auto:sl_buttonItemSelector="@drawable/product_type_stroke_round_select_selector"/>
+
+</LinearLayout>

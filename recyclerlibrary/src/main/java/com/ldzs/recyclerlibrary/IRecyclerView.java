@@ -29,6 +29,8 @@ public interface IRecyclerView {
      */
     void setLayoutManager(RecyclerView.LayoutManager layoutManager);
 
+    RecyclerView.LayoutManager getLayoutManager();
+
     /**
      * get header view count
      * @return header view count

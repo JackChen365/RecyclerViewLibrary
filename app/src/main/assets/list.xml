@@ -18,4 +18,11 @@
         <item name="CursorAdapter" class=".ui.adapter.CursorAdapterActivity" />
         <item name="SelectAdapter" class=".ui.adapter.SelectAdapterActivity" />
     </listItem>
+
+    <listItem name="3">
+        <item name="StickySample1" class=".ui.sticky.Sticky1SampleActivity" />
+        <item name="StickySample2" class=".ui.sticky.Sticky2SampleActivity" />
+        <item name="StickySample3" class=".ui.sticky.Sticky3SampleActivity" />
+        <item name="StickySample4" class=".ui.sticky.Sticky4SampleActivity" />
+    </listItem>
 </ui>

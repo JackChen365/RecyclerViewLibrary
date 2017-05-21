@@ -131,7 +131,7 @@ public abstract class BaseItemAnimator extends SimpleItemAnimator {
                 mover.run();
             }
         }
-        // Next, change stuff, to run in parallel with move animations
+        // Next, change stuff, to run in parallel withBinary move animations
         if (changesPending) {
             final ArrayList<ChangeInfo> changes = new ArrayList<ChangeInfo>();
             changes.addAll(mPendingChanges);

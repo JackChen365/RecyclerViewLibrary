@@ -16,7 +16,13 @@
         <attr name="pv_adapterView" format="enum">
             <enum name="header" value="0x00"/>
             <enum name="footer" value="0x01"/>
+            <enum name="none" value="0x02"/>
         </attr>
+    </declare-styleable>
+
+    <declare-styleable name="PullToRefreshStickyRecyclerView">
+        <attr name="pv_stickyView" format="reference"/>
+        <attr name="pv_layoutStickyView" format="boolean"/>
     </declare-styleable>
 
     <attr name="refresh_footerHeight" format="dimension"/>
