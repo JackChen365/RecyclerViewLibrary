@@ -4,7 +4,7 @@ A RecyclerView libirary ,has some support, like headerAdapter/TreeAdapter,and Pu
 #### gradle compile
 ```
 dependencies {
-    compile 'com.ldzs.recyclerlibrary:recyclerlibrary:1.5.4'
+    compile 'com.ldzs.recyclerlibrary:recyclerlibrary:1.5.5'
 }
 ```
 
@@ -22,9 +22,9 @@ dependencies {
      5|6|7|
      8|9|10|<p>
 * ExpandAdapter:Recyclerview实现为如ExpandListView功能的数据适配器.<br>
-![](https://github.com/momodae/RecyclerViewLibrary/blob/master/app/screenshot/S60214-155420.jpg)
+![]("https://github.com/momodae/RecyclerViewLibrary/blob/master/app/screenshot/S60214-155420.jpg")
 * TreeAdapter:一个无限级的Adapter树<br>
-![](https://github.com/momodae/RecyclerViewLibrary/blob/master/app/screenshot/S60214-155511.jpg)
+![](https://github.com/momodae/RecyclerViewLibrary/blob/master/app/screenshot/S60214-155511.jpg = 200x400)
 * SelectAdapter:一个封装了用户选择的数据适配器对象,选择模式有,点击/单选/多选/块选
 * HeaderAdapter:一个支持动态添加/移除头和尾的Adapter,不推荐单独使用.PullToRefreenceRecyclerView内己封装,可如ListView一般操作,且更灵活己弃用(2016/9/24己弃用)<br>
 
