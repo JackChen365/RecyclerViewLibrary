@@ -27,9 +27,9 @@ dependencies {
      5|6|7|
      8|9|10|<p>
 * ExpandAdapter:Recyclerview实现为如ExpandListView功能的数据适配器.<br>
-![]("https://github.com/momodae/RecyclerViewLibrary/blob/master/app/screenshot/S60214-155420.jpg")
+![]("https://github.com/momodae/RecyclerViewLibrary/blob/master/app/screenshot/S60214-155420.png")
 * TreeAdapter:一个无限级的Adapter树<br>
-![](https://github.com/momodae/RecyclerViewLibrary/blob/master/app/screenshot/S60214-155511.jpg = 200x400)
+![](https://github.com/momodae/RecyclerViewLibrary/blob/master/app/screenshot/S60214-155511.png)
 * SelectAdapter:一个封装了用户选择的数据适配器对象,选择模式有,点击/单选/多选/块选
 * HeaderAdapter:一个支持动态添加/移除头和尾的Adapter,不推荐单独使用.PullToRefreenceRecyclerView内己封装,可如ListView一般操作,且更灵活己弃用(2016/9/24己弃用)<br>
 
@@ -39,13 +39,13 @@ dependencies {
 * Linear/Grid拖动
 * Dynamic条目拖动(跨度很大的任一条目支持)
 * 自定义示例(新闻资讯类)演示
-![](https://github.com/momodae/RecyclerViewLibrary/blob/master/app/screenshot/S60214-155401.jpg)
+![](https://github.com/momodae/RecyclerViewLibrary/blob/master/app/screenshot/S60214-155401.png)
 ================
 
 
 ================
 #### RecyclerView 上拉刷新下拉加载(刷新框架来自另一个项目<a href="https://github.com/momodae/PullToRefreshLayout" target="_blank"> [ PullToRefreshLayout ]
-![](https://github.com/momodae/RecyclerViewLibrary/blob/master/app/screenshot/S60214-155428.jpg)
+![](https://github.com/momodae/RecyclerViewLibrary/blob/master/app/screenshot/S60214-155428.png)
 ================
 
 ================
