@@ -73,7 +73,7 @@ public abstract class BaseViewAdapter<E> extends RecyclerView.Adapter<CacheViewH
      */
     public void clearNotify() {
         this.items.clear();
-        notifyItemRangeRemoved(0, getItemsCount());
+        notifyDataSetChanged();
     }
 
 
