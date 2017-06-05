@@ -13,6 +13,11 @@ dependencies {
 2:RecyclerView上拉刷新,下拉加载</br>
 3:RecyclerView拖动</br>
 
+### 2016/12/28
+* 增加了pv_adapterView引用,此引用功能为PullToRefreshRecyclerView xml布局内增加的控件,标记为header/footer,则直接添加到adapter的header/footer内,减少代码添加header/footer做法.但因recyclerView的延持加载机制,导致findViewById找不到控件的方式,特别提供了findAdapterView方法.</br>
+
+### 2017/5/21
+* 增加了StickyHeader的效果.功能非常强大,在原有功能基础上扩展,简化分组数据逻辑,自动同步更改.最大化减少了Adapter的逻辑代码.并支持GridLayoutManager,一共四个示例.
 
 #### RecyclerView 自定义数据适配器
 * DynamicAdapter:完全动态化的Adapter,支持往任一位置插入自定义条目,使用装饰设计模式,无使用限制
@@ -77,8 +82,4 @@ dependencies {
         <item name="refresh_retryItemSelector" >@drawable/btn_retry_selector</item>
         <item name="refresh_retry" >@string/re_try</item>
 ```
-###2016/12/28
-* 增加了pv_adapterView引用,此引用功能为PullToRefreshRecyclerView xml布局内增加的控件,标记为header/footer,则直接添加到adapter的header/footer内,减少代码添加header/footer做法.但因recyclerView的延持加载机制,导致findViewById找不到控件的方式,特别提供了findAdapterView方法.<br>
-###20175/21
-* 增加了StickyHeader的效果.功能非常强大,在原有功能基础上扩展,简化分组数据逻辑,自动同步更改.最大化减少了Adapter的逻辑代码.并支持GridLayoutManager,一共四个示例.
 #### 参考:RecyclerView-Animator实现动画.非常感谢.
