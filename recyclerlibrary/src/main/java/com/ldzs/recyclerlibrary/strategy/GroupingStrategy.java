@@ -71,6 +71,18 @@ public class GroupingStrategy {
                 refreshIndexItems();
                 adapter.notifyDataSetChanged();
             }
+
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                refreshIndexItems();
+            }
+
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
+                super.onItemRangeChanged(positionStart, itemCount, payload);
+                refreshIndexItems();
+            }
         });
     }
 
