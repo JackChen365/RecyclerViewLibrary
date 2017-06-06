@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.ldzs.recyclerlibrary.IRecyclerAdapter;
 import com.ldzs.recyclerlibrary.adapter.BaseViewAdapter;
+import com.ldzs.recyclerlibrary.adapter.BaseViewAdapter2;
 import com.ldzs.recyclerlibrary.callback.BinaryCondition;
 import com.ldzs.recyclerlibrary.callback.Condition;
 
@@ -26,6 +27,15 @@ public class GroupingStrategy {
         return new GroupingStrategy(adapter);
     }
 
+    public static<T> GroupingStrategy of(BaseViewAdapter2 adapter){
+        return new GroupingStrategy(adapter);
+    }
+
+    public GroupingStrategy(BaseViewAdapter2 adapter){
+        this.adapter=adapter;
+        this.indexItems=new ArrayList<>();
+        registerAdapterDataObserver(adapter);
+    }
 
     public GroupingStrategy(BaseViewAdapter adapter){
         this.adapter=adapter;

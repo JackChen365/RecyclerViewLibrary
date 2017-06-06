@@ -300,6 +300,10 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
         adapter.registerAdapterDataObserver(new DynamicAdapterDataObserve(this.adapter));
     }
 
+    public RecyclerView.Adapter getAdapter(){
+        return this.adapter;
+    }
+
     public void setRefreshFooterState(@RefreshFrameFooter.RefreshState int state){
         refreshFooter.setRefreshState(state);
     }
