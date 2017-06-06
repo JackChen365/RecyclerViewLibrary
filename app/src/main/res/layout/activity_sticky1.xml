@@ -52,4 +52,12 @@
             android:background="@color/blue"/>
 
     </com.ldzs.recyclerlibrary.PullToRefreshStickyRecyclerView>
+
+    <Button
+        android:id="@+id/btn_wrap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:layout_gravity="right|bottom"
+        android:text="Swap"/>
 </FrameLayout>
