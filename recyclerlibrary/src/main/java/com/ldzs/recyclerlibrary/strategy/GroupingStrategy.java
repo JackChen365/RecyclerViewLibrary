@@ -1,7 +1,6 @@
 package com.ldzs.recyclerlibrary.strategy;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.ldzs.recyclerlibrary.IRecyclerAdapter;
 import com.ldzs.recyclerlibrary.adapter.BaseViewAdapter;
@@ -77,6 +76,12 @@ public class GroupingStrategy {
             @Override
             public void onChanged() {
                 super.onChanged();
+                refreshIndexItems();
+            }
+
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
+                super.onItemRangeChanged(positionStart, itemCount, payload);
                 refreshIndexItems();
             }
         });

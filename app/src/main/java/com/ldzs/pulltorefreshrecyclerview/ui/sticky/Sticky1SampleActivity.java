@@ -35,7 +35,7 @@ public class Sticky1SampleActivity  extends AppCompatActivity {
             if(swap){
                 final Random random=new Random();
                 final List<String> items=new ArrayList();
-                for(char i='A';i<='Z';i++){
+                for(char i='H';i<='Z';i++){
                     for(int k=1;k<=5+random.nextInt(5);k++){
                         items.add(String.valueOf(i)+" Item:"+k);
                     }

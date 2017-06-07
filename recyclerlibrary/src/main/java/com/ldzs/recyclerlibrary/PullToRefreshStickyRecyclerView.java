@@ -2,7 +2,6 @@ package com.ldzs.recyclerlibrary;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -148,10 +147,6 @@ public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
             RecyclerView.LayoutManager layoutManager = getLayoutManager();
-            int spanCount=1;
-            if(layoutManager instanceof GridLayoutManager){
-                spanCount=((GridLayoutManager)layoutManager).getSpanCount();
-            }
             if(layoutManager instanceof LinearLayoutManager){
                 int headerViewCount = getHeaderViewCount();
                 LinearLayoutManager linearLayoutManager= (LinearLayoutManager) layoutManager;
@@ -162,7 +157,7 @@ public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  
                     stickyView.setVisibility(View.VISIBLE);
                     int realVisibleItemPosition=firstVisibleItemPosition-headerViewCount;
                     //初始化当前位置Sticky信息
-                    int lastRealPosition=realVisibleItemPosition+spanCount;
+                    int lastRealPosition=realVisibleItemPosition+1;
                     for(int position=realVisibleItemPosition;position<=lastRealPosition;position++) {
                         if (lastVisibleItemPosition != firstVisibleItemPosition && callback.isStickyPosition(position)) {
                             lastVisibleItemPosition = firstVisibleItemPosition;
@@ -182,6 +177,8 @@ public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  
                 }
             }
         }
+
+
 
         int findStickyPosition(int position,int lastVisibleItemPosition){
             int stickyPosition=RecyclerView.NO_POSITION;
