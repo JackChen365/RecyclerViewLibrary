@@ -83,7 +83,7 @@ public class RefreshAdapter extends DynamicAdapter {
     protected void addFooterView(View view, int index) {
         int viewType = TYPE_FOOTER - footerViewTotal++;
         this.footerViews.add(index, new FooterViewItem(viewType, view));//越界处理
-        Log.e(TAG,"viewType:"+viewType+" itemCount:"+(super.getItemCount()+index)+" count:"+getItemCount()+" super:"+super.getItemCount());
+//        Log.e(TAG,"viewType:"+viewType+" itemCount:"+(super.getItemCount()+index)+" count:"+getItemCount()+" super:"+super.getItemCount());
         notifyItemInserted(super.getItemCount()+index);
     }
 
@@ -163,7 +163,7 @@ public class RefreshAdapter extends DynamicAdapter {
 
     private boolean isFooterItem(int position){
         boolean b = !footerViews.isEmpty() && position >= (getItemCount() - footerViews.size());
-        Log.e(TAG,"isFooterItem:"+b+" position:"+position);
+//        Log.e(TAG,"isFooterItem:"+b+" position:"+position);
         return b;
     }
 

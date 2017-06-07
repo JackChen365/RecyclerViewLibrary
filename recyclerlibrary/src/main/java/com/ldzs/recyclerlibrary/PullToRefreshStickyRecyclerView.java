@@ -33,6 +33,7 @@ import com.ldzs.recyclerlibrary.callback.StickyCallback;
  */
 public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  {
     private final LayoutInflater layoutInflater;
+    private AdapterDataObserver observer;
     private StickyScrollListener listener;
     private View stickyView;
 
@@ -114,6 +115,12 @@ public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  
             refreshView.removeOnScrollListener(listener);
             listener=new StickyScrollListener((StickyCallback) adapter);
             refreshView.addOnScrollListener(listener);
+            if(null==observer){
+                observer=new AdapterDataObserver((StickyCallback) adapter);
+            } else {
+                adapter.unregisterAdapterDataObserver(observer);
+            }
+            adapter.registerAdapterDataObserver(observer);
         }
     }
 
@@ -132,6 +139,22 @@ public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  
         }
     }
 
+    class AdapterDataObserver extends RecyclerView.AdapterDataObserver{
+        private final StickyCallback callback;
+
+        public AdapterDataObserver(StickyCallback callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        public void onChanged() {
+            super.onChanged();
+            //此处,当数据完全更新后,滑动到顶部,并更新显示头,否则会出现头与数据列不一致情况
+            scrollToPosition(0);
+            callback.initStickyView(stickyView, 0);
+        }
+    }
+
     class StickyScrollListener extends RecyclerView.OnScrollListener{
         private final StickyCallback callback;
         private int lastVisibleItemPosition;
@@ -147,38 +170,33 @@ public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
             RecyclerView.LayoutManager layoutManager = getLayoutManager();
-            if(layoutManager instanceof LinearLayoutManager){
-                int headerViewCount = getHeaderViewCount();
-                LinearLayoutManager linearLayoutManager= (LinearLayoutManager) layoutManager;
-                int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
-                if(firstVisibleItemPosition<headerViewCount){
-                    stickyView.setVisibility(View.GONE);
-                } else {
-                    stickyView.setVisibility(View.VISIBLE);
-                    int realVisibleItemPosition=firstVisibleItemPosition-headerViewCount;
-                    //初始化当前位置Sticky信息
-                    int lastRealPosition=realVisibleItemPosition+1;
-                    for(int position=realVisibleItemPosition;position<=lastRealPosition;position++) {
-                        if (lastVisibleItemPosition != firstVisibleItemPosition && callback.isStickyPosition(position)) {
-                            lastVisibleItemPosition = firstVisibleItemPosition;
-                            callback.initStickyView(stickyView, realVisibleItemPosition);
-                            break;
-                        }
+            int headerViewCount = getHeaderViewCount();
+            int firstVisibleItemPosition = getFirstVisiblePosition();
+            if(firstVisibleItemPosition<headerViewCount){
+                stickyView.setVisibility(View.GONE);
+            } else {
+                stickyView.setVisibility(View.VISIBLE);
+                int realVisibleItemPosition=firstVisibleItemPosition-headerViewCount;
+                //初始化当前位置Sticky信息
+                int lastRealPosition=realVisibleItemPosition+1;
+                for(int position=realVisibleItemPosition;position<=lastRealPosition;position++) {
+                    if (lastVisibleItemPosition != firstVisibleItemPosition && callback.isStickyPosition(position)) {
+                        lastVisibleItemPosition = firstVisibleItemPosition;
+                        callback.initStickyView(stickyView, realVisibleItemPosition);
+                        break;
                     }
-                    stickyView.setTranslationY(0);
-                    //在这个范围内,找到本页内可能出现的下一个阶段的条目位置.
-                    int stickyPosition = findStickyPosition(realVisibleItemPosition+1, linearLayoutManager.findLastVisibleItemPosition());
-                    if(RecyclerView.NO_POSITION!=stickyPosition){
-                        View nextAdapterView = layoutManager.findViewByPosition(stickyPosition+headerViewCount);
-                        if (null!=nextAdapterView&&nextAdapterView.getTop() < stickyView.getHeight()) {
-                            stickyView.setTranslationY(nextAdapterView.getTop()-stickyView.getHeight());
-                        }
+                }
+                stickyView.setTranslationY(0);
+                //在这个范围内,找到本页内可能出现的下一个阶段的条目位置.
+                int stickyPosition = findStickyPosition(realVisibleItemPosition+1, getLastVisiblePosition());
+                if(RecyclerView.NO_POSITION!=stickyPosition){
+                    View nextAdapterView = layoutManager.findViewByPosition(stickyPosition+headerViewCount);
+                    if (null!=nextAdapterView&&nextAdapterView.getTop() < stickyView.getHeight()) {
+                        stickyView.setTranslationY(nextAdapterView.getTop()-stickyView.getHeight());
                     }
                 }
             }
         }
-
-
 
         int findStickyPosition(int position,int lastVisibleItemPosition){
             int stickyPosition=RecyclerView.NO_POSITION;

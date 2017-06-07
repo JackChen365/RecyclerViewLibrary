@@ -98,7 +98,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             fullItemTypes.append(newFullItems.keyAt(i),newFullItems.valueAt(i));
         }
         int size = itemPositionLists.size();
-        Log.e(TAG,"position:"+Arrays.toString(itemPositions)+" itemPositions:"+itemPositionLists+" positionStart:"+positionStart);
+//        Log.e(TAG,"position:"+Arrays.toString(itemPositions)+" itemPositions:"+itemPositionLists+" positionStart:"+positionStart);
         itemPositions = new int[size];
         for (int i = 0; i < size; i++) {
             itemPositions[i] = itemPositionLists.get(i);
@@ -135,7 +135,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 positionList.remove(startIndex);
             }
         }
-        Log.e(TAG,"array:"+positionList);
+//        Log.e(TAG,"array:"+positionList);
         int size = fullItemTypes.size();
         for(int i=startIndex;i<size;i++){
             Integer position = positionList.get(i);
@@ -150,7 +150,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if(0<removeCount){
             notifyItemRangeRemoved(positionStart,removeCount);
         }
-        Log.e(TAG,"position:"+Arrays.toString(itemPositions)+" positionStart:"+positionStart+" positionEnd:"+positionEnd+" startIndex:"+startIndex+" realCount:"+getRealItemCount()+" itemCount:"+removeCount);
+//        Log.e(TAG,"position:"+Arrays.toString(itemPositions)+" positionStart:"+positionStart+" positionEnd:"+positionEnd+" startIndex:"+startIndex+" realCount:"+getRealItemCount()+" itemCount:"+removeCount);
     }
 
     /**
@@ -192,7 +192,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         while(index<itemCount){
             if(!isDynamicItem(positionEnd++))index++;
         }
-        Log.e(TAG,"itemCount:"+itemCount+" adapterCount:"+adapter.getItemCount()+" start:"+positionStart+" end:"+positionEnd);
+//        Log.e(TAG,"itemCount:"+itemCount+" adapterCount:"+adapter.getItemCount()+" start:"+positionStart+" end:"+positionEnd);
 
         int length = itemPositions.length;
         final int[] finalArray=new int[length];
@@ -215,13 +215,13 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     fullItemTypes.delete(itemPosition);
                     fullItemTypes.put(itemPositions[i],value);
                 }
-                Log.e(TAG,"start:"+start+" offset:"+startOffset+" index:"+startIndex);
+//                Log.e(TAG,"start:"+start+" offset:"+startOffset+" index:"+startIndex);
                 notifyItemRangeRemoved(start,startOffset);
                 startIndex++;
                 startOffset=0;
             }
         }
-        Log.e(TAG,"position:"+Arrays.toString(itemPositions)+" positionStart:"+positionStart+" startIndex:"+startIndex);
+//        Log.e(TAG,"position:"+Arrays.toString(itemPositions)+" positionStart:"+positionStart+" startIndex:"+startIndex);
         //之前实现方式,存在不足,但思考了很久.不舍得删了.
         //这里运算比较复杂,需要时时更新所有ItemPosition以及fullItemType信息.整个动态化逻辑里,这里最复杂.
 //        for(int i=0;i<length;i++){
@@ -493,7 +493,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (null != adapter) {
             itemCount += adapter.getItemCount();
         }
-        Log.e(TAG,"Dynamic itemCount:"+itemCount+" fullView:"+fullViews.size());
+//        Log.e(TAG,"Dynamic itemCount:"+itemCount+" fullView:"+fullViews.size());
         return itemCount;
     }
 

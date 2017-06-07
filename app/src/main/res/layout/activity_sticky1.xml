@@ -31,7 +31,7 @@
             />-->
 
         <!--headerView-->
-        <TextView
+        <!--<TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Header Item1"
@@ -49,7 +49,7 @@
             android:textSize="36sp"
             android:paddingTop="24dp"
             android:paddingBottom="24dp"
-            android:background="@color/blue"/>
+            android:background="@color/blue"/>-->
 
     </com.ldzs.recyclerlibrary.PullToRefreshStickyRecyclerView>
 
