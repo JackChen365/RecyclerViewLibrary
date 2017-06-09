@@ -28,7 +28,7 @@ public class GroupingStrategy {
         return new GroupingStrategy(adapter);
     }
 
-    public static<T> GroupingStrategy of(BaseViewAdapter2 adapter){
+    public static GroupingStrategy of(BaseViewAdapter2 adapter){
         return new GroupingStrategy(adapter);
     }
 

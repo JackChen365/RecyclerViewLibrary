@@ -79,6 +79,11 @@ public class LinearSticky2ItemAdapter extends BaseViewAdapter<Sticky1Item> imple
         }
     }
 
+    @Override
+    public GroupingStrategy getGroupingStrategy() {
+        return groupingStrategy;
+    }
+
     private TextView getTextLabel(Context context,String text){
         Button textView=new Button(context);
         textView.setText(text);
@@ -98,10 +103,7 @@ public class LinearSticky2ItemAdapter extends BaseViewAdapter<Sticky1Item> imple
         return viewType;
     }
 
-    @Override
-    public boolean isStickyPosition(int position) {
-        return groupingStrategy.isGroupIndex(position);
-    }
+
 
 
 }

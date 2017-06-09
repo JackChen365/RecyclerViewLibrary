@@ -36,6 +36,7 @@
         <activity android:name=".ui.sticky.Sticky2SampleActivity"/>
         <activity android:name=".ui.sticky.Sticky3SampleActivity"/>
         <activity android:name=".ui.sticky.Sticky4SampleActivity"/>
+        <activity android:name=".ui.sticky.Sticky5SampleActivity"/>
 
         <provider
             android:authorities="com.ldzs.pulltorefreshrecyclerview"

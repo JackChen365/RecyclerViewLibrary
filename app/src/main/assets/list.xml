@@ -24,5 +24,6 @@
         <item name="StickySample2" class=".ui.sticky.Sticky2SampleActivity" />
         <item name="StickySample3" class=".ui.sticky.Sticky3SampleActivity" />
         <item name="StickySample4" class=".ui.sticky.Sticky4SampleActivity" />
+        <item name="StickySample5" class=".ui.sticky.Sticky5SampleActivity" />
     </listItem>
 </ui>

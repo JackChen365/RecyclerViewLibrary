@@ -17,15 +17,14 @@ import java.util.List;
  * Created by Administrator on 2017/5/20.
  */
 
-public class GridStickyItem1Adapter extends GridStickyAdapter<Sticky2Item>{
+public class GridStickyItem2Adapter extends GridStickyAdapter<Sticky2Item>{
     private static final String TAG = "GridStickyItem1Adapter";
     static final int ITEM_STICKY=0;
     static final int ITEM_NORMAL=1;
-    final GroupingStrategy groupingStrategy;
-
-    public GridStickyItem1Adapter(Context context, List<Sticky2Item> items) {
+    private final GroupingStrategy groupingStrategy;
+    public GridStickyItem2Adapter(Context context, List<Sticky2Item> items) {
         super(context, items);
-        groupingStrategy= GroupingStrategy.of(this).reduce((Sticky2Item item) -> item.title);
+        groupingStrategy = GroupingStrategy.of(this).reduce((Sticky2Item item) -> item.title);
     }
 
     @Override
@@ -36,8 +35,7 @@ public class GridStickyItem1Adapter extends GridStickyAdapter<Sticky2Item>{
             TextView textView= holder.textView(R.id.tv_sticky_view);
             textView.setText(item.item);
         } else if(ITEM_NORMAL==itemViewType){
-            TextView textView= holder.textView(R.id.tv_view);
-            textView.setText(item.item);
+            holder.textView(R.id.tv_text).setText(item.item);
         }
     }
 
@@ -48,7 +46,7 @@ public class GridStickyItem1Adapter extends GridStickyAdapter<Sticky2Item>{
         if(ITEM_STICKY==viewType){
             holder=new CacheViewHolder(inflateView(parent, R.layout.sticky_top_item));
         } else {
-            holder=new CacheViewHolder(inflateView(parent, R.layout.sticky_text_item2));
+            holder=new CacheViewHolder(inflateView(parent, R.layout.grid_image_item));
         }
         return holder;
     }
@@ -71,6 +69,7 @@ public class GridStickyItem1Adapter extends GridStickyAdapter<Sticky2Item>{
         Sticky2Item item = getItem(position);
         return item.title?ITEM_STICKY:ITEM_NORMAL;
     }
+
 
 
 }

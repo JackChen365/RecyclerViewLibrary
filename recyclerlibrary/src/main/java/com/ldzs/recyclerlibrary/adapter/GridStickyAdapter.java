@@ -3,10 +3,10 @@ package com.ldzs.recyclerlibrary.adapter;
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.ldzs.recyclerlibrary.callback.GridSpanCallback;
 import com.ldzs.recyclerlibrary.callback.StickyCallback;
+import com.ldzs.recyclerlibrary.strategy.GroupingStrategy;
 
 import java.util.List;
 
@@ -22,7 +22,8 @@ public abstract class GridStickyAdapter<T> extends BaseViewAdapter<T> implements
     @Override
     public int getSpanSize(RecyclerView.LayoutManager layoutManager,int position) {
         int spanCount=1;
-        if(layoutManager instanceof GridLayoutManager&&isStickyPosition(position)){
+        GroupingStrategy groupingStrategy = getGroupingStrategy();
+        if(layoutManager instanceof GridLayoutManager&&groupingStrategy.isGroupIndex(position)){
             GridLayoutManager gridLayoutManager= (GridLayoutManager) layoutManager;
             spanCount = gridLayoutManager.getSpanCount();
         }

@@ -2,7 +2,7 @@ package com.ldzs.recyclerlibrary;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ldzs.recyclerlibrary.callback.StickyCallback;
+import com.ldzs.recyclerlibrary.strategy.GroupingStrategy;
 
 /**
  * Created by Administrator on 2017/5/20.
@@ -157,10 +158,12 @@ public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  
 
     class StickyScrollListener extends RecyclerView.OnScrollListener{
         private final StickyCallback callback;
+        private final GroupingStrategy groupingStrategy;
         private int lastVisibleItemPosition;
 
         public StickyScrollListener(StickyCallback callback) {
             this.callback = callback;
+            this.groupingStrategy=callback.getGroupingStrategy();
             //初始化第一个节点信息,若数据罗多,延持到滑动时,会导致初始化第一个失败
             this.callback.initStickyView(stickyView,0);
             this.lastVisibleItemPosition=RecyclerView.NO_POSITION;
@@ -170,6 +173,10 @@ public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
             RecyclerView.LayoutManager layoutManager = getLayoutManager();
+            int spanCount=1;
+            if(layoutManager instanceof GridLayoutManager){
+                spanCount=((GridLayoutManager)layoutManager).getSpanCount();
+            }
             int headerViewCount = getHeaderViewCount();
             int firstVisibleItemPosition = getFirstVisiblePosition();
             if(firstVisibleItemPosition<headerViewCount){
@@ -178,11 +185,11 @@ public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  
                 stickyView.setVisibility(View.VISIBLE);
                 int realVisibleItemPosition=firstVisibleItemPosition-headerViewCount;
                 //初始化当前位置Sticky信息
-                int lastRealPosition=realVisibleItemPosition+1;
+                int lastRealPosition=realVisibleItemPosition+spanCount;
                 for(int position=realVisibleItemPosition;position<=lastRealPosition;position++) {
-                    if (lastVisibleItemPosition != firstVisibleItemPosition && callback.isStickyPosition(position)) {
+                    if (lastVisibleItemPosition != firstVisibleItemPosition && groupingStrategy.isGroupIndex(position)) {
                         lastVisibleItemPosition = firstVisibleItemPosition;
-                        callback.initStickyView(stickyView, realVisibleItemPosition);
+                        callback.initStickyView(stickyView, groupingStrategy.getGroupStartIndex(realVisibleItemPosition));
                         break;
                     }
                 }
@@ -201,7 +208,7 @@ public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  
         int findStickyPosition(int position,int lastVisibleItemPosition){
             int stickyPosition=RecyclerView.NO_POSITION;
             for(int index=position;index<=lastVisibleItemPosition;index++){
-                if(callback.isStickyPosition(index)){
+                if(groupingStrategy.isGroupIndex(index)){
                     stickyPosition=index;
                     break;
                 }

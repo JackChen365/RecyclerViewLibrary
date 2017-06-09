@@ -2,7 +2,6 @@ package com.ldzs.pulltorefreshrecyclerview.adapter;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -38,7 +37,7 @@ public class LinearSticky1ItemAdapter extends BaseViewAdapter<String> implements
         TextView stickyView=holder.textView(R.id.tv_sticky_view);
         TextView textView=holder.textView(R.id.tv_view);
         String item = getItem(position);
-        boolean isStickyPosition=isStickyPosition(position);
+        boolean isStickyPosition=groupingStrategy.isGroupIndex(position);
         stickyView.setVisibility(isStickyPosition?View.VISIBLE:View.GONE);
         if(isStickyPosition){
             stickyView.setText(String.valueOf(item.charAt(0)));
@@ -56,8 +55,8 @@ public class LinearSticky1ItemAdapter extends BaseViewAdapter<String> implements
     }
 
     @Override
-    public boolean isStickyPosition(int position) {
-        return groupingStrategy.isGroupIndex(position);
+    public GroupingStrategy getGroupingStrategy() {
+        return groupingStrategy;
     }
 
 
