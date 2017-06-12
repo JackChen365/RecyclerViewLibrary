@@ -2,7 +2,6 @@ package com.ldzs.recyclerlibrary;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
 
 import com.ldzs.recyclerlibrary.callback.OnItemClickListener;
 
@@ -82,6 +81,10 @@ public interface IRecyclerView {
      * @return
      */
     RecyclerView.ItemAnimator getItemAnimator();
+
+    void addOnScrollListener(RecyclerView.OnScrollListener listener);
+
+    void removeOnScrollListener(RecyclerView.OnScrollListener listener);
 
     /**
      * set recycler view item click listener

@@ -23,9 +23,9 @@ public class RefreshFrameFooter {
     public @interface RefreshState {
     }
     private View[] frameGroup;
+    private final View container;
     private int refreshState = FRAME_CLICK;
     private View.OnClickListener mListener;
-    private View container;
     private View lastFrame;
 
     /**
@@ -70,14 +70,19 @@ public class RefreshFrameFooter {
      *
      * @param state
      */
-    public void setRefreshState(@RefreshState int state) {
-        if (refreshState == state) return;
-        frameGroup[state].setVisibility(View.VISIBLE);
-        lastFrame= frameGroup[refreshState];
-        if(null!=lastFrame){
-            lastFrame.setVisibility(View.GONE);
-        }
-        refreshState = state;
+    public void setRefreshState(final @RefreshState int state) {
+        container.post(new Runnable() {
+            @Override
+            public void run() {
+                if (refreshState == state) return;
+                frameGroup[state].setVisibility(View.VISIBLE);
+                lastFrame= frameGroup[refreshState];
+                if(null!=lastFrame){
+                    lastFrame.setVisibility(View.GONE);
+                }
+                refreshState = state;
+            }
+        });
     }
 
 

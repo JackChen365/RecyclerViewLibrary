@@ -284,6 +284,16 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
     }
 
     @Override
+    public void addOnScrollListener(RecyclerView.OnScrollListener listener) {
+        this.targetView.addOnScrollListener(listener);
+    }
+
+    @Override
+    public void removeOnScrollListener(RecyclerView.OnScrollListener listener) {
+        this.targetView.removeOnScrollListener(listener);
+    }
+
+    @Override
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.adapter.setOnItemClickListener(listener);
     }
