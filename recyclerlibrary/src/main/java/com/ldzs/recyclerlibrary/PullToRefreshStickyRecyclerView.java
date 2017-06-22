@@ -33,6 +33,7 @@ import com.ldzs.recyclerlibrary.strategy.GroupingStrategy;
  * 4:app/ui/sticky/Sticky4SampleActivity 演示GridLayoutManager的Sticky效果
  */
 public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  {
+    private static final String TAG = "PullToRefreshStickyRecyclerView";
     private final LayoutInflater layoutInflater;
     private AdapterDataObserver observer;
     private StickyScrollListener listener;
@@ -147,12 +148,14 @@ public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  
             this.callback = callback;
         }
 
+
         @Override
         public void onChanged() {
             super.onChanged();
             //此处,当数据完全更新后,滑动到顶部,并更新显示头,否则会出现头与数据列不一致情况
-            scrollToPosition(0);
-            callback.initStickyView(stickyView, 0);
+            int firstVisiblePosition = getFirstVisiblePosition()-getHeaderViewCount();
+            GroupingStrategy groupingStrategy = callback.getGroupingStrategy();
+            callback.initStickyView(stickyView, groupingStrategy.getGroupStartIndex(firstVisiblePosition));
         }
     }
 
