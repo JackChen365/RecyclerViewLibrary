@@ -72,6 +72,10 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         notifyDataSetChanged();
     }
 
+    public RecyclerView.Adapter getAdapter(){
+        return this.adapter;
+    }
+
     /**
      * 条目范围插入
      *
