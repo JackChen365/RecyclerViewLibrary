@@ -1,16 +1,12 @@
 package com.ldzs.recyclerlibrary.divide;
 
-import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 /**
@@ -97,8 +93,8 @@ public class SimpleItemDecoration extends RecyclerView.ItemDecoration {
                 drawLinearHorizontal(c, parent, state);
                 break;
             case GRID:
-                drawVertical(c, parent);
-                drawHorizontal(c, parent);
+                drawGridVertical(c, parent,state);
+                drawGridHorizontal(c, parent,state);
                 break;
         }
     }
@@ -129,45 +125,73 @@ public class SimpleItemDecoration extends RecyclerView.ItemDecoration {
         final int bottom = parent.getHeight() - parent.getPaddingBottom();
 
         final int childCount = parent.getChildCount();
+        int itemCount = state.getItemCount();
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
-            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
-                    .getLayoutParams();
-            final int left = child.getRight() + params.rightMargin;
-            final int right = left + strokeWidth;
-            drawable.setBounds(left, top + horizontalPadding, right, bottom - horizontalPadding);
-            drawable.draw(c);
+            int itemPosition = parent.getChildAdapterPosition(child);
+            if (needDraw(itemCount, itemPosition)) {
+                final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
+                        .getLayoutParams();
+                final int left = child.getRight() + params.rightMargin;
+                final int right = left + strokeWidth;
+                drawable.setBounds(left, top + horizontalPadding, right, bottom - horizontalPadding);
+                drawable.draw(c);
+            }
         }
     }
 
 
-    public void drawVertical(Canvas c, RecyclerView parent) {
+    public void drawGridVertical(Canvas c, RecyclerView parent, RecyclerView.State state) {
         int strokeWidth = this.strokeWidth;
+        int itemCount = state.getItemCount();
         final int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
-            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
-            final int left = child.getLeft() - params.leftMargin - strokeWidth;
-            final int right = child.getRight() + params.rightMargin + strokeWidth;
-            final int top = child.getBottom() + params.bottomMargin + strokeWidth;
-            final int bottom = top + drawable.getIntrinsicHeight();
-            drawable.setBounds(left, top, right, bottom);
-            drawable.draw(c);
+            final RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) child.getLayoutParams();
+            int itemPosition = layoutParams.getViewLayoutPosition();
+            if(needDraw(itemCount,itemPosition)){
+                //绘左侧
+                int left = child.getLeft() - layoutParams.leftMargin - strokeWidth;
+                int right = child.getLeft() - layoutParams.leftMargin;
+                int top = child.getTop() + layoutParams.topMargin-strokeWidth;
+                int bottom = child.getBottom() + layoutParams.bottomMargin+strokeWidth;
+                drawable.setBounds(left, top, right, bottom);
+                drawable.draw(c);
+                //绘右侧
+                left = child.getRight() + layoutParams.rightMargin;
+                right = child.getRight() + layoutParams.rightMargin+strokeWidth;
+                top = child.getTop() + layoutParams.topMargin-strokeWidth;
+                bottom = child.getBottom() + layoutParams.bottomMargin+strokeWidth;
+                drawable.setBounds(left, top, right, bottom);
+                drawable.draw(c);
+            }
         }
     }
 
-    public void drawHorizontal(Canvas c, RecyclerView parent) {
+    public void drawGridHorizontal(Canvas c, RecyclerView parent, RecyclerView.State state) {
         int strokeWidth = this.strokeWidth;
         final int childCount = parent.getChildCount();
+        int itemCount = state.getItemCount();
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
-            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
-            final int left = child.getRight() + params.rightMargin + strokeWidth;
-            final int right = left + drawable.getIntrinsicWidth();
-            final int top = child.getTop() - params.topMargin - strokeWidth;
-            final int bottom = child.getBottom() + params.bottomMargin + strokeWidth;
-            drawable.setBounds(left, top, right, bottom);
-            drawable.draw(c);
+            final RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) child.getLayoutParams();
+            int itemPosition = layoutParams.getViewLayoutPosition();
+            if(needDraw(itemCount,itemPosition)) {
+                //绘上边
+                int left = child.getLeft() + layoutParams.leftMargin - strokeWidth;
+                int right = child.getRight() + layoutParams.rightMargin + strokeWidth;
+                int top = child.getTop() - layoutParams.topMargin - strokeWidth;
+                int bottom = child.getTop() - layoutParams.topMargin;
+                drawable.setBounds(left, top, right, bottom);
+                drawable.draw(c);
+                //绘下边
+                left = child.getLeft() + layoutParams.leftMargin - strokeWidth;
+                right = child.getRight() + layoutParams.rightMargin + strokeWidth;
+                top = child.getBottom() + layoutParams.bottomMargin;
+                bottom = child.getBottom() + layoutParams.bottomMargin + strokeWidth;
+                drawable.setBounds(left, top, right, bottom);
+                drawable.draw(c);
+            }
         }
     }
 
@@ -179,7 +203,9 @@ public class SimpleItemDecoration extends RecyclerView.ItemDecoration {
         RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view.getLayoutParams();
         int itemCount = state.getItemCount();
         int itemPosition = layoutParams.getViewLayoutPosition();
-        if (needDraw(itemCount, itemPosition)) {
+        if (!needDraw(itemCount, itemPosition)) {
+            outRect.set(0, 0, 0, 0);
+        } else {
             switch (divideMode) {
                 case VERTICAL:
                     outRect.set(0, 0, 0, strokeWidth);
@@ -200,8 +226,6 @@ public class SimpleItemDecoration extends RecyclerView.ItemDecoration {
                     outRect.set(strokeWidth, strokeWidth, strokeWidth, strokeWidth);
                     break;
             }
-        } else {
-            outRect.set(0, 0, 0, 0);
         }
     }
 

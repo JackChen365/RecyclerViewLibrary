@@ -9,10 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         auto:pv_divideVerticalPadding="@dimen/activity_margin"
-        auto:pv_listDivide="@color/transparent"
+        auto:pv_listDivide="@color/divide"
         auto:pull_headerType="material"
         auto:pull_headerStrategy="front"
-        auto:pv_listDivideHeight="0.8dp" />
+        auto:pv_listDivideHeight="1dp" />
 
     <RadioGroup
         android:id="@+id/rg_refresh_mode"
