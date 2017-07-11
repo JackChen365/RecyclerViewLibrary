@@ -4,7 +4,7 @@ A RecyclerView libirary ,has some support, like headerAdapter/TreeAdapter,and Pu
 #### gradle compile
 ```
 dependencies {
-    compile 'com.ldzs.recyclerlibrary:recyclerlibrary:1.5.5'
+    compile 'com.ldzs.recyclerlibrary:recyclerlibrary:1.6.2'
 }
 ```
 
@@ -18,6 +18,24 @@ dependencies {
 
 ### 2017/5/21
 * 增加了StickyHeader的效果.功能非常强大,在原有功能基础上扩展,简化分组数据逻辑,自动同步更改.最大化减少了Adapter的逻辑代码.并支持GridLayoutManager,一共四个示例.
+
+### 2017/7/11
+* 修正了GridLayoutManager分隔线问题
+* 去掉了难以配置的RefreshFooter的引用,改为一个自定义的footerStyle决定
+
+```xml
+<style name="FrameFooterView" >
+        <item name="footer_footerHeight">60dp</item>
+        <item name="footer_clickTextHint">@string/click_load_more</item>
+        <item name="footer_textSize">14sp</item>
+        <item name="footer_textColor">@color/dark_gray</item>
+        <item name="footer_errorHint">@string/load_error</item>
+        <item name="footer_retryItemSelector" >@drawable/btn_retry_selector</item>
+        <item name="footer_complete">@string/load_complete</item>
+        <item name="footer_retry" >@string/re_try</item>
+        <item name="footer_load">@string/loading</item>
+    </style>
+```
 
 #### RecyclerView 自定义数据适配器
 * DynamicAdapter:完全动态化的Adapter,支持往任一位置插入自定义条目,使用装饰设计模式,无使用限制
