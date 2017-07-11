@@ -25,13 +25,19 @@
         <attr name="pv_layoutStickyView" format="boolean"/>
     </declare-styleable>
 
-    <attr name="refresh_footerHeight" format="dimension"/>
-    <attr name="refresh_clickTextHint" format="string"/>
-    <attr name="refresh_textSize" format="dimension"/>
-    <attr name="refresh_textColor" format="color"/>
-    <attr name="refresh_errorHint" format="reference"/>
-    <attr name="refresh_retryItemSelector" format="reference"/>
-    <attr name="refresh_retry" format="string"/>
+    <attr name="footerStyle" format="reference"/>
+
+    <declare-styleable name="FrameFooterView">
+        <attr name="footer_footerHeight" format="dimension"/>
+        <attr name="footer_clickTextHint" format="string"/>
+        <attr name="footer_textSize" format="dimension"/>
+        <attr name="footer_textColor" format="color"/>
+        <attr name="footer_errorHint" format="reference"/>
+        <attr name="footer_complete" format="string"/>
+        <attr name="footer_retryItemSelector" format="reference"/>
+        <attr name="footer_retry" format="string"/>
+        <attr name="footer_load" format="string"/>
+    </declare-styleable>
 
 
 

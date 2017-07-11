@@ -33,7 +33,7 @@ public class RefreshFrameFooter {
      * @param parent
      */
     public RefreshFrameFooter(Context context, PullToRefreshRecyclerView parent) {
-        this.container = LayoutInflater.from(context).inflate(R.layout.list_footer, parent, false);
+        this.container = new FrameFooterView(context);
         frameGroup = new View[4];
         frameGroup[FRAME_CLICK] = this.container.findViewById(R.id.refresh_click_view);
         frameGroup[FRAME_LOAD] = this.container.findViewById(R.id.refresh_loading_layout);

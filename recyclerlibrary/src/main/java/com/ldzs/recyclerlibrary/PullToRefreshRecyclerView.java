@@ -362,6 +362,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
             refreshState = END_NONE;
             adapter.removeRefreshFooterView(footerView);
         }
+        itemDecoration.setFooterCount(getFooterViewCount());
     }
 
     /**

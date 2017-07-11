@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.IntDef;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -178,15 +179,15 @@ public class SimpleItemDecoration extends RecyclerView.ItemDecoration {
             int itemPosition = layoutParams.getViewLayoutPosition();
             if(needDraw(itemCount,itemPosition)) {
                 //绘上边
-                int left = child.getLeft() + layoutParams.leftMargin - strokeWidth;
-                int right = child.getRight() + layoutParams.rightMargin + strokeWidth;
+                int left = child.getLeft() ;
+                int right = child.getRight();
                 int top = child.getTop() - layoutParams.topMargin - strokeWidth;
                 int bottom = child.getTop() - layoutParams.topMargin;
                 drawable.setBounds(left, top, right, bottom);
                 drawable.draw(c);
                 //绘下边
-                left = child.getLeft() + layoutParams.leftMargin - strokeWidth;
-                right = child.getRight() + layoutParams.rightMargin + strokeWidth;
+                left = child.getLeft();
+                right = child.getRight();
                 top = child.getBottom() + layoutParams.bottomMargin;
                 bottom = child.getBottom() + layoutParams.bottomMargin + strokeWidth;
                 drawable.setBounds(left, top, right, bottom);
@@ -218,10 +219,12 @@ public class SimpleItemDecoration extends RecyclerView.ItemDecoration {
                     if (layoutManager instanceof GridLayoutManager) {
                         GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
                         GridLayoutManager.SpanSizeLookup sizeLookup = gridLayoutManager.getSpanSizeLookup();
-                        int position = ((RecyclerView.LayoutParams) view.getLayoutParams()).getViewLayoutPosition();
-                        int spanSize = sizeLookup.getSpanSize(position);
+                        int spanSize = sizeLookup.getSpanSize(itemPosition);
                         int spanCount = gridLayoutManager.getSpanCount();
-                        if (spanSize == spanCount) return;   //横向占满行的不进行分隔
+                        if (spanSize == spanCount) {
+                            outRect.set(0, 0, 0, 0);
+                            return;
+                        }
                     }
                     outRect.set(strokeWidth, strokeWidth, strokeWidth, strokeWidth);
                     break;
@@ -243,6 +246,7 @@ public class SimpleItemDecoration extends RecyclerView.ItemDecoration {
         } else if (footerCount >= itemCount - itemPosition) {
             result = showFooter;
         }
+        Log.i(TAG,"headerCount:"+headerCount+" footerCount:"+footerCount+" itemPosition:"+itemPosition+" result:"+result);
         return result;
     }
 
