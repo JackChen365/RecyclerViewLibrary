@@ -78,6 +78,9 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
 
     public PullToRefreshRecyclerView(Context context) {
         this(context,null,0);
+        addTargetView();
+        setRefreshHeader(refreshHeader);
+        targetView.addItemDecoration(itemDecoration);
     }
 
     public PullToRefreshRecyclerView(Context context, AttributeSet attrs) {
