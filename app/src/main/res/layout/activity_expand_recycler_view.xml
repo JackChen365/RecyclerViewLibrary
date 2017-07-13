@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.ldzs.recyclerlibrary.PullToRefreshExpandRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:auto="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/recycler_view"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    auto:pv_divideVerticalPadding="@dimen/activity_margin"
-    auto:pull_headerStrategy="follow"
-    auto:pull_headerType="indicator"
-    auto:pv_listDivideHeight="0.8dp"
-    auto:pv_listDivide="@color/divide"
-    auto:pull_refreshMode="refresh_top"/>
+    android:layout_height="match_parent">
+
+</ScrollView>

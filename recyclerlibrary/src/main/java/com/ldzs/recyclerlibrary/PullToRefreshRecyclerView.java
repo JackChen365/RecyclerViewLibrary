@@ -11,6 +11,7 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -210,6 +211,22 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
         return this.targetView.getLayoutManager();
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        measureChildren(widthMeasureSpec,heightMeasureSpec);
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int measureWidth = MeasureSpec.getSize(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int measureHeight = MeasureSpec.getSize(heightMeasureSpec);
+        if(MeasureSpec.UNSPECIFIED==widthMode){
+            measureWidth=targetView.getMeasuredWidth();
+        }
+        if(MeasureSpec.UNSPECIFIED==heightMode){
+            measureHeight=targetView.getMeasuredHeight();
+        }
+        setMeasuredDimension(measureWidth,measureHeight);
+    }
 
     @Override
     public int getHeaderViewCount() {

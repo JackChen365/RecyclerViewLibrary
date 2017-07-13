@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +37,9 @@ public class PullToRefreshExpandActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expand_recycler_view);
         setTitle(getIntent().getStringExtra("title"));
-        mRecyclerView = (PullToRefreshExpandRecyclerView) this.findViewById(R.id.recycler_view);
+        ScrollView scrollView= (ScrollView) findViewById(R.id.scrollView);
+        mRecyclerView = new PullToRefreshExpandRecyclerView(this);
+        scrollView.addView(mRecyclerView);
         mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
         mRecyclerView.getItemAnimator().setAddDuration(300);
         mRecyclerView.getItemAnimator().setRemoveDuration(300);
