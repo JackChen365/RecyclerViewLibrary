@@ -18,6 +18,7 @@ import java.util.List;
  * Created by cz on 16/1/23.
  */
 public class SimpleAdapter<E> extends BaseViewAdapter<E> {
+    private static final String TAG="SimpleAdapter";
     private int layout;
 
     public static SimpleAdapter createFromResource(Context context, @ArrayRes int res) {
@@ -45,11 +46,13 @@ public class SimpleAdapter<E> extends BaseViewAdapter<E> {
 
     @Override
     public CacheViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.e(TAG,"onCreateViewHolder");
         return new CacheViewHolder(inflateView(parent, layout));
     }
 
     @Override
     public void onBindViewHolder(CacheViewHolder holder, int position) {
+        Log.e(TAG,"onBindViewHolder:"+position);
         TextView textView = (TextView) holder.itemView;
         E item = getItem(position);
         if (null != item) {

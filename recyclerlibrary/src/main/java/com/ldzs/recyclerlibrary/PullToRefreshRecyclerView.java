@@ -325,6 +325,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
     }
 
     public void setAdapter(RecyclerView.Adapter adapter){
+        this.adapter.setHasStableIds(true);
         this.adapter.setAdapter(adapter);
         this.targetView.setAdapter(this.adapter);
         adapter.registerAdapterDataObserver(new DynamicAdapterDataObserve(this.adapter));

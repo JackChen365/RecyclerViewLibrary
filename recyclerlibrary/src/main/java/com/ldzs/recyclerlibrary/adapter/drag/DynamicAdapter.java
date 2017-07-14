@@ -572,6 +572,10 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return result;
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
     /**
      * 获得添加view个数
