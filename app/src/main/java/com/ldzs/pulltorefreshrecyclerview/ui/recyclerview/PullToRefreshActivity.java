@@ -67,22 +67,22 @@ public class PullToRefreshActivity extends AppCompatActivity {
         //上拉刷新
         recyclerView.setOnPullFooterToRefreshListener(() -> {
             Log.e(TAG,"onFooterRefresh!");
-            if (times < 2) {
-                recyclerView.postDelayed(() -> {
-                    adapter.addItemsNotify(Data.createItems(this, 4));
-                    recyclerView.onRefreshFootComplete();
-                }, 1000);
-            } else if (times < 4) {
-                recyclerView.postDelayed(() -> {
-                    recyclerView.setOnFootRetryListener(v -> {
-                        adapter.addItemsNotify(Data.createItems(this, 4));
-                        recyclerView.onRefreshFootComplete();
-                    });
-                }, 1000);
-            } else {
-                recyclerView.postDelayed(() -> recyclerView.setFooterRefreshDone(), 1000);
-            }
-            times++;
+//            if (times < 2) {
+//                recyclerView.postDelayed(() -> {
+//                    adapter.addItemsNotify(Data.createItems(this, 4));
+//                    recyclerView.onRefreshFootComplete();
+//                }, 1000);
+//            } else if (times < 4) {
+//                recyclerView.postDelayed(() -> {
+//                    recyclerView.setOnFootRetryListener(v -> {
+//                        adapter.addItemsNotify(Data.createItems(this, 4));
+//                        recyclerView.onRefreshFootComplete();
+//                    });
+//                }, 1000);
+//            } else {
+//                recyclerView.postDelayed(() -> recyclerView.setFooterRefreshDone(), 1000);
+//            }
+//            times++;
         });
         //初始设置2个,考虑其不满一屏加载状态
         adapter = new SimpleAdapter(this, Data.createItems(this, 2));

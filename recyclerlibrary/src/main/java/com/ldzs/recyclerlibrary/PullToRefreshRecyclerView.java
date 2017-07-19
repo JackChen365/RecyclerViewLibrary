@@ -449,10 +449,16 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
         RefreshMode refreshMode = getRefreshMode();
         if (state == RecyclerView.SCROLL_STATE_IDLE && null != listener && refreshMode.enableFooter()) {
             RecyclerView.LayoutManager layoutManager = targetView.getLayoutManager();
+            int firstVisiblePosition = getFirstVisiblePosition();
             int lastVisibleItemPosition = getLastVisiblePosition();
-            if (lastVisibleItemPosition >= layoutManager.getItemCount() - 1 &&
+            int itemCount = layoutManager.getItemCount();
+            if(lastVisibleItemPosition-firstVisiblePosition>=itemCount-1){
+                //不满一屏,直接置为加载完毕
+                setFooterRefreshDone();
+            } else if (lastVisibleItemPosition >= itemCount - 1 &&
                     layoutManager.getItemCount() >= layoutManager.getChildCount() &&
                     refreshState==END_NORMAL&&!refreshFooter.isRefreshDone()) {
+                //大于一屏,回调加载更多
                 refreshState = END_REFRESHING;
                 listener.onRefresh();
             }
