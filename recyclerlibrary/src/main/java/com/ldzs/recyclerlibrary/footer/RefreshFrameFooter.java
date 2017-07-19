@@ -65,6 +65,10 @@ public class RefreshFrameFooter {
         return FRAME_LOAD == refreshState;
     }
 
+    public boolean isRefreshDone() {
+        return FRAME_DONE == refreshState;
+    }
+
     /**
      * set footer refresh state
      *

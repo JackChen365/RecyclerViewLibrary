@@ -451,7 +451,8 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
             RecyclerView.LayoutManager layoutManager = targetView.getLayoutManager();
             int lastVisibleItemPosition = getLastVisiblePosition();
             if (lastVisibleItemPosition >= layoutManager.getItemCount() - 1 &&
-                    layoutManager.getItemCount() >= layoutManager.getChildCount() && refreshState==END_NORMAL) {
+                    layoutManager.getItemCount() >= layoutManager.getChildCount() &&
+                    refreshState==END_NORMAL&&!refreshFooter.isRefreshDone()) {
                 refreshState = END_REFRESHING;
                 listener.onRefresh();
             }

@@ -233,10 +233,7 @@ public abstract class BaseViewAdapter2<E,VH extends RecyclerView.ViewHolder> ext
         if(0!=itemCount){
             clearNotify();
         }
-        if (null != items) {
-            this.items.addAll(items);
-            notifyDataSetChanged();
-        }
+        addItemsNotify(items);
     }
 
     /**

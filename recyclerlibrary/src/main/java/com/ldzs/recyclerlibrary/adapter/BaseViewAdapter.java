@@ -233,10 +233,7 @@ public abstract class BaseViewAdapter<E> extends RecyclerView.Adapter<CacheViewH
         if(0!=itemCount){
             clearNotify();
         }
-        if (null != items) {
-            this.items.addAll(items);
-            notifyDataSetChanged();
-        }
+        addItemsNotify(items);
     }
 
     /**
