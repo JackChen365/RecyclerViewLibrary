@@ -230,8 +230,9 @@ public abstract class BaseViewAdapter<E> extends RecyclerView.Adapter<CacheViewH
 
     public void swapItemsNotify(final List<E> items) {
         int itemCount=getItemCount();
-        this.items.clear();
-        notifyItemRangeRemoved(0,itemCount);
+        if(0!=itemCount){
+            clearNotify();
+        }
         if (null != items) {
             this.items.addAll(items);
             notifyDataSetChanged();
