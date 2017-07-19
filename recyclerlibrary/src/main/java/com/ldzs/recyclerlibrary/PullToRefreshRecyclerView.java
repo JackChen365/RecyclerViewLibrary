@@ -75,6 +75,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
     private final SimpleItemDecoration itemDecoration;
     private final RefreshFrameFooter refreshFooter;
     private OnPullFooterToRefreshListener listener;
+    private DynamicAdapterDataObserve dataObserve=null;
     private int refreshState;
 
     public PullToRefreshRecyclerView(Context context) {
@@ -92,6 +93,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
         super(context, attrs, defStyleAttr);
         refreshState = END_NORMAL;
         adapter = new SelectAdapter(null);
+        adapter.setHasStableIds(true);
         itemDecoration=new SimpleItemDecoration();
         refreshFooter = new RefreshFrameFooter(context, this);
         initFooterViewByMode(getRefreshMode());
@@ -325,10 +327,18 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
     }
 
     public void setAdapter(RecyclerView.Adapter adapter){
-        this.adapter.setHasStableIds(true);
+        RecyclerView.Adapter originalAdapter = this.adapter.getAdapter();
+        if(null!=originalAdapter){
+            if(null!=dataObserve){
+                originalAdapter.unregisterAdapterDataObserver(dataObserve);
+            }
+        } else {
+            this.targetView.setAdapter(this.adapter);
+        }
         this.adapter.setAdapter(adapter);
-        this.targetView.setAdapter(this.adapter);
-        adapter.registerAdapterDataObserver(new DynamicAdapterDataObserve(this.adapter));
+        if(null!=adapter){
+            adapter.registerAdapterDataObserver(dataObserve=new DynamicAdapterDataObserve(this.adapter));
+        }
     }
 
     public RecyclerView.Adapter getOriginalAdapter(){

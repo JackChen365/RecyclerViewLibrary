@@ -3,6 +3,7 @@ package com.ldzs.pulltorefreshrecyclerview.adapter;
 import android.content.Context;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.LayoutRes;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.TextView;
 

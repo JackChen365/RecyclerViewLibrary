@@ -222,18 +222,18 @@ public abstract class BaseViewAdapter2<E,VH extends RecyclerView.ViewHolder> ext
     }
 
     public void swapItems(final List<E> items) {
-        if (null != items && !items.isEmpty()) {
-            this.items.clear();
+        this.items.clear();
+        if (null != items) {
             this.items.addAll(items);
         }
     }
 
     public void swapItemsNotify(final List<E> items) {
-        if (null != items && !items.isEmpty()) {
-            this.items.clear();
+        this.items.clear();
+        if (null != items) {
             this.items.addAll(items);
-            notifyDataSetChanged();
         }
+        notifyDataSetChanged();
     }
 
     /**

@@ -222,18 +222,18 @@ public abstract class BaseViewAdapter<E> extends RecyclerView.Adapter<CacheViewH
     }
 
     public void swapItems(final List<E> items) {
-        if (null != items && !items.isEmpty()) {
-            this.items.clear();
+        this.items.clear();
+        if (null != items) {
             this.items.addAll(items);
         }
     }
 
     public void swapItemsNotify(final List<E> items) {
-        if (null != items && !items.isEmpty()) {
-            this.items.clear();
+        this.items.clear();
+        if (null != items) {
             this.items.addAll(items);
-            notifyDataSetChanged();
         }
+        notifyDataSetChanged();
     }
 
     /**
