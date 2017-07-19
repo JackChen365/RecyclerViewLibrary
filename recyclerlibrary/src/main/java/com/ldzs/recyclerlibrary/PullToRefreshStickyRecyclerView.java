@@ -192,7 +192,10 @@ public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  
                 for(int position=realVisibleItemPosition;position<=lastRealPosition;position++) {
                     if (lastVisibleItemPosition != firstVisibleItemPosition && groupingStrategy.isGroupIndex(position)) {
                         lastVisibleItemPosition = firstVisibleItemPosition;
-                        callback.initStickyView(stickyView, groupingStrategy.getGroupStartIndex(realVisibleItemPosition));
+                        int startIndex = groupingStrategy.getGroupStartIndex(realVisibleItemPosition);
+                        if(startIndex<layoutManager.getItemCount()){
+                            callback.initStickyView(stickyView, groupingStrategy.getGroupStartIndex(realVisibleItemPosition));
+                        }
                         break;
                     }
                 }
