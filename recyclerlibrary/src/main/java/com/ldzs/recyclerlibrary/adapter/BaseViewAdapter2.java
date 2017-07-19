@@ -229,11 +229,13 @@ public abstract class BaseViewAdapter2<E,VH extends RecyclerView.ViewHolder> ext
     }
 
     public void swapItemsNotify(final List<E> items) {
+        int itemCount=getItemCount();
         this.items.clear();
+        notifyItemRangeRemoved(0,itemCount);
         if (null != items) {
             this.items.addAll(items);
+            notifyDataSetChanged();
         }
-        notifyDataSetChanged();
     }
 
     /**
