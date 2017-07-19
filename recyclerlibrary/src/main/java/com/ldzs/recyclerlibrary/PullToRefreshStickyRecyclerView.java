@@ -97,6 +97,15 @@ public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  
         this.stickyView=view;
     }
 
+    public int getItemCount(){
+        int itemCount=0;
+        RecyclerView.Adapter adapter = getAdapter();
+        if(null!=adapter){
+            itemCount=adapter.getItemCount();
+        }
+        return itemCount;
+    }
+
     @Override
     protected void onLayout(boolean b, int left, int top, int right, int bottom) {
         super.onLayout(b, left, top, right, bottom);
@@ -155,7 +164,11 @@ public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  
             //此处,当数据完全更新后,滑动到顶部,并更新显示头,否则会出现头与数据列不一致情况
             int firstVisiblePosition = getFirstVisiblePosition()-getHeaderViewCount();
             GroupingStrategy groupingStrategy = callback.getGroupingStrategy();
-            callback.initStickyView(stickyView, groupingStrategy.getGroupStartIndex(firstVisiblePosition));
+            int itemCount = getItemCount();
+            int startIndex = groupingStrategy.getGroupStartIndex(firstVisiblePosition);
+            if(startIndex<itemCount){
+                callback.initStickyView(stickyView, startIndex);
+            }
         }
     }
 
@@ -168,7 +181,10 @@ public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  
             this.callback = callback;
             this.groupingStrategy=callback.getGroupingStrategy();
             //初始化第一个节点信息,若数据罗多,延持到滑动时,会导致初始化第一个失败
-            this.callback.initStickyView(stickyView,0);
+            int itemCount = getItemCount();
+            if(0<itemCount){
+                this.callback.initStickyView(stickyView,0);
+            }
             this.lastVisibleItemPosition=RecyclerView.NO_POSITION;
         }
 
@@ -194,7 +210,7 @@ public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  
                         lastVisibleItemPosition = firstVisibleItemPosition;
                         int startIndex = groupingStrategy.getGroupStartIndex(realVisibleItemPosition);
                         if(startIndex<layoutManager.getItemCount()){
-                            callback.initStickyView(stickyView, groupingStrategy.getGroupStartIndex(realVisibleItemPosition));
+                            callback.initStickyView(stickyView, startIndex);
                         }
                         break;
                     }
