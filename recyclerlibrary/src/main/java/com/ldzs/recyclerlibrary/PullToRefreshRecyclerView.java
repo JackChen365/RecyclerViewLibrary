@@ -359,6 +359,23 @@ public class PullToRefreshRecyclerView extends PullToRefreshLayout<RecyclerView>
         initFooterViewByMode(mode);
     }
 
+    private void smoothMoveToPosition(int n) {
+        RecyclerView.LayoutManager layoutManager = targetView.getLayoutManager();
+        if(layoutManager instanceof LinearLayoutManager){
+            LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
+            int firstItem = linearLayoutManager.findFirstVisibleItemPosition();
+            int lastItem = linearLayoutManager.findLastVisibleItemPosition();
+            if (n <= firstItem ){
+                targetView.smoothScrollToPosition(n);
+            }else if ( n <= lastItem ){
+                int top = targetView.getChildAt(n - firstItem).getTop();
+                targetView.smoothScrollBy(0, top);
+            }else{
+                targetView.smoothScrollToPosition(n);
+            }
+        }
+    }
+
     /**
      * 滚动到指定位置
      * @param position

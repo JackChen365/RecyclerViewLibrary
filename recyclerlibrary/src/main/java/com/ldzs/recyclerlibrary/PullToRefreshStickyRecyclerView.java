@@ -110,7 +110,7 @@ public class PullToRefreshStickyRecyclerView extends PullToRefreshRecyclerView  
     protected void onLayout(boolean b, int left, int top, int right, int bottom) {
         super.onLayout(b, left, top, right, bottom);
         if(null!=stickyView){
-            stickyView.layout(left,top,right,stickyView.getMeasuredHeight());
+            stickyView.layout(left,0,right,stickyView.getMeasuredHeight());
         }
     }
 

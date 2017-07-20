@@ -107,6 +107,33 @@ public class GroupingStrategy {
      * @return
      */
     public int getGroupStartIndex(int position){
+        int index=0;
+        int start = getStartIndex(position);
+        if(-1<start&&start<indexItems.size()){
+            index=indexItems.get(start);
+        }
+        return index;
+    }
+
+    /**
+     * 获得映射集的真实位置,如映射集为0 13 25 给定1 返回 13
+     * @param index
+     * @return
+     */
+    public int getOriginalIndex(int index){
+        int position=0;
+        if(-1<index&&index<indexItems.size()){
+            position=indexItems.get(index);
+        }
+        return position;
+    }
+
+    /**
+     * 获得position起始位置,如映射位置为 0 13 25  则给定14 返回 1 给定12 返回0
+     * @param position
+     * @return
+     */
+    public int getStartIndex(int position){
         int start = 0, end = indexItems.size();
         while (end - start > 1) {
             // 中间位置
@@ -122,12 +149,9 @@ public class GroupingStrategy {
                 break;
             }
         }
-        int index=0;
-        if(-1<start&&start<indexItems.size()){
-            index=indexItems.get(start);
-        }
-        return index;
+        return start;
     }
+
 
     /**
      * 刷新定位角标位置

@@ -3,10 +3,13 @@ package com.ldzs.pulltorefreshrecyclerview.ui.sticky;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.View;
+import android.widget.Toast;
 
 import com.ldzs.pulltorefreshrecyclerview.R;
 import com.ldzs.pulltorefreshrecyclerview.adapter.LinearSticky1ItemAdapter;
 import com.ldzs.recyclerlibrary.PullToRefreshStickyRecyclerView;
+import com.ldzs.recyclerlibrary.callback.OnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +36,12 @@ public class Sticky3SampleActivity extends AppCompatActivity {
         }
         final LinearSticky1ItemAdapter adapter = new LinearSticky1ItemAdapter(this, items);
         refreshStickyRecyclerView.setAdapter(adapter);
+        refreshStickyRecyclerView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                Toast.makeText(Sticky3SampleActivity.this,"position:"+position,Toast.LENGTH_SHORT).show();
+            }
+        });
 
         final Random random=new Random();
         findViewById(R.id.btn_remove).setOnClickListener(v ->
