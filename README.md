@@ -7,11 +7,18 @@ dependencies {
     compile 'com.ldzs.recyclerlibrary:recyclerlibrary:1.6.2'
 }
 ```
+## 声明,本库己放弃更新,替换的库为:https://github.com/momodae/KotlinRecyclerView
+* 纯kotlin全部重写
+* 修正了dyanmic映射问题.
+* 采用了新的下拉刷新库:https://github.com/momodae/KotlinPulltoRefreshLayout.git 全部使用NestedScroll重写刷新逻辑
+* 新增了layoutManager模块,主要实现为自定义的:Gallery/Wheel/ViewPager/TableView等更强大的扩展
+<br><br><br><br><br>
 
 #### 一个RecyclerView扩展库,其中主要包含
 1:针对RecyclerView数据适配器的封装</br>
 2:RecyclerView上拉刷新,下拉加载</br>
 3:RecyclerView拖动</br>
+
 
 ### 2016/12/28
 * 增加了pv_adapterView引用,此引用功能为PullToRefreshRecyclerView xml布局内增加的控件,标记为header/footer,则直接添加到adapter的header/footer内,减少代码添加header/footer做法.但因recyclerView的延持加载机制,导致findViewById找不到控件的方式,特别提供了findAdapterView方法.</br>
