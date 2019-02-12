@@ -7,10 +7,10 @@ dependencies {
     compile 'com.ldzs.recyclerlibrary:recyclerlibrary:1.6.2'
 }
 ```
-## 声明,本库己放弃更新,替换库为:![KotlinRecyclerView](https://github.com/momodae/KotlinRecyclerView)
+## 声明,本库己放弃更新,替换库为:[KotlinRecyclerView](https://github.com/momodae/KotlinRecyclerView)
 * 纯kotlin全部重写
 * 修正了dyanmic映射问题.
-* 采用了新的下拉刷新库:![KotlinPulltoRefreshLayout](https://github.com/momodae/KotlinPulltoRefreshLayout) 全部使用NestedScroll重写刷新逻辑
+* 采用了新的下拉刷新库:[KotlinPulltoRefreshLayout](https://github.com/momodae/KotlinPulltoRefreshLayout) 全部使用NestedScroll重写刷新逻辑
 * 新增了layoutManager模块,主要实现为自定义的:Gallery/Wheel/ViewPager/TableView等更强大的扩展
 <br><br><br><br><br>
 
